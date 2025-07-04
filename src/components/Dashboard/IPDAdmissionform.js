@@ -13,7 +13,6 @@ const IPDAdmissionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('jwt');
-
   const visit = location.state?.visit || null;
 
   const [patientId, setPatientId] = useState(visit?.patientDbId?._id || '');
@@ -21,7 +20,7 @@ const IPDAdmissionForm = () => {
 const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctorId || '');
 
 
-
+ const [submitted, setSubmitted] = useState(false);
   const [wardId, setWardId] = useState('');
   const [bedNumber, setBedNumber] = useState('');
   const [roomCategoryId, setRoomCategoryId] = useState('');
@@ -75,6 +74,7 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submitting for patientId=', patientId);
   console.log('Admitting Doctor ID:', admittingDoctorId);
     if (!patientId || !visitId || !wardId || !bedNumber || !roomCategoryId || !admittingDoctorId) {
       return toast.error('All required fields must be filled.');
@@ -100,83 +100,67 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('IPD Admission successful!');
-      setTimeout(() => navigate('/reception-dashboard'), 2000);
+     setSubmitted(true);
     } catch (err) {
       console.error(err.response?.data || err.message);
       toast.error(err.response?.data?.message || 'IPD Admission failed.');
     }
   };
+ const handleView = () => {
+  if (!patientId) {
+    return toast.error('No patient selected.');
+  }
+  navigate(`/receptionist-dashboard/IPDAdmissionList/${patientId}`);
+};
+
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto' }}>
+     <div style={{ maxWidth: 600, margin: '2rem auto' }}>
       <ToastContainer position="top-right" autoClose={3000} />
-      <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-        <h2 style={{ textAlign: 'center' }}>IPD Admission</h2>
 
-        <div>
-          <label>Patient ID</label>
-          <input type="text" value={patientId} readOnly />
+      {!submitted ? (
+        <>
+          <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
+            <h2>IPD Admission</h2>
+
+            <div><label>Patient ID</label><input readOnly value={patientId} /></div>
+            <div><label>Doctor</label><input readOnly value={admittingDoctorId} /></div>
+          
+            <div><label>Visit ID</label><input readOnly value={visitId} /></div>
+            <div><label>Ward</label>
+              <select value={wardId} onChange={e => setWardId(e.target.value)}>
+                <option value="">Select ward</option>
+                {wards.map(w => <option key={w._id} value={w._id}>{w.name}</option>)}
+              </select>
+            </div>
+
+            <div><label>Bed Number</label>
+              <input value={bedNumber} onChange={e => setBedNumber(e.target.value)} />
+            </div>
+
+            <div><label>Room Category</label>
+              <select value={roomCategoryId} onChange={e => setRoomCategoryId(e.target.value)}>
+                <option value="">Select category</option>
+                {roomCategories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+              </select>
+            </div>
+
+            <div><label>Expected Discharge</label>
+              <input type="date" value={expectedDischargeDate} onChange={e => setExpectedDischargeDate(e.target.value)} />
+            </div>
+
+            <div style={{ marginTop: 15 }}>
+              <button type="submit">Admit</button>
+              <button type="button" onClick={() => navigate(-1)}>Cancel</button>
+            </div>
+          </form>
+        </>
+      ) : (
+        <div style={{ padding: '2rem', border: '1px solid #28a745', color: '#28a745', borderRadius: 8, textAlign: 'center' }}>
+          <p>✅ Admission completed for patient {patientId}</p>
+          <button onClick={handleView}>View Admissions</button>
         </div>
-
-        <div>
-          <label>Visit ID</label>
-          <input type="text" value={visitId} readOnly />
-        </div>
-
-        <div>
-        <p>Doctor ID: {admittingDoctorId}</p>
-<p>Doctor Name: {visit?.assignedDoctor?.fullName}</p>
-
-        </div>
-
-        <div>
-          <label>Ward</label>
-          <select value={wardId} onChange={(e) => setWardId(e.target.value)} required>
-            <option value="">Select Ward</option>
-            {wards.map(ward => (
-              <option key={ward._id} value={ward._id}>{ward.name}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label>Bed Number</label>
-          <input
-            type="text"
-            value={bedNumber}
-            onChange={(e) => setBedNumber(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label>Room Category</label>
-          <select value={roomCategoryId} onChange={(e) => setRoomCategoryId(e.target.value)} required>
-            <option value="">Select Room Category</option>
-            {roomCategories.map(cat => (
-              <option key={cat._id} value={cat._id}>{cat.name}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label>Expected Discharge Date</label>
-          <input
-            type="date"
-            value={expectedDischargeDate}
-            onChange={(e) => setExpectedDischargeDate(e.target.value)}
-          />
-        </div>
-
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-          <button type="submit" style={{ padding: '10px 20px', background: '#28a745', color: 'white' }}>
-            Admit
-          </button>
-          <button type="button" onClick={() => navigate(-1)} style={{ padding: '10px 20px' }}>
-            Cancel
-          </button>
-        </div>
-      </form>
+      )}
     </div>
   );
 };

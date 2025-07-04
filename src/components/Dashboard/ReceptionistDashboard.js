@@ -20,6 +20,8 @@ import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams } from 'react-router-dom';
+
 const drawerWidth = 260;
 
 const menuItems = [
@@ -32,7 +34,7 @@ const menuItems = [
 const ReceptionistDashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('');
-
+  const { patientId } = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 const navigate = useNavigate();
@@ -180,6 +182,22 @@ const drawerContent = (
     }} />
         </ListItem>
 
+          <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "IPD Admission List" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "IPD Admission List"? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }}
+   onClick={() => handleNav(`/receptionist-dashboard/IPDAdmissionList/${patientId}`, "IPD Admission List")}>
+
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="IPD Admission List" primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "IPD Admission List" ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+
        <ListItem button    sx={{
     px: 3,
     width: '100%', // Ensure full width
@@ -230,6 +248,21 @@ const drawerContent = (
           <ListItemText primary="LabourRoom"  primaryTypographyProps={{
       fontWeight: 500,
       color: activeMenu === "LabourRoom"  ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+
+
+                       <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "ViewLabourRoom" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "ViewLabourRoom" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ViewLabourRoom" ,"ViewLabourRoom")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="ViewLabourRoom"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "ViewLabourRoom"  ? '#1976d2' : 'inherit'
     }} />
         </ListItem>
 

@@ -16,20 +16,21 @@ const Login = () => {
   const { jwt, user } = useSelector((store) => store.auth);
 
 useEffect(() => {
-  if (jwt && user?.role) {
+  if (jwt && user) {
     if (user.role === "ADMIN") {
       navigate("/admin-dashboard");
     } else if (user.role === "RECEPTIONIST") {
       navigate("/receptionist-dashboard");
     } else if (user.role === "DOCTOR") {
       navigate("/doctor-dashboard");
-    } else if (user.role === "NURSE") {
-      navigate("/nurse-dashboard");
-    } else {
+    } else if (user.role === "STAFF")
+  navigate("/nurse-dashboard")
+ else {
       alert("Unknown role, cannot navigate");
     }
   }
 }, [jwt, user, navigate]);
+
 
 
 

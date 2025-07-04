@@ -184,7 +184,7 @@ setSpecialties(specRes.data.specialties || []);
   disabled={loadingDoctors}
   onClick={async () => {
     if (!specialtyName || !dayOfWeek) {
-      toast.error("Please select both specialty and day.");
+      toast.error("Please select  specialty ");
       return;
     }
     try {

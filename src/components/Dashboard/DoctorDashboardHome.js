@@ -87,56 +87,48 @@ useEffect(() => {
 
   const doctorId = doctor.id;
   doctorRef.current = doctor;
+  tokenRef.current = localStorage.getItem('jwt');
 
   socket.emit('joinDoctorRoom', doctorId);
   console.log('Joined doctor room:', doctorId);
 
   if (!socketInitialized.current) {
-  let toastDisplayed = false;
+    socket.on('newAssignedPatient', async (data) => {
+      if (data.doctorId === doctorRef.current?.id) {
+        await fetchVisits();
+        toast.success(`🩺 New patient assigned: ${data.patientName || 'Patient'}`);
+      }
+    });
 
-//  socket.on('newAssignedPatient', async (data) => {
-//   if (!toastDisplayedRef.current) {
-//     toastDisplayedRef.current = true;
-
-//     await fetchVisits(); // ✅ Wait for visits to be fetched
-
-//     toast.success('🩺 New patient assigned waiting!');
-
-//     setTimeout(() => {
-//       toastDisplayedRef.current = false;
-//     }, 3000);
-//   }
-// });
-
-
-  socketInitialized.current = true; // ✅ add this 
-}
-                           
+    socketInitialized.current = true;
+  }
 
   fetchVisits();
 
   return () => {
-    // clean up
     socket.off('newAssignedPatient');
     socketInitialized.current = false;
   };
 }, [doctor]);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    fetchVisits();
-  }, 8000);
 
-  return () => clearInterval(interval);
-}, []);
+// useEffect(() => {
+//   const interval = setInterval(() => {
+//     fetchVisits();
+//    toast.success('🩺 New patient assigned !');
+//   }, );
+
+//   return () => clearInterval(interval);
+// }, []);
 
 
-useEffect(() => {
-  if (location.state?.consultationDone) {
-    toast.success('Consultation completed successfully!');
-  }
-}, [location]);
+// useEffect(() => {
+//   if (location.state?.consultationDone) {
+//     toast.success('Consultation completed successfully!');
+//   }
+// }, [location]);
  
+
   return (
     <div>
       <h2>Welcome {doctor?.name}</h2>
@@ -169,7 +161,7 @@ useEffect(() => {
 ))}
 
 
-         <ToastContainer />
+        <ToastContainer position="top-right" autoClose={3000} />
     </div>
    
   );

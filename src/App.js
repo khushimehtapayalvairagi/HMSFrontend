@@ -38,11 +38,16 @@ import OPDConsultationForm from './components/Dashboard/OPDConsultationForm';
 import PreviousConsultations from './components/Dashboard/PreviousConsultantPatient';
 import UpdateVisitStatusPage from './components/Dashboard/UpdateVisitStatus';
 import ReceptionistHome from './components/Dashboard/receptionistHome';
-import IPDAdmissionForm from './components/Dashboard/IPDAdmissionform';
+import IPDAdmissionForm from './components/Dashboard/IPDAdmissionform'
+import IPDAdmissionList from './components/Dashboard/IPDAdmissionList';
 import ProcedureForm from './components/Dashboard/ProcedureForm';
 import AnesthesiaForm from './components/Dashboard/AnesthesiaForm';
 import ViewAnesthesiaRecord from './components/Dashboard/ViewAnthesiaRecord';
 import LabourRoomDetails from './components/Dashboard/LabourRoom';
+
+import NurseDashboard from './components/Dashboard/NurseDashboard';
+import LabourRoomDetailViewer from './components/Dashboard/LabourRoomDetailViewer.js';
+import DailyReports from './components/Dashboard/DailyReports.js';
 
 const App = () => {
   return (
@@ -86,11 +91,14 @@ const App = () => {
        <Route path="patient-visits-viewer" element={<PatientVisitsViewer/>} />
 <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage/>} />
 <Route path="IPDAdmissionForm" element={<IPDAdmissionForm/>} />
-<Route path="ProcedureForm" element={<ProcedureForm/>} />
-<Route path="AnesthesiaForm" element={<AnesthesiaForm/>} />
-<Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord/>} />
-<Route path="LabourRoom" element={<LabourRoomDetails/>} />
+<Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
 
+<Route path="ProcedureForm" element={<ProcedureForm/>} />
+<Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm/>} />
+<Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord/>} />
+ <Route path="LabourRoom/:procedureScheduleId/:patientId" element={<LabourRoomDetails />} />
+
+<Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
 </Route>
 <Route path="/doctor-dashboard" element={<ProtectedRoute element={<DoctorDashboard />} role="DOCTOR" />}>
  <Route index element={<DoctorDashboardHome />} />
@@ -100,10 +108,13 @@ const App = () => {
     <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />  
 
 </Route>
-
+<Route path="/nurse-dashboard"  element={<NurseDashboard />}  >
+<Route path ="DailyReports" element ={<DailyReports/>}/>
+</Route>
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
+
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 import { toast, ToastContainer } from 'react-toastify';
@@ -7,14 +7,14 @@ import 'react-toastify/dist/ReactToastify.css';
 const socket = io('http://localhost:8000', { withCredentials: true });
 
 const UpdateVisitStatusPage = () => {
-const [activeTab, setActiveTab] = useState('Registered'); // Default to show the Registered tab
-
+  const [activeTab, setActiveTab] = useState('Registered');
   const [registeredVisits, setRegisteredVisits] = useState([]);
   const [waitingVisits, setWaitingVisits] = useState([]);
   const [declineReasons, setDeclineReasons] = useState({});
+  const socketInitialized = useRef(false);
 
   const token = localStorage.getItem('jwt');
-  const patientId = localStorage.getItem('currentPatientId'); // ⚠️ You must store this during visit creation or login
+  const patientId = localStorage.getItem('currentPatientId');
 
   const fetchVisits = async () => {
     try {
@@ -27,8 +27,7 @@ const [activeTab, setActiveTab] = useState('Registered'); // Default to show the
       setWaitingVisits(visits.filter(v => v.status === 'Waiting'));
     } catch (err) {
       console.error(err);
-    toast.error("Failed to fetch patient visits");
-
+      toast.error("Failed to fetch patient visits");
     }
   };
 
@@ -43,21 +42,33 @@ const [activeTab, setActiveTab] = useState('Registered'); // Default to show the
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      fetchVisits(); // Refresh after status update
-    } catch (err) {
-    toast.error(err.response?.data?.message || 'Status update failed');
+      toast.success(`Visit marked as ${newStatus}`);
+      fetchVisits();
 
+      // Emit socket event after update
+      socket.emit('visitStatusUpdated', { visitId, newStatus });
+
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Status update failed');
     }
   };
 
   useEffect(() => {
     fetchVisits();
 
-    socket.on('visitCompleted', (visitId) => {
-      setWaitingVisits(prev => prev.filter(v => v._id !== visitId));
-    });
+    if (!socketInitialized.current) {
+      socket.on('visitCompleted', (visitId) => {
+        setWaitingVisits(prev => prev.filter(v => v._id !== visitId));
+        toast.info(`Visit ${visitId} marked as Completed`);
+      });
 
-    return () => socket.off('visitCompleted');
+      socketInitialized.current = true;
+    }
+
+    return () => {
+      socket.off('visitCompleted');
+    };
   }, []);
 
   return (
@@ -118,8 +129,8 @@ const [activeTab, setActiveTab] = useState('Registered'); // Default to show the
           ))}
         </div>
       )}
-      <ToastContainer position="top-right" autoClose={3000} />
 
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

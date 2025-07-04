@@ -5,11 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 
 const AnesthesiaForm = () => {
-  const { procedureId } = useParams();  // from /anesthesia/:procedureId
+  const { procedureScheduleId } = useParams();  // from /anesthesia/:procedureId
   const [doctors, setDoctors] = useState([]);
 
   const [form, setForm] = useState({
-    procedureScheduleId: procedureId,
+    procedureScheduleId: procedureScheduleId || '',
     anestheticId: '',
     anesthesiaName: '',
     anesthesiaType: '',
@@ -37,13 +37,28 @@ const AnesthesiaForm = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     const token = localStorage.getItem('jwt');
+   
+ const payload = {
+  procedureScheduleId: procedureScheduleId,  // not form.procedureScheduleId
+  anestheticId: form.anestheticId,
+  anesthesiaName: form.anesthesiaName,
+  anesthesiaType: form.anesthesiaType,
+  induceTime: form.induceTime || null,
+  endTime: form.endTime || null,
+  medicinesUsedText: form.medicinesUsedText || ''
+};
+
+
+
     try {
       const res = await axios.post(
         'http://localhost:8000/api/procedures/anesthesia-records',
-        form,
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('Anesthesia record saved!');
+      console.log('Submitting anesthesia form:', form);
+ console.log('Sent payload:', payload)
       console.log(res.data);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to save anesthesia record');
