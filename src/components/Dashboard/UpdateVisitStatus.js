@@ -12,9 +12,19 @@ const UpdateVisitStatusPage = () => {
   const [waitingVisits, setWaitingVisits] = useState([]);
   const [declineReasons, setDeclineReasons] = useState({});
   const socketInitialized = useRef(false);
-
+const [patientId, setPatientId] = useState('');
   const token = localStorage.getItem('jwt');
-  const patientId = localStorage.getItem('currentPatientId');
+ useEffect(() => {
+  const storedId = localStorage.getItem('currentPatientId');
+  if (storedId) {
+    setPatientId(storedId);
+  }
+}, []);
+
+useEffect(() => {
+  if (!patientId) return;
+  fetchVisits();
+}, [patientId]);
 
   const fetchVisits = async () => {
     try {

@@ -112,21 +112,7 @@ useEffect(() => {
 }, [doctor]);
 
 
-// useEffect(() => {
-//   const interval = setInterval(() => {
-//     fetchVisits();
-//    toast.success('🩺 New patient assigned !');
-//   }, );
 
-//   return () => clearInterval(interval);
-// }, []);
-
-
-// useEffect(() => {
-//   if (location.state?.consultationDone) {
-//     toast.success('Consultation completed successfully!');
-//   }
-// }, [location]);
  
 
   return (
@@ -140,7 +126,6 @@ useEffect(() => {
       <h4>Consultation for Patient:</h4>
       <p><strong>Patient ID:</strong> {visit.patientId}</p>
       <p><strong>Patient Name:</strong> {visit.patientDbId?.fullName || 'N/A'}</p>
-      <p><strong>Visit ID:</strong> {visit._id}</p>
       <p><strong>Status:</strong> {visit.status}</p>
    
   

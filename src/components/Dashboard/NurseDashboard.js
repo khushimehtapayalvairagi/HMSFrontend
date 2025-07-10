@@ -60,19 +60,21 @@ const drawerContent = (
     <Box sx={{ flexGrow: 1 }}>
       <List>
         {/* Home */}
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/nurse-dashboard/home")}>
+        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/nurse-dashboard/NurseIPDAdmissionList")}>
           <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
-          <ListItemText primary="Home" primaryTypographyProps={{ fontWeight: 500 }} />
+          <ListItemText primary="NurseIPDAdmissionList" primaryTypographyProps={{ fontWeight: 500 }} />
         </ListItem>
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => handleNav("/nurse-dashboard/DailyReports")}>
-  <ListItemIcon sx={{ minWidth: 36 }}><IpdIcon /></ListItemIcon>
-  <ListItemText primary="DailyReports" primaryTypographyProps={{ fontWeight: 500 }} />
-</ListItem>
+    
 
         {/* Profile */}
         <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/nurse-dashboard/ViewDailyReports" )}>
           <ListItemIcon sx={{ minWidth: 36 }}><PersonIcon /></ListItemIcon>
           <ListItemText primary="ViewDailyReports" primaryTypographyProps={{ fontWeight: 500 }} />
+        </ListItem>
+
+        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/nurse-dashboard/NurseScheduledProcedures" )}>
+          <ListItemIcon sx={{ minWidth: 36 }}><PersonIcon /></ListItemIcon>
+          <ListItemText primary="NurseScheduledProcedures" primaryTypographyProps={{ fontWeight: 500 }} />
         </ListItem>
 
         {/* Modules under Profile */}
@@ -88,32 +90,12 @@ const drawerContent = (
 
 
 
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => handleNav("/dashboard/patientFrom")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><PharmacyIcon /></ListItemIcon>
-          <ListItemText primary="Pharmacist" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
 
 
 
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="Lab Management" primaryTypographyProps={{ fontWeight:500 }} />
-        </ListItem>
+        
 
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><OpdIcon /></ListItemIcon>
-          <ListItemText primary="OutPatient" primaryTypographyProps={{ fontWeight:500}} />
-        </ListItem>
-
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><BillingIcon /></ListItemIcon>
-          <ListItemText primary="Billing & Payment " primaryTypographyProps={{ fontWeight:500 }} />
-        </ListItem>
-
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><OtIcon /></ListItemIcon>
-          <ListItemText primary="OT & Labour Room " primaryTypographyProps={{ fontWeight:500 }} />
-        </ListItem>
+       
 
         {/* Settings */}
         <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => isMobile && setMobileOpen(false)}>

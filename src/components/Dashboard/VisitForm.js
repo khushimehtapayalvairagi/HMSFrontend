@@ -96,6 +96,7 @@ setSpecialties(specRes.data.specialties || []);
       });
 
     toast.success("Visit created successfully!");
+localStorage.setItem('currentPatientId', patientId);
 
       localStorage.setItem('currentPatientId', patientId);
       console.log(res.data);

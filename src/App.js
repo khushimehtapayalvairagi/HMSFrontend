@@ -43,11 +43,15 @@ import IPDAdmissionList from './components/Dashboard/IPDAdmissionList';
 import ProcedureForm from './components/Dashboard/ProcedureForm';
 import AnesthesiaForm from './components/Dashboard/AnesthesiaForm';
 import ViewAnesthesiaRecord from './components/Dashboard/ViewAnthesiaRecord';
-import LabourRoomDetails from './components/Dashboard/LabourRoom';
+import LabourRoom from './components/Dashboard/LabourRoom';
 
 import NurseDashboard from './components/Dashboard/NurseDashboard';
 import LabourRoomDetailViewer from './components/Dashboard/LabourRoomDetailViewer.js';
 import DailyReports from './components/Dashboard/DailyReports.js';
+import NurseIPDAdmissionList from './components/Dashboard/NurseIPDAdmissionList.js';
+import ViewDailyReports from './components/Dashboard/ViewDailyReports.js';
+import NurseScheduledProcedures from './components/Dashboard/NurseScheduledProcedures.js';
+import DischargePatient from './components/Dashboard/DischargePatient.js';
 
 const App = () => {
   return (
@@ -94,11 +98,15 @@ const App = () => {
 <Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
 
 <Route path="ProcedureForm" element={<ProcedureForm/>} />
-<Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm/>} />
-<Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord/>} />
- <Route path="LabourRoom/:procedureScheduleId/:patientId" element={<LabourRoomDetails />} />
+<Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
+ 
+<Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
+
+ <Route path="LabourRoom" element={<LabourRoom />} />
 
 <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
+<Route path="DischargePatient" element={<DischargePatient/>} />
+
 </Route>
 <Route path="/doctor-dashboard" element={<ProtectedRoute element={<DoctorDashboard />} role="DOCTOR" />}>
  <Route index element={<DoctorDashboardHome />} />
@@ -109,7 +117,10 @@ const App = () => {
 
 </Route>
 <Route path="/nurse-dashboard"  element={<NurseDashboard />}  >
+<Route path ="NurseIPDAdmissionList" element ={<NurseIPDAdmissionList/>}/>
 <Route path ="DailyReports" element ={<DailyReports/>}/>
+<Route path="ViewDailyReports" element={<ViewDailyReports />} />
+<Route path ="NurseScheduledProcedures" element={<NurseScheduledProcedures/>}/>
 </Route>
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" />} />

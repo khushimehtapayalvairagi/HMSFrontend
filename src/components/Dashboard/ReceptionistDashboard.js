@@ -211,19 +211,7 @@ const drawerContent = (
       color: activeMenu === "ProcedureForm"  ? '#1976d2' : 'inherit'
     }} />
         </ListItem>
-            <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "AnesthesiaForm" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "AnesthesiaForm" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/AnesthesiaForm" ,"AnesthesiaForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="AnesthesiaForm"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "AnesthesiaForm"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
+         
                  <ListItem button    sx={{
     px: 3,
     width: '100%', // Ensure full width
@@ -267,10 +255,20 @@ const drawerContent = (
         </ListItem>
 
 
-        <ListItem button sx={{ px: 3 }} onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><OtIcon /></ListItemIcon>
-          <ListItemText primary="OT & Labour Room " primaryTypographyProps={{ fontWeight:500 }} />
+                 <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "DischargePatient" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "DischargePatient" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/DischargePatient" ,"DischargePatient")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="DischargePatient"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "DischargePatient"  ? '#1976d2' : 'inherit'
+    }} />
         </ListItem>
+
 
         {/* Settings */}
         <ListItem button sx={{ px: 3 }} onClick={() => isMobile && setMobileOpen(false)}>

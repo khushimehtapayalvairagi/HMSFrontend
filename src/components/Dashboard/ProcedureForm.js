@@ -19,6 +19,7 @@ const ProcedureForm = () => {
     ipdAdmissionId: initialAdmissionId || '',
     procedureType: '',
     roomId: '',
+    labourRoomId:"",
     scheduledDateTime: '',
     procedureId: '',
     surgeonId: '',
@@ -26,39 +27,53 @@ const ProcedureForm = () => {
     anestheticId: ''
   });
 
- useEffect(() => {
-  const fetchInitialData = async () => {
-    const token = localStorage.getItem('jwt');
-    try {
-      const [
-        patientRes,
-        
-        procedureRes,
-        doctorRes,
-        roomRes,
-        lrRes
-      ] = await Promise.all([
-        axios.get('http://localhost:8000/api/receptionist/patients', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:8000/api/receptionist/procedures', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:8000/api/receptionist/doctors', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:8000/api/receptionist/operation-theaters', { headers: { Authorization: `Bearer ${token}` } }),
-     axios.get('http://localhost:8000/api/receptionist/labour-rooms', { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      
-      setPatients(patientRes.data.patients);
-      // setIpdAdmissions(ipdRes.data.admissions);
-      setProcedures(procedureRes.data.procedures);
-      setDoctors(doctorRes.data.doctors);
-      setRooms(roomRes.data.theaters);
-      setLabourRooms(lrRes.data.labourRooms);
-    } catch (error) {
-      console.error("Error loading initial dropdown data:", error.response?.data || error.message);
-      toast.error('Failed to load initial form data');
-    }
-  };
+const fetchInitialData = async () => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const [
+      patientRes,
+      procedureRes,
+      doctorRes,
+      roomRes,
+      lrRes
+    ] = await Promise.all([
+      axios.get('http://localhost:8000/api/receptionist/patients', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get('http://localhost:8000/api/receptionist/procedures', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get('http://localhost:8000/api/receptionist/doctors', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get('http://localhost:8000/api/receptionist/operation-theaters', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get('http://localhost:8000/api/receptionist/labour-rooms', { headers: { Authorization: `Bearer ${token}` } }),
+    ]);
 
+    const allPatients = patientRes.data.patients;
+
+    // Fetch admissions for each patient and filter only admitted ones
+    const admittedPatients = [];
+    for (const patient of allPatients) {
+      const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const admissions = res.data.admissions || [];
+      if (admissions.some(adm => adm.status === 'Admitted')) {
+        admittedPatients.push(patient);
+      }
+    }
+
+    setPatients(admittedPatients);
+    setProcedures(procedureRes.data.procedures);
+    setDoctors(doctorRes.data.doctors);
+    setRooms(roomRes.data.theaters);
+    setLabourRooms(lrRes.data.labourRooms);
+  } catch (error) {
+    console.error("Error loading initial dropdown data:", error.response?.data || error.message);
+    toast.error('Failed to load initial form data');
+  }
+};
+useEffect(() => {
   fetchInitialData();
 }, []);
+
+
  useEffect(() => {
     if (!formData.patientId) return;
     const token = localStorage.getItem('jwt');
@@ -78,29 +93,35 @@ const ProcedureForm = () => {
     setFormData(prev => ({ ...prev, assistantIds: selectedOptions }));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    const token = localStorage.getItem('jwt');
-    try {
-      const res = await axios.post(
-        'http://localhost:8000/api/procedures/schedules',
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+const handleSubmit = async e => {
+  console.log("Submitting Procedure:", formData);
 
-      toast.success('Procedure scheduled successfully!');
-      const procedureScheduleId = res.data.procedure._id;
+  e.preventDefault();
+  const token = localStorage.getItem('jwt');
+  try {
+    const normalizedFormData = {
+      ...formData,
+      procedureType: formData.procedureType.trim().toLowerCase()
+    };
 
-      if (formData.procedureType === 'Labour Room') {
-        // redirect to LabourRoomForm with procedureScheduleId and patientId
-       navigate(`/receptionist-dashboard/LabourRoom/${procedureScheduleId}/${formData.patientId}`);
+    const res = await axios.post(
+      'http://localhost:8000/api/procedures/schedules',
+      normalizedFormData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      }
+    toast.success('Procedure scheduled successfully!');
+    const procedureScheduleId = res.data.procedure._id;
 
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Scheduling failed');
+    if (formData.procedureType === 'OT') {
+      navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
     }
-  };
+
+  } catch (error) {
+    toast.error(error.response?.data?.message || 'Scheduling failed');
+  }
+};
+
 
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto', padding: '2rem', background: '#f5f5f5', borderRadius: '10px' }}>
@@ -118,7 +139,7 @@ const ProcedureForm = () => {
       <option value="">Select Admission</option>
       {ipdAdmissions?.map(a => (
         <option key={a._id} value={a._id}>
-          {a._id} — {a.wardId.name}
+          {a.wardId.name}
         </option>
       ))}
     </select>
@@ -136,7 +157,7 @@ const ProcedureForm = () => {
   </select>
 )}
 {formData.procedureType === 'Labour Room' && (
-  <select name="roomId" value={formData.roomId} onChange={handleChange} required>
+  <select name="labourRoomId" value={formData.labourRoomId} onChange={handleChange} required>
     <option value="">Select Labour Room</option>
     {labourRooms.map(r => <option key={r._id} value={r._id}>{r.name}</option>)}
   </select>

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { API_BASE_URL } from "../../config/ApiConfig"
+import { API_BASE_URL } from "../config/ApiConfig"
 import {  LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS,  FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
   FETCH_USERS_FAILURE } from "./ActionType"

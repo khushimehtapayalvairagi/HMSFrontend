@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useEffect,useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+const DailyReports = () => {
+  const location = useLocation();
+  const token = localStorage.getItem('jwt');
+  const user = JSON.parse(localStorage.getItem('user'));
+ // Save this on login
+   const [reportSaved, setReportSaved] = useState(false);
 
-const DailyReports = ({ ipdAdmissionId, recordedByUserId, token }) => {
+  const { ipdAdmissionId, patientId } = location.state || {};
   const [vitals, setVitals] = useState({ temperature: '', pulse: '', bp: '', respiratoryRate: '' });
   const [nurseNotes, setNurseNotes] = useState('');
   const [treatments, setTreatments] = useState('');
   const [medicine, setMedicine] = useState('');
-  const [message, setMessage] = useState('');
-
+const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setVitals((prev) => ({ ...prev, [name]: value }));
@@ -15,12 +24,14 @@ const DailyReports = ({ ipdAdmissionId, recordedByUserId, token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log({ ipdAdmissionId, recordedByUserId: user?.id });
+
     try {
       await axios.post(
-        '/api/reports',
+                  `http://localhost:8000/api/ipd/reports`,
         {
           ipdAdmissionId,
-          recordedByUserId,
+          recordedByUserId:user.id,
           vitals,
           nurseNotes,
           treatmentsAdministeredText: treatments,
@@ -28,15 +39,19 @@ const DailyReports = ({ ipdAdmissionId, recordedByUserId, token }) => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessage('Report saved successfully!');
+      toast.success(' Report saved successfully!');
+      setReportSaved(true);
+   
     } catch (err) {
       console.error(err);
-      setMessage('Error saving report');
+         toast.error(' Error saving report');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <>
+    <ToastContainer position="top-right" autoClose={3000} />
+       <form onSubmit={handleSubmit}>
       <h2>Daily Progress Report</h2>
 
       <fieldset>
@@ -75,8 +90,31 @@ const DailyReports = ({ ipdAdmissionId, recordedByUserId, token }) => {
       </label>
 
       <button type="submit">Save Report</button>
-      {message && <p>{message}</p>}
+     {reportSaved && (
+  <button
+    type="button"
+    onClick={() =>
+      navigate('/nurse-dashboard/ViewDailyReports', {
+        state: { ipdAdmissionId },
+      })
+    }
+    style={{
+      marginLeft: '1rem',
+      padding: '0.5rem 1rem',
+      backgroundColor: '#007bff',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+    }}
+  >
+    View Reports
+  </button>
+)}
+
     </form>
+    </>
+
+ 
   );
 };
 

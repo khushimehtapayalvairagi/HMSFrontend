@@ -14,7 +14,8 @@ const IPDAdmissionForm = () => {
   const location = useLocation();
   const token = localStorage.getItem('jwt');
   const visit = location.state?.visit || null;
-
+const [patientName, setPatientName] = useState(visit?.patientDbId?.fullName || '');
+const [doctorName, setDoctorName] = useState('');
   const [patientId, setPatientId] = useState(visit?.patientDbId?._id || '');
   const [visitId, setVisitId] = useState(visit?._id || '');
 const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctorId || '');
@@ -29,26 +30,60 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
 
-  useEffect(() => {
-    fetchWards();
-    fetchRoomCategories();
+ useEffect(() => {
+  fetchWards();
+  fetchRoomCategories();
 
-    // 🧠 Join receptionist room and listen for doctor IPD advice
-    socket.emit('joinReceptionistRoom');
+  
+  socket.emit('joinReceptionistRoom');
 
-    socket.on('newIPDAdmissionAdvice', (data) => {
-      toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+  socket.on('newIPDAdmissionAdvice', (data) => {
+    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
 
-      // ✅ Auto-fill the form from socket event
-      setPatientId(data.patientId || '');
-      setVisitId(data.visitId || '');
-      setAdmittingDoctorId(data.admittingDoctorId || '');
-    });
+    setPatientId(data.patientId || '');
+    setVisitId(data.visitId || '');
+    setAdmittingDoctorId(data.admittingDoctorId || '');
 
-    return () => {
-      socket.off('newIPDAdmissionAdvice');
-    };
-  }, []);
+    
+  });
+
+  
+
+  return () => {
+    socket.off('newIPDAdmissionAdvice');
+  };
+}, []);
+
+// const fetchDoctorName = async (doctorId) => {
+//   try {
+//     const res = await axios.get(`http://localhost:8000/api/receptionist/doctor/${doctorId}`, {
+//       headers: { Authorization: `Bearer ${token}` },
+//     });
+//     setDoctorName(res.data.doctor?.userId?.name || 'Unknown Doctor');
+//   } catch (err) {
+//     console.error('Error fetching doctor name:', err);
+//     setDoctorName('Unknown Doctor');
+//   }
+// };
+
+// const fetchPatientName = async (patientId) => {
+//   try {
+//     const res = await axios.get(`http://localhost:8000/api/receptionist/patient/${patientId}`, {
+//       headers: { Authorization: `Bearer ${token}` },
+//     });
+//     setPatientName(res.data.patient?.fullName || 'Unknown Patient');
+//   } catch (err) {
+//     console.error('Error fetching patient name:', err);
+//     setPatientName('Unknown Patient');
+//   }
+// };useEffect(() => {
+//   if (patientId) fetchPatientName(patientId);
+// }, [patientId]);
+
+// useEffect(() => {
+//   if (admittingDoctorId) fetchDoctorName(admittingDoctorId);
+// }, [admittingDoctorId]);
+
 
   const fetchWards = async () => {
     try {
@@ -120,13 +155,14 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
 
       {!submitted ? (
         <>
+   
           <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
             <h2>IPD Admission</h2>
 
-            <div><label>Patient ID</label><input readOnly value={patientId} /></div>
-            <div><label>Doctor</label><input readOnly value={admittingDoctorId} /></div>
+         <div><label>Patient:</label><input readOnly value={patientName || patientId} /></div>
+<div><label>Doctor:</label><input readOnly value={doctorName || admittingDoctorId} /></div>
+
           
-            <div><label>Visit ID</label><input readOnly value={visitId} /></div>
             <div><label>Ward</label>
               <select value={wardId} onChange={e => setWardId(e.target.value)}>
                 <option value="">Select ward</option>
