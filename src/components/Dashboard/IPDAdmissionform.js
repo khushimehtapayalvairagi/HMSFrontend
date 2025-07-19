@@ -13,10 +13,13 @@ const IPDAdmissionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('jwt');
+ const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 const [patientName, setPatientName] = useState(visit?.patientDbId?.fullName || '');
+
 const [doctorName, setDoctorName] = useState('');
-  const [patientId, setPatientId] = useState(visit?.patientDbId?._id || '');
+ const [patientId, setPatientId] = useState(visit?.patientDbId || '');
+
   const [visitId, setVisitId] = useState(visit?._id || '');
 const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctorId || '');
 
@@ -141,6 +144,7 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
       toast.error(err.response?.data?.message || 'IPD Admission failed.');
     }
   };
+  
  const handleView = () => {
   if (!patientId) {
     return toast.error('No patient selected.');
@@ -159,8 +163,12 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
           <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
             <h2>IPD Admission</h2>
 
-         <div><label>Patient:</label><input readOnly value={patientName || patientId} /></div>
-<div><label>Doctor:</label><input readOnly value={doctorName || admittingDoctorId} /></div>
+       
+  {/* <label>Patient:</label>
+  <input readOnly value={patientName ? patientName : patientId} />
+</div>
+
+<div><label>Doctor:</label><input readOnly value={doctorName || admittingDoctorId} /></div> */}
 
           
             <div><label>Ward</label>

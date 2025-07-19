@@ -158,6 +158,7 @@ const [errors, setErrors] = useState({});
               <option value="">Select Role</option>
               <option value="DOCTOR">Doctor</option>
               <option value="STAFF">STAFF</option>
+                <option value="INVENTORYMANAGER">INVENTORYMANAGER</option>
              
             </select>
 
@@ -210,6 +211,7 @@ const [errors, setErrors] = useState({});
                   <option value="Head Nurse">Head Nurse</option>
                   <option value="Assistant Doctor">Assistant Doctor</option>
                   <option value="Receptionist">Receptionist</option>
+                    <option value="InventoryManager">InventoryManager</option>
                   <option value="Other">Other</option>
                 </select>
                 <select name="department" value={form.department} onChange={handleChange}>

@@ -269,6 +269,62 @@ const drawerContent = (
     }} />
         </ListItem>
 
+         
+                 <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "Billing" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "Billing" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/Billing" ,"Billing")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="Billing"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "Billing"  ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+        <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "ViewBill" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "ViewBill" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ViewBill" ,"ViewBill")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="ViewBill"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "ViewBill"  ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+
+           <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "PaymentForm" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "PaymentForm" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/PaymentForm" ,"PaymentForm")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="PaymentForm"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "PaymentForm"  ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+
+            <ListItem button    sx={{
+    px: 3,
+    width: '100%', // Ensure full width
+    justifyContent: 'flex-start', // Align contents to the left
+    backgroundColor: activeMenu === "BillPaymentHistory" ? '#e3f2fd' : 'transparent',
+    borderLeft: activeMenu === "BillPaymentHistory" ? '4px solid #1976d2' : 'none',
+   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/BillPaymentHistory" ,"BillPaymentHistory")}>
+          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
+          <ListItemText primary="BillPaymentHistory"  primaryTypographyProps={{
+      fontWeight: 500,
+      color: activeMenu === "BillPaymentHistory"  ? '#1976d2' : 'inherit'
+    }} />
+        </ListItem>
+
 
         {/* Settings */}
         <ListItem button sx={{ px: 3 }} onClick={() => isMobile && setMobileOpen(false)}>

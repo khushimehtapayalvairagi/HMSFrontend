@@ -3,61 +3,73 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
 const PreviousConsultations = () => {
-  const { patientId } = useParams(); // from the route
+ const { patientId } = useParams();
   const [consultations, setConsultations] = useState([]);
+  const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-const user = JSON.parse(localStorage.getItem('user'));
-const doctorId = user?.id;
-
-// Filter consultations by logged-in doctor
-// const filteredConsultations = consultations.filter(
-//   (c) =>
-//     String(c.doctorId?._id) === String(doctorId) &&
-//     c.visitId?.status === "Completed" // ✅ filter only completed visits
-// );
-
-
+  const token = localStorage.getItem('jwt');
 
   useEffect(() => {
-    const fetchConsultations = async () => {
+    const fetchAllData = async () => {
       try {
-        const token = localStorage.getItem('jwt');
-        const res = await axios.get(`http://localhost:8000/api/doctor/opd-consultations/${patientId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setConsultations(res.data.consultations || []);
+        const [consultRes, admitRes] = await Promise.all([
+          axios.get(`http://localhost:8000/api/doctor/opd-consultations/${patientId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`http://localhost:8000/api/ipd/admissions/${patientId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
+
+        setConsultations(consultRes.data.consultations || []);
+        setAdmissions(admitRes.data.admissions || []);
       } catch (err) {
-        console.error('Error fetching consultations:', err.response?.data || err.message);
+        console.error("Error fetching records:", err.response?.data || err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchConsultations();
+    fetchAllData();
   }, [patientId]);
 
-  if (loading) return <p>Loading consultations...</p>;
-  if (consultations.length === 0) return <p>No consultations found for this patient.</p>;
+  if (loading) return <p>Loading patient records...</p>;
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h3>Previous OPD Consultations</h3>
-  {consultations.map((c, index) => (
-  <div key={c._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '15px' }}>
-   
-    <p><strong>Date:</strong> {new Date(c.consultationDateTime || c.createdAt).toLocaleString()}</p>
- 
-    <p><strong>Chief Complaint:</strong> {c.chiefComplaint}</p>
-    <p><strong>Diagnosis:</strong> {c.diagnosis}</p>
-    <p><strong>Doctor Notes:</strong> {c.doctorNotes}</p>
-    <p><strong>Admission Advice:</strong> {c.admissionAdvice ? 'Yes' : 'No'}</p>
-    <p><strong>Lab Investigations:</strong> {(c.labInvestigationsSuggested || []).join(', ')}</p>
-    <p><strong>Medicines Prescribed:</strong> {c.medicinesPrescribedText}</p>
-    {c.transcribedFromPaperNotes && (
-      <p><strong>Transcribed By:</strong> {c.transcribedByUserId?.name || 'Unknown'} ({c.transcribedByUserId?.email})</p>
-    )}
-  </div>
-))}
+      <h3>📝 Previous OPD Consultations</h3>
+      {consultations.length === 0 ? (
+        <p>No consultations found.</p>
+      ) : consultations.map((c) => (
+        <div key={c._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
+          <p><strong>Date:</strong> {new Date(c.consultationDateTime || c.createdAt).toLocaleString()}</p>
+          <p><strong>Complaint:</strong> {c.chiefComplaint}</p>
+          <p><strong>Diagnosis:</strong> {c.diagnosis}</p>
+          <p><strong>Notes:</strong> {c.doctorNotes}</p>
+          <p><strong>Admission Advice:</strong> {c.admissionAdvice ? 'Yes' : 'No'}</p>
+          <p><strong>Medicines:</strong> {c.medicinesPrescribedText}</p>
+          {c.transcribedFromPaperNotes && (
+            <p><strong>Transcribed By:</strong> {c.transcribedByUserId?.name || 'N/A'}</p>
+          )}
+        </div>
+      ))}
+
+      <h3>🏥 Previous IPD Admissions</h3>
+      {admissions.length === 0 ? (
+        <p>No IPD admissions found.</p>
+      ) : admissions.map((a) => (
+        <div key={a._id} style={{ border: '1px solid #aaa', padding: '10px', marginBottom: '10px' }}>
+          <p><strong>Admitted On:</strong> {new Date(a.createdAt).toLocaleString()}</p>
+          <p><strong>Status:</strong> {a.status}</p>
+          <p><strong>Ward:</strong> {a.wardId?.name}</p>
+          <p><strong>Bed Number:</strong> {a.bedNumber}</p>
+          <p><strong>Room Category:</strong> {a.roomCategoryId?.name}</p>
+          <p><strong>Expected Discharge:</strong> {a.expectedDischargeDate ? new Date(a.expectedDischargeDate).toLocaleDateString() : 'N/A'}</p>
+          {a.actualDischargeDate && (
+            <p><strong>Discharged On:</strong> {new Date(a.actualDischargeDate).toLocaleDateString()}</p>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

@@ -52,6 +52,16 @@ import NurseIPDAdmissionList from './components/Dashboard/NurseIPDAdmissionList.
 import ViewDailyReports from './components/Dashboard/ViewDailyReports.js';
 import NurseScheduledProcedures from './components/Dashboard/NurseScheduledProcedures.js';
 import DischargePatient from './components/Dashboard/DischargePatient.js';
+import InventoryManagerDashboard from './components/Dashboard/InventoryManagerDashboard.js';
+import InventoryForm from './components/Dashboard/InventoryForm.js';
+import InventoryList from './components/Dashboard/InventoryList.js';
+import EditInventoryForm from './components/Dashboard/EditInventoryForm.js';
+import RecordTransactionForm from './components/Dashboard/RecordTransactionForm.js';
+import TransactionHistoryForm from './components/Dashboard/TransactionHistoryForm.js';
+import CreateBillForm from './components/Dashboard/CreateBillForm.js';
+import ViewBill from './components/Dashboard/ViewBill.js';
+import PaymentForm from './components/Dashboard/PaymentForm.js';
+import BillPaymentHistory from './components/Dashboard/BillPaymentHistory.js';
 
 const App = () => {
   return (
@@ -106,7 +116,10 @@ const App = () => {
 
 <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
 <Route path="DischargePatient" element={<DischargePatient/>} />
-
+<Route path="Billing" element={<CreateBillForm/>} />
+<Route path='ViewBill' element={<ViewBill/>}/>
+<Route path ="PaymentForm" element={<PaymentForm/>}/>
+<Route path ="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 </Route>
 <Route path="/doctor-dashboard" element={<ProtectedRoute element={<DoctorDashboard />} role="DOCTOR" />}>
  <Route index element={<DoctorDashboardHome />} />
@@ -121,6 +134,13 @@ const App = () => {
 <Route path ="DailyReports" element ={<DailyReports/>}/>
 <Route path="ViewDailyReports" element={<ViewDailyReports />} />
 <Route path ="NurseScheduledProcedures" element={<NurseScheduledProcedures/>}/>
+</Route>
+<Route path="/inventoryManager-dashboard"  element={<InventoryManagerDashboard />}  >
+<Route path ="InventoryForm" element ={<InventoryForm/>}/>
+<Route path ="InventoryList" element ={<InventoryList/>}/>
+<Route path="inventory/edit/:id" element={<EditInventoryForm />} />
+<Route path ="RecordTransactionForm" element={<RecordTransactionForm/>}/>
+<Route path ="TransactionHistoryForm" element={<TransactionHistoryForm/>}/>
 </Route>
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" />} />

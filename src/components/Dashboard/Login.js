@@ -24,7 +24,9 @@ useEffect(() => {
     } else if (user.role === "DOCTOR") {
       navigate("/doctor-dashboard");
     } else if (user.role === "STAFF")
-  navigate("/nurse-dashboard")
+  navigate("/nurse-dashboard");
+  else if (user.role === "INVENTORYMANAGER")
+  navigate("/inventoryManager-dashboard")
  else {
       alert("Unknown role, cannot navigate");
     }

@@ -3,15 +3,14 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaBed, FaChevronDown, FaChevronUp, FaHospital, FaClipboardList, FaUserMd, FaPlus } from 'react-icons/fa';
 
 const NurseIPDAdmissionList = () => {
   const [patientsWithAdmissions, setPatientsWithAdmissions] = useState([]);
   const [expandedPatientId, setExpandedPatientId] = useState(null);
-  const [patientName, setPatientName] = useState('');
   const token = localStorage.getItem('jwt');
   const navigate = useNavigate();
 
-  // 🔄 Fetch patients and their active IPD admissions
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,10 +19,8 @@ const NurseIPDAdmissionList = () => {
         });
 
         const allPatients = patientRes.data.patients || [];
-
         const admittedPatients = [];
 
-        // 🔁 For each patient, fetch their IPD admissions
         for (const patient of allPatients) {
           const ipdRes = await axios.get(
             `http://localhost:8000/api/ipd/admissions/${patient._id}`,
@@ -42,19 +39,7 @@ const NurseIPDAdmissionList = () => {
         }
 
         setPatientsWithAdmissions(admittedPatients);
-      
-      
-      
-      
-      
-      
-      } 
-      
-      
-      
-      
-      
-      catch (err) {
+      } catch (err) {
         console.error("Error fetching data", err);
         toast.error("Failed to load admitted patients");
       }
@@ -77,55 +62,85 @@ const NurseIPDAdmissionList = () => {
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: '2rem auto' }}>
+    <div style={{ maxWidth: '960px', margin: '2rem auto', padding: '1rem' }}>
       <ToastContainer />
-      <h2>Nurse - Admitted Patients</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <FaUserMd style={{ marginRight: '10px' }} />
+        Nurse - IPD Admitted Patients
+      </h2>
 
       {patientsWithAdmissions.length === 0 ? (
-        <p>No patients with admitted IPD admissions.</p>
+        <p style={{ textAlign: 'center', color: '#6c757d' }}>No admitted patients found.</p>
       ) : (
         patientsWithAdmissions.map(({ patient, admissions }) => (
-          <div key={patient._id} style={{ borderBottom: '1px solid #ccc', padding: '1rem 0' }}>
-            <p><strong>Name:</strong> {patient.fullName}</p>
-            <button
+          <div
+            key={patient._id}
+            style={{
+              border: '1px solid #ccc',
+              borderRadius: '8px',
+              padding: '1rem',
+              marginBottom: '1.5rem',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            <div
               onClick={() => handleToggle(patient._id)}
               style={{
-                background: expandedPatientId === patient._id ? 'gray' : 'blue',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '4px',
+                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
               }}
             >
-              {expandedPatientId === patient._id ? 'Hide Admissions' : 'View IPD Admissions'}
-            </button>
+              <p style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>
+                <FaUserMd style={{ marginRight: '8px' }} />
+                {patient.fullName}
+              </p>
+              <span style={{ color: '#007bff', fontWeight: 500 }}>
+                {expandedPatientId === patient._id ? <FaChevronUp /> : <FaChevronDown />}
+              </span>
+            </div>
 
             {expandedPatientId === patient._id && (
               <div style={{ marginTop: '1rem' }}>
-                <h4>IPD Admissions for {patient.firstName} {patient.lastName}</h4>
+                <h4 style={{ marginBottom: '1rem' }}>
+                  <FaClipboardList style={{ marginRight: '6px' }} />
+                  Admissions for {patient.fullName}
+                </h4>
                 {admissions.map(adm => (
                   <div
                     key={adm._id}
                     style={{
-                      border: '1px solid #ccc',
+                      backgroundColor: '#f8f9fa',
+                      border: '1px solid #dee2e6',
                       padding: '1rem',
                       borderRadius: '8px',
                       marginBottom: '1rem',
                     }}
                   >
-                    <p><strong>Ward:</strong> {adm.wardId?.name} | <strong>Bed:</strong> {adm.bedNumber}</p>
+                    <p><FaHospital style={{ marginRight: '6px' }} /><strong>Ward:</strong> {adm.wardId?.name}</p>
+                    <p><FaBed style={{ marginRight: '6px' }} /><strong>Bed:</strong> {adm.bedNumber}</p>
                     <p><strong>Status:</strong> {adm.status}</p>
-                    <button
-                      onClick={() => handleDailyReport(adm)}
-                      style={{
-                        padding: '8px 16px',
-                        background: 'green',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                      }}
-                    >
-                      Daily Report
-                    </button>
+                    <div style={{ textAlign: 'right' }}>
+                      <button
+                        onClick={() => handleDailyReport(adm)}
+                        style={{
+                          backgroundColor: '#28a745',
+                          color: 'white',
+                          padding: '8px 14px',
+                          borderRadius: '4px',
+                          border: 'none',
+                          cursor: 'pointer',
+                          marginTop: '10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                        }}
+                      >
+                        <FaPlus /> Daily Report
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

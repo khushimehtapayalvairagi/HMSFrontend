@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const VisitForm = () => {
+
   const [patientId, setPatientId] = useState('');
   const [visitType, setVisitType] = useState('');
   const [assignedDoctorId, setAssignedDoctorId] = useState('');
@@ -20,7 +22,7 @@ const [loadingDoctors, setLoadingDoctors] = useState(false);
 
   const [doctors, setDoctors] = useState([]);
   const [referralPartners, setReferralPartners] = useState([]);
-
+ const navigate = useNavigate()
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('jwt');
@@ -95,7 +97,13 @@ setSpecialties(specRes.data.specialties || []);
         headers: { Authorization: `Bearer ${token}` },
       });
 
-    toast.success("Visit created successfully!");
+   if (visitType === 'IPD_Admission') {
+  navigate('/receptionist-dashboard/IPDAdmissionForm', {
+    state: { visit: res.data.visit, patient: res.data.visit.patientDbId }
+  });
+} else {
+  toast.success("Visit created successfully!");
+}
 localStorage.setItem('currentPatientId', patientId);
 
       localStorage.setItem('currentPatientId', patientId);

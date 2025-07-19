@@ -1,0 +1,88 @@
+.inventory-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.load-button {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.load-button:hover {
+  background-color: #125a9c;
+}
+
+.inventory-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.inventory-item {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.details-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.details-btn:hover {
+  background-color: #3e8e41;
+}
+
+.edit-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #e68a00;
+}
+
+.close-btn {
+  background-color: #d32f2f;
+  color: white;
+  margin-top: 10px;
+}
+
+.close-btn:hover {
+  background-color: #b71c1c;
+}
+
+.details-panel {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 8px;
+}
