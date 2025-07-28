@@ -21,7 +21,7 @@ import { Outlet } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
-
+import SocketContext from '../../context/SocketContext';
 const drawerWidth = 260;
 
 const menuItems = [
@@ -422,6 +422,7 @@ const drawerContent = (
         </Drawer>
       </Box>
 
+
       {/* Main Content */}
       <Box
   component="main"
@@ -437,7 +438,13 @@ const drawerContent = (
         <Typography variant="body1" sx={{ mb: 2 }}>
          Hospital Management System
         </Typography>
-
+<div style={{ display: 'flex' }}>
+      {/* Sidebar here */}
+      <div style={{ flex: 1 }}>
+        <ToastContainer position="top-right" autoClose={3000} />
+        <SocketContext/> {/* ✅ Socket logic */}
+      </div>
+    </div>
          <Outlet />
          <ToastContainer position="top-right" autoClose={3000} />
 

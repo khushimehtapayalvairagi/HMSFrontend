@@ -62,6 +62,8 @@ import CreateBillForm from './components/Dashboard/CreateBillForm.js';
 import ViewBill from './components/Dashboard/ViewBill.js';
 import PaymentForm from './components/Dashboard/PaymentForm.js';
 import BillPaymentHistory from './components/Dashboard/BillPaymentHistory.js';
+import IPDReportPage from './Admin/components/IPDReportPage.js';
+import OPDReportPage from './Admin/components/OPDReportPage.js';
 
 const App = () => {
   return (
@@ -70,6 +72,10 @@ const App = () => {
         path="/admin-dashboard"
         element={<ProtectedRoute element={<AdminDashboard />} role="ADMIN" />}
       >
+       <Route path="reports">
+    <Route path="opd-register" element={<OPDReportPage />} />
+    <Route path="ipd-register" element={<IPDReportPage />} />
+  </Route>   
   <Route index element={<AdminHome />} /> {/* Default dashboard home */}
         <Route path="add-user" element={<AddUser />} />
         <Route path="view-user/:type" element={<ViewUsers />} />
@@ -95,7 +101,7 @@ const App = () => {
       </Route>
    <Route
   path="/receptionist-dashboard"
-  element={<ProtectedRoute element={<ReceptionistDashboard />} role="RECEPTIONIST" />}
+  element={<ProtectedRoute element={<ReceptionistDashboard />}role="STAFF" />}
 >
   <Route path="Home" element={<ReceptionistHome/>} />
   <Route path="patient-form" element={<PatientForm/>} />

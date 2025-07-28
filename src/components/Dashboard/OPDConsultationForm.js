@@ -53,8 +53,6 @@ const handleSubmit = async (e) => {
 
   try {
     console.log("Payload being sent:", payload);
-    console.log("Visit object:", visit);
-    console.log("User object:", user);
 
     await axios.post('http://localhost:8000/api/doctor/opd-consultations', payload, {
       headers: { Authorization: `Bearer ${token}` },

@@ -321,7 +321,7 @@ console.log("Calling reports API for", ipdAdmissionId);
                   <option value="">Select Procedure</option>
                   {schedules.map(s => (
                     <option key={s._id} value={s._id}>
-                      {s.procedureId?.name} — ₹{s.procedureId?.cost} — Dr. {s.surgeonId?.userId?.name || 'N/A'}
+                        {s.procedureId?.name} - Rs. {s.procedureId?.cost} ({s.surgeonId?.userId?.name})
                     </option>
                   ))}
                 </select>

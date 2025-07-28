@@ -19,13 +19,13 @@ useEffect(() => {
   if (jwt && user) {
     if (user.role === "ADMIN") {
       navigate("/admin-dashboard");
-    } else if (user.role === "RECEPTIONIST") {
+    } else if (user.designation === "Receptionist") {
       navigate("/receptionist-dashboard");
     } else if (user.role === "DOCTOR") {
       navigate("/doctor-dashboard");
-    } else if (user.role === "STAFF")
+    } else if (user.designation === "Head Nurse")
   navigate("/nurse-dashboard");
-  else if (user.role === "INVENTORYMANAGER")
+  else if (user.designation === "Inventory Manager")
   navigate("/inventoryManager-dashboard")
  else {
       alert("Unknown role, cannot navigate");

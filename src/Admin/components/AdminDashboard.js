@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [departmentDropdownOpen,setDepartmentDropdownOpen] = useState(false);
 const [searchTerm, setSearchTerm] = useState('');
 const [activeModuleLabel, setActiveModuleLabel] = useState('');
-
+const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const location = useLocation();
 
   // Close all dropdowns when navigating
@@ -31,8 +31,28 @@ const [activeModuleLabel, setActiveModuleLabel] = useState('');
       setOperationDropdownOpen(false)
       setSpecialtyDropdownOpen(false)
       setDepartmentDropdownOpen(false)
+      setReportDropdownOpen(false)
   }, [location.pathname]);
+  useEffect(() => {
+  if (location.pathname.startsWith('/reports')) {
+    setActiveModuleLabel('Reports');
+    setReportDropdownOpen(true);
+  }
+}, [location.pathname]);
 const modules = [
+
+  {
+    label: 'Reports',
+    icon: '📊',
+    dropdownOpen: reportDropdownOpen,
+    setDropdownOpen: setReportDropdownOpen,
+    content: (
+      <>
+        <Link to="reports/opd-register" style={dropdownLinkStyle}>Central OPD Register</Link>
+        <Link to="reports/ipd-register" style={dropdownLinkStyle}>Central IPD Register</Link>
+  </>
+    )
+},
   {
     label: 'User Management',
     icon: '👥',

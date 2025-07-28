@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useAdmissionAdvice } from '../../context/AdmissionAdviceContext';
 const socket = io('http://localhost:8000', {
   withCredentials: true,
 });
@@ -13,15 +13,19 @@ const IPDAdmissionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('jwt');
- const patient = location.state?.patient || null;
-  const visit = location.state?.visit || null;
-const [patientName, setPatientName] = useState(visit?.patientDbId?.fullName || '');
+const { adviceData } = useAdmissionAdvice();
 
-const [doctorName, setDoctorName] = useState('');
- const [patientId, setPatientId] = useState(visit?.patientDbId || '');
+const patient = location.state?.patient || null;
+const visit = location.state?.visit || null;
 
-  const [visitId, setVisitId] = useState(visit?._id || '');
-const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctorId || '');
+const initialPatientId = adviceData?.patientId || patient?._id || '';
+const initialVisitId = adviceData?.visitId || visit?._id || '';
+const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
+
+const [patientId, setPatientId] = useState(initialPatientId);
+const [visitId, setVisitId] = useState(initialVisitId);
+const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
+
 
 
  const [submitted, setSubmitted] = useState(false);
@@ -32,6 +36,8 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
 
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
+
+
 
  useEffect(() => {
   fetchWards();
@@ -47,6 +53,7 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
     setVisitId(data.visitId || '');
     setAdmittingDoctorId(data.admittingDoctorId || '');
 
+
     
   });
 
@@ -57,35 +64,8 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
   };
 }, []);
 
-// const fetchDoctorName = async (doctorId) => {
-//   try {
-//     const res = await axios.get(`http://localhost:8000/api/receptionist/doctor/${doctorId}`, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     setDoctorName(res.data.doctor?.userId?.name || 'Unknown Doctor');
-//   } catch (err) {
-//     console.error('Error fetching doctor name:', err);
-//     setDoctorName('Unknown Doctor');
-//   }
-// };
 
-// const fetchPatientName = async (patientId) => {
-//   try {
-//     const res = await axios.get(`http://localhost:8000/api/receptionist/patient/${patientId}`, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     setPatientName(res.data.patient?.fullName || 'Unknown Patient');
-//   } catch (err) {
-//     console.error('Error fetching patient name:', err);
-//     setPatientName('Unknown Patient');
-//   }
-// };useEffect(() => {
-//   if (patientId) fetchPatientName(patientId);
-// }, [patientId]);
 
-// useEffect(() => {
-//   if (admittingDoctorId) fetchDoctorName(admittingDoctorId);
-// }, [admittingDoctorId]);
 
 
   const fetchWards = async () => {
@@ -163,12 +143,12 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(visit?.assignedDoctor
           <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
             <h2>IPD Admission</h2>
 
-       
-  {/* <label>Patient:</label>
-  <input readOnly value={patientName ? patientName : patientId} />
+    <div>   
+  <label>Patient:</label>
+  <input readOnly value={ patientId} />
 </div>
 
-<div><label>Doctor:</label><input readOnly value={doctorName || admittingDoctorId} /></div> */}
+<div><label>Doctor:</label><input readOnly value={ admittingDoctorId} /></div>
 
           
             <div><label>Ward</label>

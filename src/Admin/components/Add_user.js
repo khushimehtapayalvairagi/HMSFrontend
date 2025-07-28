@@ -54,15 +54,14 @@ const [errors, setErrors] = useState({});
     fetchOptions();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setMessage('');
-     // Field-level validation for name
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setForm({ ...form, [name]: value });
+  setMessage('');
+
   if (name === 'name') {
     const startsWithLetter = /^[A-Za-z]/.test(value);
-    const containsInvalidChar = /[^A-Za-z\s]/.test(value); // allow only letters and space
-
+    const containsInvalidChar = /[^A-Za-z\s]/.test(value);
     if (!startsWithLetter) {
       setErrors((prev) => ({ ...prev, name: 'Name must start with a letter.' }));
     } else if (containsInvalidChar) {
@@ -70,10 +69,26 @@ const [errors, setErrors] = useState({});
     } else {
       setErrors((prev) => ({ ...prev, name: '' }));
     }
+  } else if (name === 'contactNumber') {
+    const contactValid = /^\d{0,10}$/.test(value); // allows only digits, up to 10
+    if (!contactValid) {
+      setErrors((prev) => ({
+        ...prev,
+        contactNumber: 'Contact number must be numeric and up to 10 digits only.',
+      }));
+    } else if (value.length !== 10) {
+      setErrors((prev) => ({
+        ...prev,
+        contactNumber: 'Contact number must be exactly 10 digits.',
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, contactNumber: '' }));
+    }
   } else {
-    setErrors((prev) => ({ ...prev, [name]: '' })); // Clear error for other fields
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   }
 };
+
   
 
   const handleScheduleChange = (index, field, value) => {
@@ -101,11 +116,23 @@ const [errors, setErrors] = useState({});
     setForm({ ...form, schedule: updated });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('jwt');
+     const payload = { ...form };
+
+  if (form.role !== 'DOCTOR') {
+    const selectedDept = departments.find((d) => d._id === form.department);
+    if (selectedDept) {
+      payload.department = selectedDept.name;
+    } else {
+      toast.error('Invalid department selected for staff.');
+      return;
+    }
+  }
     try {
-      const res = await axios.post('http://localhost:8000/api/admin/users', form, {
+      const res = await axios.post('http://localhost:8000/api/admin/users', payload, {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         withCredentials: true
       });
@@ -158,7 +185,6 @@ const [errors, setErrors] = useState({});
               <option value="">Select Role</option>
               <option value="DOCTOR">Doctor</option>
               <option value="STAFF">STAFF</option>
-                <option value="INVENTORYMANAGER">INVENTORYMANAGER</option>
              
             </select>
 
@@ -175,6 +201,13 @@ const [errors, setErrors] = useState({});
                     <option key={s._id} value={s.name}>{s.name}</option>
                   ))}
                 </select>
+                <select name="department" value={form.department} onChange={handleChange} required>
+  <option value="">Select Department</option>
+  {departments.map((d) => (
+    <option key={d._id} value={d._id}>{d.name}</option>
+  ))}
+</select>
+
                 <input name="medicalLicenseNumber" value={form.medicalLicenseNumber} onChange={handleChange} placeholder="Medical License No." required />
 
                 <h4>Schedule</h4>
@@ -211,13 +244,13 @@ const [errors, setErrors] = useState({});
                   <option value="Head Nurse">Head Nurse</option>
                   <option value="Assistant Doctor">Assistant Doctor</option>
                   <option value="Receptionist">Receptionist</option>
-                    <option value="InventoryManager">InventoryManager</option>
+                    <option value="Inventory Manager">Inventory Manager</option>
                   <option value="Other">Other</option>
                 </select>
                 <select name="department" value={form.department} onChange={handleChange}>
                   <option value="">Select Department</option>
                   {departments.map((d) => (
-                    <option key={d._id} value={d.name}>{d.name}</option>
+                    <option key={d._id} value={d._id}>{d.name}</option>
                   ))}
                 </select>
               </>

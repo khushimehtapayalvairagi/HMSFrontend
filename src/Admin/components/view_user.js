@@ -92,6 +92,7 @@ const ViewUsers = () => {
                   <th>Role</th>
                   <th>Doctor Type</th>
                   <th>Specialty</th>
+                     <th>Department</th>
                   <th>Medical License</th>
                   <th>Schedule</th>
                 </tr>
@@ -104,6 +105,11 @@ const ViewUsers = () => {
                     <td>{user.userId?.role || user.role || '-'}</td>
                     <td>{user.doctorType || '-'}</td>
                     <td>{user.specialty?.name || '-'}</td>
+                   <td>
+                      {user.department && typeof user.department.name === 'string'
+                        ? user.department.name
+                        : '-'}
+                    </td>
                     <td>{user.medicalLicenseNumber || '-'}</td>
                     <td>
                       {Array.isArray(user.schedule) ? (

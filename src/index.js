@@ -8,16 +8,21 @@ import { Provider } from 'react-redux';
 import store from './State/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AdmissionAdviceProvider } from './context/AdmissionAdviceContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
       <Provider store={store}>
-    <BrowserRouter>
+        <AdmissionAdviceProvider>
+ <BrowserRouter>
      
       <App />
+       
+   
    
       
     </BrowserRouter>
+     </AdmissionAdviceProvider>
   </Provider>
   </React.StrictMode>,
 );

@@ -1,44 +1,27 @@
-// // src/context/SocketContext.js
-// import React, { createContext, useEffect, useRef } from 'react';
-// import io from 'socket.io-client';
-// import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import io from 'socket.io-client';
+import { useAdmissionAdvice } from '../context/AdmissionAdviceContext';
 
-// export const SocketContext = createContext();
+const socket = io('http://localhost:8000', { withCredentials: true });
 
-// const socket = io('http://localhost:8000', { withCredentials: true });
+const SocketContext = () => {
+  const { setAdviceData } = useAdmissionAdvice();
 
-// const SocketProvider = ({ children }) => {
-//   const toastDisplayedRef = useRef(false);
+  useEffect(() => {
+    socket.emit('joinReceptionistRoom');
 
-//   useEffect(() => {
-//     const user = JSON.parse(localStorage.getItem('user'));
+    socket.on('newIPDAdmissionAdvice', (data) => {
+      toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+      setAdviceData(data); // 🌟 store the socket data globally
+    });
 
-//     if (user?.id) {
-//       socket.emit('joinDoctorRoom', user.id);
-//     }
+    return () => {
+      socket.off('newIPDAdmissionAdvice');
+    };
+  }, []);
 
-//     const handleNewPatient = async (data) => {
-//       if (!toastDisplayedRef.current) {
-//         toastDisplayedRef.current = true;
-//         toast.success('🩺 New patient assigned waiting!');
-//         setTimeout(() => {
-//           toastDisplayedRef.current = false;
-//         }, 5000);
-//       }
-//     };
+  return null;
+};
 
-//     socket.on('newAssignedPatient', handleNewPatient);
-
-//     return () => {
-//       socket.off('newAssignedPatient', handleNewPatient);
-//     };
-//   }, []);
-
-//   return (
-//     <SocketContext.Provider value={socket}>
-//       {children}
-//     </SocketContext.Provider>
-//   );
-// };
-
-// export default SocketProvider;
+export default SocketContext;
