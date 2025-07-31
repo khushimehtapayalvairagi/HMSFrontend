@@ -18,13 +18,16 @@ const { adviceData } = useAdmissionAdvice();
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-const initialPatientId = adviceData?.patientId || patient?._id || '';
+const initialPatientId = adviceData?.patientId || patient?.id || patient || '';
 const initialVisitId = adviceData?.visitId || visit?._id || '';
 const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
 
 const [patientId, setPatientId] = useState(initialPatientId);
 const [visitId, setVisitId] = useState(initialVisitId);
 const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
+
+const [patientName, setPatientName] = useState(adviceData?.patientName || patient?.name || visit?.patientName || '');
+const [doctorName, setDoctorName] = useState(location.state?.doctorName || '');
 
 
 
@@ -51,7 +54,9 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDocto
 
     setPatientId(data.patientId || '');
     setVisitId(data.visitId || '');
-    setAdmittingDoctorId(data.admittingDoctorId || '');
+    setAdmittingDoctorId(data.admittingDoctorId || data.doctorId || '');
+setPatientName(data.patientName || '');
+setDoctorName(data.doctorName || '');
 
 
     
@@ -64,8 +69,61 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDocto
   };
 }, []);
 
+// useEffect(() => {
+//   const fetchPatientName = async () => {
+//     if (!patientId || patientName) return;
+//     try {
+//       const res = await axios.get(`http://localhost:8000/api/receptionist/patients/${patientId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       console.log("Patient API Response:", res.data);
+//       setPatientName(res.data.fullName || res.data.patient?.fullName || '');
+//     } catch (err) {
+//       console.error('Error fetching patient name:', err);
+//       toast.error('Failed to fetch patient name');
+//     }
+//   };
+
+//   fetchPatientName();
+// }, [patientId, patientName, token]);
+
+useEffect(() => {
+  const fetchDoctorName = async () => {
+    if (!admittingDoctorId || doctorName?.trim()) return; // ✅ FIXED condition
+
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/receptionist/doctors/${admittingDoctorId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const fetchedName =
+        res.data?.user?.name || 
+        res.data?.doctor?.user?.name || 
+        res.data?.doctor?.fullName || '';
+
+      setDoctorName(fetchedName);
+    } catch (err) {
+      console.error('Error fetching doctor name:', err.response?.data || err.message);
+      toast.error('Failed to fetch doctor name');
+    }
+  };
+
+  fetchDoctorName();
+}, [admittingDoctorId, doctorName, token]);
 
 
+useEffect(() => {
+  if (adviceData?.doctorName) {
+    setDoctorName(adviceData.doctorName);
+  }
+
+  if (adviceData?.patientName) {
+    setPatientName(adviceData.patientName);
+  }
+}, [adviceData]);
 
 
   const fetchWards = async () => {
@@ -124,13 +182,31 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDocto
       toast.error(err.response?.data?.message || 'IPD Admission failed.');
     }
   };
+  const handleCancel = () => {
+  // Clear all input fields
+  setPatientName('');
+  setVisitId('');
+  setAdmittingDoctorId('');
+  setWardId('');
+  setBedNumber('');
+  setRoomCategoryId('');
+  setExpectedDischargeDate('');
+  setSubmitted(false); // In case it's needed
+  toast.info('Admission form reset.');
+};
+
   
- const handleView = () => {
+const handleView = () => {
   if (!patientId) {
     return toast.error('No patient selected.');
   }
-  navigate(`/receptionist-dashboard/IPDAdmissionList/${patientId}`);
+  navigate(`/receptionist-dashboard/IPDAdmissionList/${patientId}`, {
+    state: {
+      patientName, // 👈 pass patient name here
+    },
+  });
 };
+
 
 
   return (
@@ -143,12 +219,16 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDocto
           <form onSubmit={handleSubmit} style={{ padding: '2rem', border: '1px solid #ccc', borderRadius: '8px' }}>
             <h2>IPD Admission</h2>
 
-    <div>   
+  <div>
   <label>Patient:</label>
-  <input readOnly value={ patientId} />
+  <input readOnly value={patientName } />
 </div>
 
-<div><label>Doctor:</label><input readOnly value={ admittingDoctorId} /></div>
+<div>
+  <label>DoctorName:</label>
+  <input readOnly value={doctorName || admittingDoctorId} />
+</div>
+
 
           
             <div><label>Ward</label>
@@ -175,13 +255,14 @@ const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDocto
 
             <div style={{ marginTop: 15 }}>
               <button type="submit">Admit</button>
-              <button type="button" onClick={() => navigate(-1)}>Cancel</button>
+            <button type="button" onClick={handleCancel}>Cancel</button>
+
             </div>
           </form>
         </>
       ) : (
         <div style={{ padding: '2rem', border: '1px solid #28a745', color: '#28a745', borderRadius: 8, textAlign: 'center' }}>
-          <p>✅ Admission completed for patient {patientId}</p>
+          <p>✅ Admission completed for patient {patientName}</p>
           <button onClick={handleView}>View Admissions</button>
         </div>
       )}

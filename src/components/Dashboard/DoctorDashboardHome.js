@@ -25,12 +25,13 @@ const location = useLocation();
 useEffect(() => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('jwt');
-  setDoctor(storedUser);
-  doctorRef.current = storedUser;
-  tokenRef.current = token;
-  console.log("Token:", token);
-  console.log("Local user object:", storedUser);
+  if (storedUser && token) {
+    setDoctor(storedUser);
+    doctorRef.current = storedUser;
+    tokenRef.current = token;
+  }
 }, []);
+
 
 
 
@@ -61,26 +62,7 @@ const fetchVisits = async () => {
   }
 };
 
-// const handleRemoveVisit = async (visitIdToRemove) => {
-//   const token = tokenRef.current;
-//   try {
-//     await axios.delete(`http://localhost:8000/api/doctor/visits/${visitIdToRemove}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`
-//       }
-//     });
 
-//     // Update frontend immediately
-//     setAssignedVisits(prev =>
-//       prev.filter(visit => visit._id !== visitIdToRemove)
-//     );
-
-//     toast.info('Declined visit removed.');
-//   } catch (err) {
-//     console.error('Error removing visit:', err.response?.data || err);
-//     toast.error('Failed to remove declined visit.');
-//   }
-// };
 
 useEffect(() => {
   if (!doctor) return;

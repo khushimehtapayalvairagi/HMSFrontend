@@ -1,0 +1,84 @@
+.manual-charge-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.manual-charge-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.status-message {
+  text-align: center;
+  font-style: italic;
+  font-size: 1rem;
+  margin: 12px 0;
+  color: #444;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  font-style: italic;
+  font-size: 1rem;
+  margin: 12px 0;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.manual-charge-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  min-width: 600px;
+}
+
+.manual-charge-table th,
+.manual-charge-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f8f8f8;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.manual-charge-table th {
+  background-color: #e2e8f0;
+  color: #333;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+  .manual-charge-container {
+    padding: 12px;
+  }
+
+  .manual-charge-title {
+    font-size: 1.5rem;
+  }
+
+  .manual-charge-table th,
+  .manual-charge-table td {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+@media (max-width: 580px) {
+  .manual-charge-table tr {
+    min-height: 60px;
+    height: 70px; /* Enforces taller row height */
+  }
+
+  .manual-charge-table th,
+  .manual-charge-table td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    line-height: 1.4;
+  }
+}

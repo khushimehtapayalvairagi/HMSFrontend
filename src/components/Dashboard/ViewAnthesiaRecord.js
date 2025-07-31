@@ -10,7 +10,6 @@ const ViewAnesthesiaRecord = () => {
   const fetchAllAnesthesiaRecords = async () => {
     const token = localStorage.getItem('jwt');
     try {
-      // Step 1: Fetch all patients
       const patientRes = await axios.get(
         'http://localhost:8000/api/receptionist/patients',
         { headers: { Authorization: `Bearer ${token}` } }
@@ -18,7 +17,6 @@ const ViewAnesthesiaRecord = () => {
 
       const patients = patientRes.data.patients;
 
-      // Step 2: For each patient, fetch their procedures
       const allProcedurePromises = patients.map(p =>
         axios
           .get(`http://localhost:8000/api/procedures/schedules/${p._id}`, {
@@ -30,19 +28,21 @@ const ViewAnesthesiaRecord = () => {
 
       const allProcedures = (await Promise.all(allProcedurePromises)).flat();
 
-      // Step 3: Filter OT + Scheduled
       const filteredProcedures = allProcedures.filter(
-        p =>  p.status === 'Scheduled'
+        p => p.status === 'Scheduled'
       );
 
-      // Step 4: For each, fetch anesthesia record
       const anesthesiaRecords = await Promise.all(
         filteredProcedures.map(p =>
           axios
             .get(`http://localhost:8000/api/procedures/anesthesia-records/${p._id}`, {
               headers: { Authorization: `Bearer ${token}` },
             })
-            .then(res => ({ ...res.data.record, procedureName: p.procedureId?.name || '', patient: p.patient }))
+            .then(res => ({
+              ...res.data.record,
+              procedureName: p.procedureId?.name || '',
+              patient: p.patient
+            }))
             .catch(() => null)
         )
       );
@@ -62,34 +62,25 @@ const ViewAnesthesiaRecord = () => {
   }, []);
 
   if (loading) {
-    return <div style={{ textAlign: 'center', marginTop: '2rem' }}>Loading...</div>;
+    return <div style={styles.centerText}>Loading...</div>;
   }
 
   if (!records.length) {
-    return <div style={{ textAlign: 'center', marginTop: '2rem' }}>No Anesthesia Records Found.</div>;
+    return <div style={styles.centerText}>No Anesthesia Records Found.</div>;
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: '2rem auto' }}>
-      <h2>All Anesthesia Records (Scheduled OT Procedures)</h2>
+    <div style={styles.container}>
+      <h2 style={styles.heading}>Anesthesia Records</h2>
       {records.map((record, index) => (
-        <div
-          key={record._id || index}
-          style={{
-            background: '#f0f8ff',
-            marginBottom: '1rem',
-            padding: '1rem',
-            borderRadius: '8px',
-          }}
-        >
-          <p><strong>Patient:</strong> {record.patient?.fullName || 'Unknown'}</p>
-          <p><strong>Procedure:</strong> {record.procedureName || 'N/A'}</p>
-          <p><strong>Anesthetist:</strong> {record.anestheticId?.userId?.name || 'N/A'}</p>
-          <p><strong>Anesthesia Name:</strong> {record.anesthesiaName}</p>
-          <p><strong>Type:</strong> {record.anesthesiaType}</p>
-          <p><strong>Induce Time:</strong> {record.induceTime ? new Date(record.induceTime).toLocaleString() : 'N/A'}</p>
-          <p><strong>End Time:</strong> {record.endTime ? new Date(record.endTime).toLocaleString() : 'N/A'}</p>
-          <p><strong>Medicines Used:</strong> {record.medicinesUsedText || 'N/A'}</p>
+        <div key={record._id || index} style={styles.card}>
+          <p><strong>👤 Patient:</strong> {record.patient?.fullName || 'Unknown'}</p>
+          <p><strong>🩺 Procedure:</strong> {record.procedureName || 'N/A'}</p>
+          <p><strong>👨‍⚕️ Anesthetist:</strong> {record.anestheticId?.userId?.name || 'N/A'}</p>
+          <p><strong>💉 Anesthesia:</strong> {record.anesthesiaName} ({record.anesthesiaType})</p>
+          <p><strong>⏱️ Induce Time:</strong> {record.induceTime ? new Date(record.induceTime).toLocaleString() : 'N/A'}</p>
+          <p><strong>✅ End Time:</strong> {record.endTime ? new Date(record.endTime).toLocaleString() : 'N/A'}</p>
+          <p><strong>💊 Medicines Used:</strong> {record.medicinesUsedText || 'N/A'}</p>
         </div>
       ))}
       <ToastContainer />
@@ -98,3 +89,34 @@ const ViewAnesthesiaRecord = () => {
 };
 
 export default ViewAnesthesiaRecord;
+
+// 🔧 Clean inline CSS
+const styles = {
+  container: {
+    maxWidth: '900px',
+    margin: '2rem auto',
+    padding: '1rem',
+    fontFamily: 'Segoe UI, sans-serif'
+  },
+  heading: {
+    textAlign: 'center',
+    marginBottom: '1.5rem',
+    color: '#003366'
+  },
+  card: {
+    background: '#e6f7ff',
+    border: '1px solid #b3d8ff',
+    marginBottom: '1.2rem',
+    padding: '1rem 1.2rem',
+    borderRadius: '10px',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+    lineHeight: '1.6',
+    fontSize: '15px'
+  },
+  centerText: {
+    textAlign: 'center',
+    marginTop: '2rem',
+    fontSize: '16px',
+    color: '#555'
+  }
+};

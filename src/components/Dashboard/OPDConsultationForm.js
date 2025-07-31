@@ -38,7 +38,7 @@ const handleSubmit = async (e) => {
   const payload = {
     visitId: visit._id,
     patientId: visit.patientDbId._id,
- doctorId: visit.assignedDoctorId,
+ doctorId: visit.assignedDoctorUserId,
 
 
     chiefComplaint,
@@ -95,7 +95,6 @@ const handleSubmit = async (e) => {
     >
       <h3 style={{ textAlign: 'center' }}>OPD Consultation Details</h3>
 
-      <div><strong>Visit ID:</strong> {visit._id}</div>
       <div><strong>Patient ID:</strong> {visit.patientId}</div>
       <div><strong>Patient Name:</strong> {visit.patientDbId?.fullName || 'N/A'}</div>
 

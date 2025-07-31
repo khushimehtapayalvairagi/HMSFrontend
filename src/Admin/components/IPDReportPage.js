@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import './IPDReportPage.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const IPDReportPage = () => {
   const [departments, setDepartments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState('');
@@ -13,10 +16,28 @@ const [gender, setGender] = useState('');
 const [deliveryType, setDeliveryType] = useState('');
 const [billingSummaryData, setBillingSummaryData] = useState(null);
 const [fumigationData, setFumigationData] = useState([]);
-
-
+const [theaters, setTheaters] = useState([]);
+  const [error, setError] = useState('');
+const [selectedOtRoom, setSelectedOtRoom] = useState('');
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
+  useEffect(() => {
+    const fetchTheaters = async () => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const res = await axios.get('http://localhost:8000/api/admin/operation-theaters', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setTheaters(res.data.theaters);
+      } catch (err) {
+        setError('Failed to fetch operation theaters');
+      }
+    };
+
+    fetchTheaters();
+  }, []);
 
   // Fetch departments
   useEffect(() => {
@@ -78,7 +99,7 @@ else if (reportType === 'fumigation') {
   params = {
     startDate,
     endDate,
-    otRoomId: selectedDepartment || '', // Optional filtering by OT room if reused
+     otRoomId: selectedOtRoom, // Optional filtering by OT room if reused
   };
 }
 
@@ -111,17 +132,21 @@ if (reportType === 'fumigation') {
     reportType === 'ot' && Array.isArray(reportData) ? reportData : [];
  const birthData =
     reportType === 'birth' && Array.isArray(reportData) ? reportData : [];
-  return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-blue-700">IPD Report</h1>
+ 
+    return (
+ <div className="report-container">
+
+      <h1 className="report-title">
+IPD Report</h1>
 
       {/* Report Type Selector */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium">Report Type</label>
+      <form onSubmit={handleSubmit} className="form-section">
+      <div className="mb-5">
+        <label className="label">Report Type</label>
         <select
           value={reportType}
           onChange={(e) => setReportType(e.target.value)}
-          className="mt-1 block w-full border rounded px-3 py-2"
+          className="label"
         >
           <option value="central">Central IPD Register</option>
           <option value="department">Department Wise IPD Register</option>
@@ -139,16 +164,16 @@ if (reportType === 'fumigation') {
 
       {/* Filter Form */}
     {/* Filter Form */}
-<form onSubmit={handleSubmit} className="bg-white shadow-md rounded p-4 mb-6">
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+  <div className="mb-4">
     {/* Start Date */}
     <div>
-      <label className="block text-sm font-medium">Start Date</label>
+      <label className="label">Start Date</label>
       <input
         type="date"
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
-        className="mt-1 block w-full border rounded px-3 py-2"
+        className="input-field" 
         required
       />
     </div>
@@ -160,7 +185,7 @@ if (reportType === 'fumigation') {
         type="date"
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
-        className="mt-1 block w-full border rounded px-3 py-2"
+        className="select-field"
         required
       />
     </div>
@@ -181,6 +206,25 @@ if (reportType === 'fumigation') {
         ))}
       </select>
     </div>
+{reportType === 'fumigation' && (
+  <div>
+    <label className="block text-sm font-medium">Select OT Room</label>
+    <select
+      value={selectedOtRoom}
+      onChange={(e) => setSelectedOtRoom(e.target.value)}
+      className="mt-1 block w-full border rounded px-3 py-2"
+    >
+      <option value="">All</option>
+    {Array.isArray(theaters) &&
+  theaters.map((room) => (
+    <option key={room._id} value={room._id}>
+      {room.name}
+    </option>
+))}
+
+    </select>
+  </div>
+)}
 
     {/* Gender Filter (ONLY for Birth) */}
     {reportType === 'birth' && (
@@ -218,7 +262,7 @@ if (reportType === 'fumigation') {
   <div className="mt-4">
     <button
       type="submit"
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      className="submit-btn"
       disabled={loading}
     >
       {loading ? 'Generating...' : 'Generate Report'}
@@ -229,9 +273,10 @@ if (reportType === 'fumigation') {
 
       {/* Central Report Table */}
       {reportType === 'central' && normalizedCentralData.length > 0 && (
-        <table className="w-full border text-sm">
+        <table className="table">
           <thead className="bg-gray-100">
-            <tr>
+         <tr className="table-row">
+
               <th className="border px-4 py-2">Patient</th>
               <th className="border px-4 py-2">Doctor</th>
               <th className="border px-4 py-2">Department</th>
@@ -273,9 +318,10 @@ if (reportType === 'fumigation') {
     <h2 className="text-lg font-semibold text-blue-700 mb-2">
       Department: {dept.department} ({dept.totalAdmissions} admissions)
     </h2>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+       <tr className="table-row">
+
           <th className="border px-4 py-2">Patient</th>
           <th className="border px-4 py-2">Doctor</th>
           <th className="border px-4 py-2">Bed No</th>
@@ -308,9 +354,10 @@ if (reportType === 'fumigation') {
 {reportType === 'ot' && Array.isArray(otProcedureData) && otProcedureData.length > 0 && (
   <div className="bg-white p-4 rounded shadow">
     <h2 className="text-lg font-semibold text-blue-700 mb-4">OT Procedure Register</h2>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+     <tr className="table-row">
+
           <th className="border px-4 py-2">Patient</th>
           <th className="border px-4 py-2">Surgeon</th>
           <th className="border px-4 py-2">Department</th>
@@ -344,9 +391,10 @@ if (reportType === 'fumigation') {
 {reportType === 'anesthesia' && Array.isArray(reportData) && reportData.length > 0 && (
   <div className="bg-white p-4 rounded shadow">
     <h2 className="text-lg font-semibold text-blue-700 mb-4">Anesthesia Register</h2>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+      <tr className="table-row">
+
           <th className="border px-4 py-2">Patient</th>
           <th className="border px-4 py-2">Anesthetist</th>
           <th className="border px-4 py-2">Procedure</th>
@@ -387,9 +435,10 @@ if (reportType === 'fumigation') {
 {reportType === 'birth' && (
   <div className="bg-white p-4 rounded shadow">
     <h2 className="text-lg font-semibold text-blue-700 mb-4">Birth Record Register</h2>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+       <tr className="table-row">
+
           <th className="border px-4 py-2">Patient Name</th>
           <th className="border px-4 py-2">Baby Name</th>
           <th className="border px-4 py-2">Gender</th>
@@ -438,9 +487,10 @@ if (reportType === 'fumigation') {
     </div>
 
     <h3 className="text-md font-semibold text-blue-600 mt-4 mb-2">Breakdown by Item Type</h3>
-    <table className="w-full text-sm border mb-6">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+        <tr className="table-row">
+
           <th className="border px-4 py-2">Item Type</th>
           <th className="border px-4 py-2">Total Amount</th>
           <th className="border px-4 py-2">Count</th>
@@ -459,9 +509,10 @@ if (reportType === 'fumigation') {
     </table>
 
     <h3 className="text-md font-semibold text-blue-600 mb-2">Payment Status Breakdown</h3>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+      <tr className="table-row">
+
           <th className="border px-4 py-2">Payment Status</th>
           <th className="border px-4 py-2">Total Amount</th>
         </tr>
@@ -484,12 +535,13 @@ if (reportType === 'fumigation') {
 
     <div className="mb-4">
       <p className="text-md font-semibold">
-        <span className="text-gray-700">Total Received:</span> ₹{billingSummaryData.totalReceived.toFixed(2)}
+        <span className="text-gray-700">Total Received:</span> ₹{typeof billingSummaryData.totalReceived === 'number' ? billingSummaryData.totalReceived.toFixed(2) : '0.00'}
+
       </p>
     </div>
 
     <h3 className="text-md font-semibold text-blue-600 mt-4 mb-2">Breakdown by Payment Method</h3>
-    <table className="w-full text-sm border mb-6">
+    <table className="table">
       <thead className="bg-gray-100">
         <tr>
           <th className="border px-4 py-2">Payment Method</th>
@@ -508,7 +560,7 @@ if (reportType === 'fumigation') {
     </table>
 
     <h3 className="text-md font-semibold text-blue-600 mb-2">Breakdown by User</h3>
-    <table className="w-full text-sm border mb-6">
+    <table className="table">
       <thead className="bg-gray-100">
         <tr>
           <th className="border px-4 py-2">Received By</th>
@@ -527,7 +579,7 @@ if (reportType === 'fumigation') {
     </table>
 
     <h3 className="text-md font-semibold text-blue-600 mb-2">Payment Transactions</h3>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
         <tr>
           <th className="border px-4 py-2">Date</th>
@@ -542,7 +594,8 @@ if (reportType === 'fumigation') {
           <tr key={p._id} className="bg-white hover:bg-gray-50">
             <td className="border px-4 py-2">{new Date(p.payment_date).toLocaleString()}</td>
             <td className="border px-4 py-2">{p.payment_method}</td>
-            <td className="border px-4 py-2">₹{p.amount_paid.toFixed(2)}</td>
+            <td className="border px-4 py-2">₹{typeof p.amount_paid === 'number' ? p.amount_paid.toFixed(2) : '0.00'}
+</td>
             <td className="border px-4 py-2">{p.received_by_user_id_ref?.name || 'N/A'}</td>
             <td className="border px-4 py-2">{p.bill_id_ref?._id || 'N/A'}</td>
           </tr>
@@ -554,9 +607,10 @@ if (reportType === 'fumigation') {
 {Array.isArray(fumigationData) && reportType === 'fumigation' && (
   <div className="bg-white p-4 rounded shadow mt-6">
     <h2 className="text-lg font-semibold text-blue-700 mb-4">OT Fumigation Report</h2>
-    <table className="w-full text-sm border">
+    <table className="table">
       <thead className="bg-gray-100">
-        <tr>
+      <tr className="table-row">
+
           <th className="border px-4 py-2">Date</th>
           <th className="border px-4 py-2">OT Room</th>
           <th className="border px-4 py-2">Performed By</th>

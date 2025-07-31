@@ -37,39 +37,47 @@ const PreviousConsultations = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h3>📝 Previous OPD Consultations</h3>
-      {consultations.length === 0 ? (
-        <p>No consultations found.</p>
-      ) : consultations.map((c) => (
-        <div key={c._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-          <p><strong>Date:</strong> {new Date(c.consultationDateTime || c.createdAt).toLocaleString()}</p>
-          <p><strong>Complaint:</strong> {c.chiefComplaint}</p>
-          <p><strong>Diagnosis:</strong> {c.diagnosis}</p>
-          <p><strong>Notes:</strong> {c.doctorNotes}</p>
-          <p><strong>Admission Advice:</strong> {c.admissionAdvice ? 'Yes' : 'No'}</p>
-          <p><strong>Medicines:</strong> {c.medicinesPrescribedText}</p>
-          {c.transcribedFromPaperNotes && (
-            <p><strong>Transcribed By:</strong> {c.transcribedByUserId?.name || 'N/A'}</p>
-          )}
-        </div>
-      ))}
+ <h3>📝 Previous OPD Consultations</h3>
+{consultations.length === 0 ? (
+  <p>No consultations found.</p>
+) : consultations.map((c) => {
+  // Find matching IPD admission for this consultation
+  const matchingAdmission = admissions.find(a => {
+    const consultDate = new Date(c.createdAt);
+    const admitDate = new Date(a.createdAt);
+    return Math.abs(consultDate - admitDate) < 1000 * 60 * 60 * 24 * 2; // within 2 days
+  });
 
-      <h3>🏥 Previous IPD Admissions</h3>
-      {admissions.length === 0 ? (
-        <p>No IPD admissions found.</p>
-      ) : admissions.map((a) => (
-        <div key={a._id} style={{ border: '1px solid #aaa', padding: '10px', marginBottom: '10px' }}>
-          <p><strong>Admitted On:</strong> {new Date(a.createdAt).toLocaleString()}</p>
-          <p><strong>Status:</strong> {a.status}</p>
-          <p><strong>Ward:</strong> {a.wardId?.name}</p>
-          <p><strong>Bed Number:</strong> {a.bedNumber}</p>
-          <p><strong>Room Category:</strong> {a.roomCategoryId?.name}</p>
-          <p><strong>Expected Discharge:</strong> {a.expectedDischargeDate ? new Date(a.expectedDischargeDate).toLocaleDateString() : 'N/A'}</p>
-          {a.actualDischargeDate && (
-            <p><strong>Discharged On:</strong> {new Date(a.actualDischargeDate).toLocaleDateString()}</p>
+  return (
+    <div key={c._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '20px' }}>
+      <p><strong>Date:</strong> {new Date(c.consultationDateTime || c.createdAt).toLocaleString()}</p>
+      <p><strong>Complaint:</strong> {c.chiefComplaint}</p>
+      <p><strong>Diagnosis:</strong> {c.diagnosis}</p>
+      <p><strong>Notes:</strong> {c.doctorNotes}</p>
+      <p><strong>Admission Advice:</strong> {c.admissionAdvice ? 'Yes' : 'No'}</p>
+      <p><strong>Medicines:</strong> {c.medicinesPrescribedText}</p>
+      {c.transcribedFromPaperNotes && (
+        <p><strong>Transcribed By:</strong> {c.transcribedByUserId?.name || 'N/A'}</p>
+      )}
+
+      {matchingAdmission && (
+        <div style={{ marginTop: '1rem', padding: '10px', backgroundColor: '#f0f8ff', border: '1px solid #aaa' }}>
+          <h4>🏥 Related IPD Admission</h4>
+          <p><strong>Admitted On:</strong> {new Date(matchingAdmission.createdAt).toLocaleString()}</p>
+          <p><strong>Status:</strong> {matchingAdmission.status}</p>
+          <p><strong>Ward:</strong> {matchingAdmission.wardId?.name}</p>
+          <p><strong>Bed Number:</strong> {matchingAdmission.bedNumber}</p>
+          <p><strong>Room Category:</strong> {matchingAdmission.roomCategoryId?.name}</p>
+          <p><strong>Expected Discharge:</strong> {matchingAdmission.expectedDischargeDate ? new Date(matchingAdmission.expectedDischargeDate).toLocaleDateString() : 'N/A'}</p>
+          {matchingAdmission.actualDischargeDate && (
+            <p><strong>Discharged On:</strong> {new Date(matchingAdmission.actualDischargeDate).toLocaleDateString()}</p>
           )}
         </div>
-      ))}
+      )}
+    </div>
+  );
+})}
+
     </div>
   );
 };

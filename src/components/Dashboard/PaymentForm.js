@@ -98,6 +98,8 @@ export default function PaymentForm({ onPaymentSuccess }) {
       setBill(data.updatedBill);
       onPaymentSuccess?.(data.updatedBill, data.payment);
       fetchPayments();
+          toast.success('Payment recorded successfully ✅');
+
     } catch (err) {
       setError(err.response?.data?.message || 'Payment error');
     }

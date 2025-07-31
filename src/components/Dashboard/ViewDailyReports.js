@@ -126,7 +126,7 @@ const ViewDailyReports = () => {
               {admissions.map((adm, index) => (
                 <div key={adm._id} style={{ marginBottom: '2rem' }}>
                   <h4 style={{ color: '#28a745', marginBottom: '0.5rem' }}>
-                    Admission #{index + 1} — Ward: {adm.wardId?.name}, Bed: {adm.bedNumber}
+                    Admission  — Ward: {adm.wardId?.name}, Bed: {adm.bedNumber}
                   </h4>
                   {adm.reports.length === 0 ? (
                     <p style={{ color: '#999' }}>No reports yet for this admission.</p>
@@ -143,7 +143,7 @@ const ViewDailyReports = () => {
                         }}
                       >
                         <p style={{ marginBottom: '0.5rem' }}>
-                          <strong>Report #{adm.reports.length - rIndex}</strong> — {new Date(report.reportDateTime).toLocaleString()}
+                          <strong>Report {adm.reports.length - rIndex}</strong> — {new Date(report.reportDateTime).toLocaleString()}
                         </p>
                         <p><strong>Recorded By:</strong> {report.recordedByUserId?.name} ({report.recordedByUserId?.role})</p>
                         <ul style={{ paddingLeft: '1.2rem' }}>

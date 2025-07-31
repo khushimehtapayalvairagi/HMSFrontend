@@ -27,10 +27,13 @@ useEffect(() => {
   navigate("/nurse-dashboard");
   else if (user.designation === "Inventory Manager")
   navigate("/inventoryManager-dashboard")
- else {
-      alert("Unknown role, cannot navigate");
-    }
+else {
+        toast.error("Unknown role, cannot navigate", {
+          position: "top-center",
+          autoClose: 4000,
+        });
   }
+}
 }, [jwt, user, navigate]);
 
 
@@ -109,10 +112,11 @@ const handleSubmit = async (e) => {
 
             <button type="submit">Log In</button>
           </form>
+          
         </div>
       </div>
       
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer />
     </div>
   );
 };

@@ -1,0 +1,58 @@
+.ward-container {
+  padding: 1.5rem;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ward-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #1d4ed8;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+.table-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  overflow-x: auto;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 0.5rem;
+}
+
+.ward-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.ward-table th,
+.ward-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+.ward-table th {
+  background-color: #1976d2;
+  color: white;
+}
+
+.ward-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.ward-table ul {
+  padding-left: 1.25rem;
+  margin: 0;
+}

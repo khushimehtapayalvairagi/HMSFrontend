@@ -1,42 +1,53 @@
-import { Navigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { Navigate, Outlet } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-const ProtectedRoute = ({ element, role: requiredRole }) => {
+const ProtectedRoute = ({ role: requiredRole }) => {
   const token = localStorage.getItem('jwt');
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const userRaw = localStorage.getItem('user');
 
-  if (!token) {
+  if (!token || !userRaw) {
     return <Navigate to="/" replace />;
   }
 
+  let user;
   try {
+    user = JSON.parse(userRaw);
+    if (!user || typeof user !== 'object' || !user.role) {
+      throw new Error('Invalid user');
+    }
+
     const decoded = jwtDecode(token);
-    const isExpired = decoded.exp < Date.now() / 1000;
-    if (isExpired) throw new Error("Token expired");
+    if (decoded.exp < Date.now() / 1000) {
+      throw new Error('Token expired');
+    }
 
-    const userRole = storedUser.role;
-    const userDesignation = storedUser.designation;
+    const userRole = user.role;
+    const userDesignation = user.designation;
 
-    // If requiredRole is STAFF, allow receptionist(on designation)
+    // Staff-based access
     if (requiredRole === 'STAFF') {
-      if (userRole === 'STAFF' && userDesignation === 'Receptionist') {
-        return element;
+      const allowedDesignations = ['Receptionist', 'Head Nurse'];
+      if (userRole === 'STAFF' && allowedDesignations.includes(userDesignation)) {
+        return <Outlet />;
       }
     }
 
-    if (userRole !== requiredRole) {
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('role');
-      return <Navigate to="/" replace />;
+    if (requiredRole === 'INVENTORY_MANAGER') {
+      if (userRole === 'STAFF' && userDesignation === 'Inventory Manager') {
+        return <Outlet />;
+      }
     }
 
-    return element;
-  } catch (err) {
-    console.error("ProtectedRoute error:", err);
+    if (userRole === requiredRole) return <Outlet />;
+
+    return <Navigate to="/" replace />;
+  } catch (error) {
+    console.error("Auth error:", error.message);
     localStorage.removeItem('jwt');
-    localStorage.removeItem('role');
+    localStorage.removeItem('user');
     return <Navigate to="/" replace />;
   }
 };
+
 
 export default ProtectedRoute;

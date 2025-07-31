@@ -232,7 +232,8 @@ const modules = [
      {modules
     .filter(mod => mod.label.toLowerCase().includes(searchTerm))
     .map((mod, index) => (
-      <div key={index}>
+          <div key={index} style={{ width: '100%' }}> {/* ✅ Force full width */}
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
        <button
   onClick={() => {
     const isOpening = !mod.dropdownOpen;
@@ -253,12 +254,14 @@ const modules = [
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100vh',
     cursor: 'pointer',
   }}
 >
-  {mod.icon} {mod.label} <span>{mod.dropdownOpen ? '▲' : '▼'}</span>
+   <span>{mod.icon} {mod.label}</span>
+          <span>{mod.dropdownOpen ? '▲' : '▼'}</span>
 </button>
+</div>
+  
 
 
         {mod.dropdownOpen && (
@@ -294,7 +297,7 @@ const modules = [
 const styles = {
   container: {
     display: 'flex',
-    height: '100vh',
+    height: '50vh',
     fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
     flexDirection: 'row',
   },
@@ -306,7 +309,7 @@ const styles = {
     flexDirection: 'column',
     boxShadow: '2px 0 6px rgba(0,0,0,0.05)',
     padding: '20px 15px',
-    height:"130vh"
+    height:"50vh"
   },
   title: {
     textAlign: 'center',
@@ -325,12 +328,12 @@ const styles = {
     border: 'none',
     borderBottom: '1px solid #d1d5db',
     margin: '10px 0',
-    width: '300%',
+    width: '100%',
   },
 dropdown: {
   display: 'flex',
   flexDirection: 'column',
-  gap: '10px',
+  gap: '30px',
   backgroundColor: '#f3f4f6',  // Light gray background
   borderRadius: '4px',
   marginTop: '6px',
@@ -370,7 +373,7 @@ nestedDropdown: {
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
-      height:"180vh"
+      height:"220vh"
   },
 };
 
@@ -400,10 +403,15 @@ const dropdownLinkStyle = {
   ...linkStyle,
   fontSize: '14px',
   padding: '8px 20px',
-    marginLeft: '0px',
+  marginLeft: '0px',
   marginBottom: '4px',
   fontWeight: '500',
-  
+  transition: 'background-color 0.2s ease',
+  borderRadius: '4px',
+};
+
+const hoverStyle = {
+  backgroundColor: '#e0f2fe', // Tailwind light-blue-100
 };
 
 export default AdminDashboard;

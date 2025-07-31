@@ -1,0 +1,76 @@
+
+
+.procedure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* wider min on desktop */
+  gap: 16px;
+}
+
+.procedure-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  word-wrap: break-word;
+}
+
+.procedure-card h3,
+.procedure-card p {
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.procedure-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+@media (max-width: 768px) {
+  .procedure-container {
+    padding: 12px;
+  }
+
+  .procedure-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .procedure-card {
+    padding: 14px;
+  }
+
+  .procedure-card-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .procedure-container {
+    padding: 10px;
+  }
+
+  .procedure-title {
+    font-size: 1.4rem;
+  }
+
+  .procedure-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .procedure-card {
+    padding: 12px;
+  }
+
+  .procedure-card-title {
+    font-size: 1rem;
+  }
+
+  .procedure-card p {
+    font-size: 0.95rem;
+  }
+}

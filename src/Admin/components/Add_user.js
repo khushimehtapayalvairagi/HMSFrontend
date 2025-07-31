@@ -76,12 +76,7 @@ const handleChange = (e) => {
         ...prev,
         contactNumber: 'Contact number must be numeric and up to 10 digits only.',
       }));
-    } else if (value.length !== 10) {
-      setErrors((prev) => ({
-        ...prev,
-        contactNumber: 'Contact number must be exactly 10 digits.',
-      }));
-    } else {
+    }  else {
       setErrors((prev) => ({ ...prev, contactNumber: '' }));
     }
   } else {
@@ -238,7 +233,16 @@ const handleChange = (e) => {
 
             {form.role !== 'DOCTOR' && (
               <>
-                <input name="contactNumber" value={form.contactNumber} onChange={handleChange} placeholder="Contact Number" required />
+      <input
+  name="contactNumber"
+  value={form.contactNumber}
+  onChange={handleChange}
+  placeholder="Contact Number"
+  required
+  maxLength={10}
+/>
+{errors.contactNumber && <div className="error-text">{errors.contactNumber}</div>}
+
                 <select name="designation" value={form.designation} onChange={handleChange} required>
                   <option value="">Select Designation</option>
                   <option value="Head Nurse">Head Nurse</option>

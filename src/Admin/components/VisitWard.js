@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './VisitWard.css'; // Import external CSS
 
 const VisitWard = () => {
   const [wards, setWards] = useState([]);
@@ -11,8 +12,8 @@ const VisitWard = () => {
         const token = localStorage.getItem('jwt');
         const res = await axios.get('http://localhost:8000/api/admin/wards', {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setWards(res.data.wards || []);
       } catch (error) {
@@ -26,28 +27,28 @@ const VisitWard = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ marginBottom: '20px' }}>Ward List</h2>
+    <div className="ward-container">
+      <h2 className="ward-title">Ward List</h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="loading-text">Loading...</p>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={styles.table}>
-            <thead style={{ backgroundColor: '#f4f4f4' }}>
+        <div className="table-wrapper">
+          <table className="ward-table">
+            <thead>
               <tr>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>Room Category</th>
-                <th style={styles.th}>Beds</th>
+                <th>Name</th>
+                <th>Room Category</th>
+                <th>Beds</th>
               </tr>
             </thead>
             <tbody>
               {wards.map((ward) => (
                 <tr key={ward._id}>
-                  <td style={styles.td}>{ward.name}</td>
-                  <td style={styles.td}>{ward.roomCategory?.name || 'N/A'}</td>
-                  <td style={styles.td}>
-                    <ul style={{ paddingLeft: '20px' }}>
+                  <td>{ward.name}</td>
+                  <td>{ward.roomCategory?.name || 'N/A'}</td>
+                  <td>
+                    <ul>
                       {ward.beds.map((bed, index) => (
                         <li key={index}>
                           Bed {bed.bedNumber} - {bed.status}
@@ -64,27 +65,5 @@ const VisitWard = () => {
     </div>
   );
 };
-
-const styles = {
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    border: '1px solid black'
-  },
-  th: {
-    padding: '12px',
-    textAlign: 'left',
-    borderBottom: '2px solid black',
-    borderRight: '1px solid black'
-  },
-  td: {
-    padding: '10px',
-    borderBottom: '1px solid black',
-    borderRight: '1px solid black',
-    verticalAlign: 'top',
-    backgroundColor: '#f9f9f9'
-  }
-};
-
 
 export default VisitWard;

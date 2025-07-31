@@ -192,15 +192,23 @@ console.log("Calling reports API for", ipdAdmissionId);
       items: cleanedItems
     };
 
-    try {
-      const token = localStorage.getItem('jwt');
-      await axios.post('http://localhost:8000/api/billing/bills', payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success('Bill created successfully!');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error creating bill');
-    }
+   try {
+  const token = localStorage.getItem('jwt');
+  await axios.post('http://localhost:8000/api/billing/bills', payload, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  toast.success('Bill created successfully!');
+} catch (err) {
+ const errorMessage = err.response?.data?.message;
+if (errorMessage === 'This procedure has already been billed.') {
+  toast.error('⚠️ This procedure has already been billed.');
+} else if (errorMessage === 'No daily report record found.') {
+  toast.error('📋 No daily report record found.');
+} else {
+  toast.error(errorMessage || 'Error creating bill');
+}
+}
+
   };
 
  return (

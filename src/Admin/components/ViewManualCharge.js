@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './ViewManualCharge.css'; // Import the external CSS
 
 const ViewManualCharge = () => {
   const [items, setItems] = useState([]);
@@ -27,56 +28,41 @@ const ViewManualCharge = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Manual Charge Items</h2>
+    <div className="manual-charge-container">
+      <h2 className="manual-charge-title">Manual Charge Items</h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="status-message">Loading...</p>
       ) : error ? (
-        <p style={{ color: 'red' }}>{error}</p>
+        <p className="error-message">{error}</p>
       ) : items.length === 0 ? (
-        <p>No manual charge items found.</p>
+        <p className="status-message">No manual charge items found.</p>
       ) : (
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          marginTop: '20px'
-        }}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Item Name</th>
-              <th style={thStyle}>Category</th>
-              <th style={thStyle}>Price (₹)</th>
-              <th style={thStyle}>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(item => (
-              <tr key={item._id}>
-                <td style={tdStyle}>{item.itemName}</td>
-                <td style={tdStyle}>{item.category}</td>
-                <td style={tdStyle}>{item.defaultPrice}</td>
-                <td style={tdStyle}>{item.description}</td>
+        <div className="table-wrapper">
+          <table className="manual-charge-table">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Price (₹)</th>
+                <th>Description</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item._id}>
+                  <td>{item.itemName}</td>
+                  <td>{item.category}</td>
+                  <td>{item.defaultPrice}</td>
+                  <td>{item.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
-};
-
-const thStyle = {
-  border: '1px solid black',
-  padding: '10px',
-  backgroundColor: '#f8f8f8',
-  textAlign: 'left'
-};
-
-const tdStyle = {
-  border: '1px solid black',
-  padding: '10px',
-   backgroundColor: '#f8f8f8',
 };
 
 export default ViewManualCharge;

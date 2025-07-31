@@ -97,13 +97,35 @@ setSpecialties(specRes.data.specialties || []);
         headers: { Authorization: `Bearer ${token}` },
       });
 
-   if (visitType === 'IPD_Admission') {
-  navigate('/receptionist-dashboard/IPDAdmissionForm', {
-    state: { visit: res.data.visit, patient: res.data.visit.patientDbId }
-  });
+ if (visitType === 'IPD_Admission' || visitType === 'IPD_Referral') {
+  const visitData = res.data.visit;
+
+  const doctorName = visitData?.assignedDoctorUserId?.fullName || '';
+  const patientName = visitData?.patientId?.fullName || '';
+  const patientDbId = visitData?.patientId?._id || '';
+
+  const commonState = {
+    visit: visitData,
+    patient: {
+      id: patientDbId,
+      name: patientName,
+      doctorName: doctorName
+    }
+  };
+
+  if (visitType === 'IPD_Admission') {
+    navigate('/receptionist-dashboard/IPDAdmissionForm', {
+      state: commonState
+    });
+  } else if (visitType === 'IPD_Referral') {
+    navigate('/receptionist-dashboard/IPDAdmissionForm', {
+      state: commonState
+    });
+  }
 } else {
   toast.success("Visit created successfully!");
 }
+
 localStorage.setItem('currentPatientId', patientId);
 
       localStorage.setItem('currentPatientId', patientId);

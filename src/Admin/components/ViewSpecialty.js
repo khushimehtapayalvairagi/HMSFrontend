@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./ViewSpecialty.css"; // External CSS
 
 const ViewSpecialty = () => {
   const [specialties, setSpecialties] = useState([]);
@@ -27,33 +28,35 @@ const ViewSpecialty = () => {
     fetchSpecialties();
   }, []);
 
-  if (loading) return <p>Loading specialties...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return <p className="loading-text">Loading specialties...</p>;
+  if (error) return <p className="error-text">{error}</p>;
 
   return (
-    <div>
-      <h2>Specialties</h2>
+    <div className="specialty-container">
+      <h2 className="specialty-title">Specialties</h2>
       {specialties.length === 0 ? (
         <p>No specialties found.</p>
       ) : (
-        <table border="1" cellPadding="8" cellSpacing="0">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Specialty Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {specialties.map((spec, index) => (
-              <tr key={spec._id}>
-                <td>{index + 1}</td>
-                <td>{spec.name}</td>
-                <td>{spec.description}</td>
+        <div className="table-wrapper">
+          <table className="responsive-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Specialty Name</th>
+                <th>Description</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {specialties.map((spec, index) => (
+                <tr key={spec._id}>
+                  <td>{index + 1}</td>
+                  <td>{spec.name}</td>
+                  <td>{spec.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

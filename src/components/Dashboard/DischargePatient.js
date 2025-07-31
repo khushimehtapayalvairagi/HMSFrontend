@@ -44,7 +44,7 @@ const DischargePatient = () => {
       // Remove from current list
       setAdmissions(prev => prev.filter(adm => adm._id !== id));
     } catch (err) {
-      toast.error('Discharge failed');
+      toast.error('Unpaid bills');
     }
   };
 

@@ -162,12 +162,23 @@ useEffect(() => {
         </div>
 
         {selectedProcedure && (
-          <div style={{ flex: 1, background: '#f5f5f5', padding: '1rem', borderRadius: '8px' }}>
+         <div style={{
+  flex: 1,
+  background: '#f5f5f5',
+  maxWidth: '600px',
+  maxHeight:"550px",
+  padding: '0.75rem',
+  borderRadius: '6px',
+  fontSize: '14px',
+  lineHeight: '1.2'
+}}>
+
             <h3>Labour Room Details</h3>
          <p><strong>Patient:</strong> {patients.find(pt => pt._id === selectedProcedure.patientId)?.fullName}</p>
 
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
               <input name="babyName" value={form.babyName} onChange={handleChange} placeholder="Baby Name" />
               <select name="gender" value={form.gender} onChange={handleChange} required>
                 <option value="">Gender</option>

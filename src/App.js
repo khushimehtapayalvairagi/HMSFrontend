@@ -68,9 +68,10 @@ import OPDReportPage from './Admin/components/OPDReportPage.js';
 const App = () => {
   return (
     <Routes>
-      <Route
+    <Route element={<ProtectedRoute role="ADMIN" />}>
+<Route
         path="/admin-dashboard"
-        element={<ProtectedRoute element={<AdminDashboard />} role="ADMIN" />}
+         element={<AdminDashboard />} 
       >
        <Route path="reports">
     <Route path="opd-register" element={<OPDReportPage />} />
@@ -99,9 +100,10 @@ const App = () => {
                      <Route path="view-operation-theatre" element={<ViewOperationTheatre/>} />          
       
       </Route>
-   <Route
-  path="/receptionist-dashboard"
-  element={<ProtectedRoute element={<ReceptionistDashboard />}role="STAFF" />}
+      </Route>
+          <Route element={<ProtectedRoute role="STAFF" />}>
+ <Route
+  path="/receptionist-dashboard"element={<ReceptionistDashboard />}
 >
   <Route path="Home" element={<ReceptionistHome/>} />
   <Route path="patient-form" element={<PatientForm/>} />
@@ -127,7 +129,9 @@ const App = () => {
 <Route path ="PaymentForm" element={<PaymentForm/>}/>
 <Route path ="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 </Route>
-<Route path="/doctor-dashboard" element={<ProtectedRoute element={<DoctorDashboard />} role="DOCTOR" />}>
+      </Route>
+ <Route  element={<ProtectedRoute role="DOCTOR" />} >
+    <Route path="/doctor-dashboard"  element={<DoctorDashboard />}>
  <Route index element={<DoctorDashboardHome />} />
 <Route path="home" element={<DoctorDashboardHome />} />
    <Route index element={<OPDConsultationForm />} />
@@ -135,19 +139,26 @@ const App = () => {
     <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />  
 
 </Route>
-<Route path="/nurse-dashboard"  element={<NurseDashboard />}  >
+  </Route>
+
+<Route  element={<ProtectedRoute role="STAFF" />} >
+<Route path="/nurse-dashboard"  element={<NurseDashboard />}>
 <Route path ="NurseIPDAdmissionList" element ={<NurseIPDAdmissionList/>}/>
 <Route path ="DailyReports" element ={<DailyReports/>}/>
 <Route path="ViewDailyReports" element={<ViewDailyReports />} />
 <Route path ="NurseScheduledProcedures" element={<NurseScheduledProcedures/>}/>
 </Route>
-<Route path="/inventoryManager-dashboard"  element={<InventoryManagerDashboard />}  >
+</Route>
+<Route element={<ProtectedRoute role="STAFF" />}>
+<Route path="/inventoryManager-dashboard"  element={<InventoryManagerDashboard />} >
 <Route path ="InventoryForm" element ={<InventoryForm/>}/>
 <Route path ="InventoryList" element ={<InventoryList/>}/>
 <Route path="inventory/edit/:id" element={<EditInventoryForm />} />
 <Route path ="RecordTransactionForm" element={<RecordTransactionForm/>}/>
 <Route path ="TransactionHistoryForm" element={<TransactionHistoryForm/>}/>
 </Route>
+</Route>
+
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

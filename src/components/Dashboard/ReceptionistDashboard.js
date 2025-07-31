@@ -66,17 +66,7 @@ const drawerContent = (
   <List sx={{ width: '100%' }}>
 
         {/* Home */}
-        <ListItem button  sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === 'Home' ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === 'Home' ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }}onClick={() => handleNav("/receptionist-dashboard/Home", "Home")}
->
-          <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
-          <ListItemText primary="Home" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
+       
         <ListItem button     sx={{
     px: 3,
     width: '100%', // Ensure full width
@@ -352,7 +342,18 @@ const drawerContent = (
 
 
   return (
-    <Box sx={{ display: 'flex', backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
+<Box
+  sx={{
+    display: 'flex',
+    minHeight: '100vh',
+    backgroundImage: 'url("/images/hospital.jpg")', // 🖼️ Your image URL
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed', // Optional: makes image stay fixed during scroll
+  }}
+>
+
       <CssBaseline />
 
       {/* AppBar */}

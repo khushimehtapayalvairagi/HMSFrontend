@@ -64,16 +64,10 @@ const drawerContent = (
           <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
           <ListItemText primary="Home" primaryTypographyProps={{ fontWeight: 500 }} />
         </ListItem>
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }}onClick={() => handleNav("/doctor-dashboard/ConsultationForm")}>
-  <ListItemIcon sx={{ minWidth: 36 }}><IpdIcon /></ListItemIcon>
-  <ListItemText primary="ConsultationForm" primaryTypographyProps={{ fontWeight: 500 }} />
-</ListItem>
+     
 
         {/* Profile */}
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/doctor-dashboard/PreviousConsultantPatient" )}>
-          <ListItemIcon sx={{ minWidth: 36 }}><PersonIcon /></ListItemIcon>
-          <ListItemText primary="Previous Consultations" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
+        
 
   
 
