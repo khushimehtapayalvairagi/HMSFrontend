@@ -37,7 +37,6 @@ import DoctorDashboardHome from './components/Dashboard/DoctorDashboardHome';
 import OPDConsultationForm from './components/Dashboard/OPDConsultationForm';
 import PreviousConsultations from './components/Dashboard/PreviousConsultantPatient';
 import UpdateVisitStatusPage from './components/Dashboard/UpdateVisitStatus';
-import ReceptionistHome from './components/Dashboard/receptionistHome';
 import IPDAdmissionForm from './components/Dashboard/IPDAdmissionform'
 import IPDAdmissionList from './components/Dashboard/IPDAdmissionList';
 import ProcedureForm from './components/Dashboard/ProcedureForm';
@@ -105,7 +104,6 @@ const App = () => {
  <Route
   path="/receptionist-dashboard"element={<ReceptionistDashboard />}
 >
-  <Route path="Home" element={<ReceptionistHome/>} />
   <Route path="patient-form" element={<PatientForm/>} />
    <Route path="viewPatient" element={<ViewPatient/>} />
    <Route path="Doctor-Availablity-check" element={<DoctorAvailabilityForm/>} />

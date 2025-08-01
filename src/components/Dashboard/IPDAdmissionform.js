@@ -253,11 +253,15 @@ const handleView = () => {
               <input type="date" value={expectedDischargeDate} onChange={e => setExpectedDischargeDate(e.target.value)} />
             </div>
 
-            <div style={{ marginTop: 15 }}>
-              <button type="submit">Admit</button>
-            <button type="button" onClick={handleCancel}>Cancel</button>
+          <div style={{ marginTop: 15, display: 'flex', gap: '1rem' }}>
+  <button type="submit" style={{ flex: 1, backgroundColor: '#1976d2', color: 'white', padding: '0.5rem', border: 'none', borderRadius: 4 }}>
+    Admit
+  </button>
+  <button type="button" onClick={handleCancel} style={{ flex: 1, backgroundColor: '#9e9e9e', color: 'white', padding: '0.5rem', border: 'none', borderRadius: 4 }}>
+    Cancel
+  </button>
+</div>
 
-            </div>
           </form>
         </>
       ) : (

@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ViewAnesthesiaRecord = () => {
   const [records, setRecords] = useState([]);
+  const [filteredRecords, setFilteredRecords] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchAllAnesthesiaRecords = async () => {
@@ -27,10 +36,7 @@ const ViewAnesthesiaRecord = () => {
       );
 
       const allProcedures = (await Promise.all(allProcedurePromises)).flat();
-
-      const filteredProcedures = allProcedures.filter(
-        p => p.status === 'Scheduled'
-      );
+      const filteredProcedures = allProcedures.filter(p => p.status === 'Scheduled');
 
       const anesthesiaRecords = await Promise.all(
         filteredProcedures.map(p =>
@@ -49,6 +55,7 @@ const ViewAnesthesiaRecord = () => {
 
       const validRecords = anesthesiaRecords.filter(r => r !== null);
       setRecords(validRecords);
+      setFilteredRecords(validRecords);
     } catch (error) {
       console.error('Error fetching anesthesia records:', error);
       toast.error('Failed to fetch records');
@@ -61,28 +68,89 @@ const ViewAnesthesiaRecord = () => {
     fetchAllAnesthesiaRecords();
   }, []);
 
-  if (loading) {
-    return <div style={styles.centerText}>Loading...</div>;
-  }
+  useEffect(() => {
+    const lower = searchTerm.toLowerCase();
+    const filtered = records.filter(record =>
+      record?.patient?.fullName?.toLowerCase().includes(lower)
+    );
+    setFilteredRecords(filtered);
+  }, [searchTerm, records]);
 
-  if (!records.length) {
-    return <div style={styles.centerText}>No Anesthesia Records Found.</div>;
-  }
+  const handleOpenDialog = (record) => {
+    setSelectedRecord(record);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedRecord(null);
+  };
+
+  if (loading) return <div style={styles.centerText}>Loading...</div>;
 
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Anesthesia Records</h2>
-      {records.map((record, index) => (
-        <div key={record._id || index} style={styles.card}>
-          <p><strong>👤 Patient:</strong> {record.patient?.fullName || 'Unknown'}</p>
-          <p><strong>🩺 Procedure:</strong> {record.procedureName || 'N/A'}</p>
-          <p><strong>👨‍⚕️ Anesthetist:</strong> {record.anestheticId?.userId?.name || 'N/A'}</p>
-          <p><strong>💉 Anesthesia:</strong> {record.anesthesiaName} ({record.anesthesiaType})</p>
-          <p><strong>⏱️ Induce Time:</strong> {record.induceTime ? new Date(record.induceTime).toLocaleString() : 'N/A'}</p>
-          <p><strong>✅ End Time:</strong> {record.endTime ? new Date(record.endTime).toLocaleString() : 'N/A'}</p>
-          <p><strong>💊 Medicines Used:</strong> {record.medicinesUsedText || 'N/A'}</p>
-        </div>
-      ))}
+
+      <input
+        type="text"
+        placeholder="Search by patient name..."
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        style={styles.searchInput}
+      />
+
+      {filteredRecords.length === 0 ? (
+        <div style={styles.centerText}>No records found.</div>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>👤 Patient Name</strong></TableCell>
+                <TableCell><strong>Details</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredRecords.map((record, index) => (
+                <TableRow key={record._id || index}>
+                  <TableCell>{record.patient?.fullName || 'Unknown'}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleOpenDialog(record)}>
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      {/* Dialog */}
+    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+  <DialogTitle>📝 Anesthesia Record Details</DialogTitle>
+  <DialogContent dividers>
+    {selectedRecord && (
+      <>
+        <p><strong>👤 Patient:</strong> {selectedRecord.patient?.fullName || 'Unknown'}</p>
+        <p><strong>🩺 Procedure:</strong> {selectedRecord.procedureName || 'N/A'}</p>
+        <p><strong>👨‍⚕️ Anesthetist:</strong> {selectedRecord.anestheticId?.userId?.name || 'N/A'}</p>
+        <p><strong>💉 Anesthesia:</strong> {selectedRecord.anesthesiaName} ({selectedRecord.anesthesiaType})</p>
+        <p><strong>⏱️ Induce Time:</strong> {selectedRecord.induceTime ? new Date(selectedRecord.induceTime).toLocaleString() : 'N/A'}</p>
+        <p><strong>✅ End Time:</strong> {selectedRecord.endTime ? new Date(selectedRecord.endTime).toLocaleString() : 'N/A'}</p>
+        <p><strong>💊 Medicines Used:</strong> {selectedRecord.medicinesUsedText || 'N/A'}</p>
+      </>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog} color="primary" variant="contained">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
       <ToastContainer />
     </div>
   );
@@ -90,7 +158,7 @@ const ViewAnesthesiaRecord = () => {
 
 export default ViewAnesthesiaRecord;
 
-// 🔧 Clean inline CSS
+// Styles
 const styles = {
   container: {
     maxWidth: '900px',
@@ -100,18 +168,16 @@ const styles = {
   },
   heading: {
     textAlign: 'center',
-    marginBottom: '1.5rem',
+    marginBottom: '1rem',
     color: '#003366'
   },
-  card: {
-    background: '#e6f7ff',
-    border: '1px solid #b3d8ff',
-    marginBottom: '1.2rem',
-    padding: '1rem 1.2rem',
-    borderRadius: '10px',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
-    lineHeight: '1.6',
-    fontSize: '15px'
+  searchInput: {
+    width: '100%',
+    padding: '10px',
+    fontSize: '15px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    marginBottom: '1.5rem'
   },
   centerText: {
     textAlign: 'center',

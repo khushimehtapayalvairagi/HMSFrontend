@@ -4,16 +4,32 @@ import {
   CssBaseline, Divider, Avatar, ListItemIcon, IconButton, useMediaQuery
 } from '@mui/material';
 import {
-  Home as HomeIcon, Person as PersonIcon, Settings as SettingsIcon,
-  Logout as LogoutIcon, Menu as MenuIcon,
+  Home as HomeIcon,
+  Person as PersonIcon,
+  Settings as SettingsIcon,
+  Logout as LogoutIcon,
+  Menu as MenuIcon,
   AssignmentInd as ReceptionIcon,
   LocalPharmacy as PharmacyIcon,
   Hotel as IpdIcon,
   Science as LabIcon,
   EventNote as OpdIcon,
   ReceiptLong as BillingIcon,
-  BabyChangingStation as OtIcon
-} from '@mui/icons-material';
+  BabyChangingStation as OtIcon,
+  Visibility as ViewIcon,
+  Update as UpdateIcon,
+  PlaylistAddCheck as AdmissionIcon,
+  ListAlt as ListIcon,
+  Inventory as ProcedureIcon,
+  Assignment as AnesthesiaIcon,
+  ChildCare as LabourRoomIcon,
+  Payment as PaymentIcon,
+  History as HistoryIcon,
+  Receipt as ViewBillIcon,
+  HowToReg as PatientIcon,
+  MedicalInformation as VisitIcon
+}from '@mui/icons-material';
+
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -24,16 +40,12 @@ import { useParams } from 'react-router-dom';
 import SocketContext from '../../context/SocketContext';
 const drawerWidth = 260;
 
-const menuItems = [
-  { text: 'Home', icon: <HomeIcon /> },
-  { text: 'Profile', icon: <PersonIcon /> },
-  { text: 'Settings', icon: <SettingsIcon /> },
-  { text: 'Logout', icon: <LogoutIcon /> },
-];
 
 const ReceptionistDashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('');
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
+
   const { patientId } = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -54,359 +66,134 @@ const handleNav = (path,menuLabel) => {
 
 
 const drawerContent = (
-  <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-    {/* Profile */}
-    <Box sx={{ textAlign: 'center', p: 2, pt: 3 }}>
-    </Box>
-
-    <Divider sx={{ my: 2 }} />
-
-    {/* Navigation Modules */}
-  <Box sx={{ flexGrow: 1, alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
-  <List sx={{ width: '100%' }}>
-
-        {/* Home */}
-       
-        <ListItem button     sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === 'Patient' ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === 'Patient' ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }}onClick={() => handleNav("/receptionist-dashboard/patient-form", "Patient")}
->
-  <ListItemIcon sx={{ minWidth: 36 }}><IpdIcon /></ListItemIcon>
-  <ListItemText primary="Patient" primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === 'Patient' ? '#1976d2' : 'inherit'
-    }} />
-</ListItem>
-
-        {/* Profile */}
-        <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === 'ViewPatient' ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === 'ViewPatient'? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }}onClick={() => handleNav("/receptionist-dashboard/viewPatient",'ViewPatient' )}>
-          <ListItemIcon sx={{ minWidth: 36 }}><PersonIcon /></ListItemIcon>
-          <ListItemText primary="ViewPatient"primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === 'ViewPatient' ? '#1976d2' : 'inherit'
-    }} />
+ <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+  <Box sx={{ flexGrow: 1 }}>
+    <List sx={{ py: 1 }}>
+      {[
+        { label: "Patient", path: "/receptionist-dashboard/patient-form", icon: <IpdIcon /> },
+        { label: "ViewPatient", path: "/receptionist-dashboard/viewPatient", icon: <PersonIcon /> },
+        { label: "Visit Form", path: "/receptionist-dashboard/visit-form", icon: <VisitIcon /> },
+        { label: "Patient Visits Viewer", path: "/receptionist-dashboard/patient-visits-viewer", icon: <PharmacyIcon /> },
+        { label: "Update Patient Satus", path: "/receptionist-dashboard/UpdatePatientStatus", icon: <UpdateIcon /> },
+        { label: "IPD Admission Form", path: "/receptionist-dashboard/IPDAdmissionForm", icon: <AdmissionIcon /> },
+        { label: "IPD Admission List", path: `/receptionist-dashboard/IPDAdmissionList/${patientId}`, icon: <ListIcon /> },
+        { label: "ProcedureForm", path: "/receptionist-dashboard/ProcedureForm", icon: <ProcedureIcon /> },
+        { label: "ViewAnesthesiaForm", path: "/receptionist-dashboard/ViewAnesthesiaForm", icon: <AnesthesiaIcon /> },
+        { label: "LabourRoom", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
+        { label: "ViewLabourRoom", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },
+        { label: "DischargePatient", path: "/receptionist-dashboard/DischargePatient", icon: <LabIcon /> },
+        { label: "Billing", path: "/receptionist-dashboard/Billing", icon: <BillingIcon /> },
+        { label: "ViewBill", path: "/receptionist-dashboard/ViewBill", icon: <ViewBillIcon /> },
+        { label: "PaymentForm", path: "/receptionist-dashboard/PaymentForm", icon: <PaymentIcon /> },
+        { label: "BillPaymentHistory", path: "/receptionist-dashboard/BillPaymentHistory", icon: <HistoryIcon /> },
+      ].map(({ label, path, icon }) => (
+        <ListItem
+          key={label}
+          button
+          onClick={() => handleNav(path, label)}
+          sx={{
+            px: 3,
+            py: 1,
+             cursor: 'pointer',
+            backgroundColor: activeMenu === label ? '#e3f2fd' : 'transparent',
+            borderLeft: activeMenu === label ? '4px solid #1976d2' : 'none',
+            '&:hover': {
+              backgroundColor: '#f5f5f5',
+            }
+          }}
+        >
+          <ListItemIcon sx={{ color: activeMenu === label ? '#1976d2' : 'inherit', minWidth: 36 }}>
+            {icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={label}
+            primaryTypographyProps={{
+              fontWeight: 500,
+              color: activeMenu === label ? '#1976d2' : 'inherit'
+            }}
+          />
         </ListItem>
-
-        {/* Modules under Profile */}
-        {/* <ListItem button   sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "DoctorAvailable" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "DoctorAvailable" ? '4px solid #1976d2' : 'none',
-  }} onClick={() => handleNav("/receptionist-dashboard/Doctor-Availablity-check" , "DoctorAvailable")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><ReceptionIcon /></ListItemIcon>
-          <ListItemText primary="DoctorAvailable " primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "DoctorAvailable" ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem> */}
-
- <ListItem button   sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "Visit Form" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "Visit Form" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/visit-form" ,"Visit Form")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><MedicalInformationIcon /></ListItemIcon>
-          <ListItemText primary="Visit Form "primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === 'Visit Form' ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-
-
-        <ListItem button   sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === 'Patient Visits Viewer' ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === 'Patient Visits Viewer' ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/patient-visits-viewer","Patient Visits Viewer")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><PharmacyIcon /></ListItemIcon>
-          <ListItemText primary="Patient Visits Viewer"primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === 'Patient Visits Viewer' ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-
-
-        <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === 'Update Patient Satus' ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === 'Update Patient Satus' ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/UpdatePatientStatus","Update Patient Satus")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="Update Patient Satus" primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "Update Patient Satus" ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-         <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "IPD Admission Form" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "IPD Admission Form"? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/IPDAdmissionForm","IPD Admission Form")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="IPD Admission Form" primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "IPD Admission Form" ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-          <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "IPD Admission List" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "IPD Admission List"? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }}
-   onClick={() => handleNav(`/receptionist-dashboard/IPDAdmissionList/${patientId}`, "IPD Admission List")}>
-
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="IPD Admission List" primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "IPD Admission List" ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-       <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "ProcedureForm" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "ProcedureForm" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ProcedureForm" ,"ProcedureForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="ProcedureForm"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "ProcedureForm"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-         
-                 <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "ViewAnesthesiaForm" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "ViewAnesthesiaForm" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ViewAnesthesiaForm" ,"ViewAnesthesiaForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="ViewAnesthesiaForm"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "ViewAnesthesiaForm"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-                      <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "LabourRoom" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "LabourRoom" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/LabourRoom" ,"LabourRoom")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="LabourRoom"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "LabourRoom"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-
-                       <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "ViewLabourRoom" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "ViewLabourRoom" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ViewLabourRoom" ,"ViewLabourRoom")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="ViewLabourRoom"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "ViewLabourRoom"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-
-                 <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "DischargePatient" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "DischargePatient" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/DischargePatient" ,"DischargePatient")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="DischargePatient"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "DischargePatient"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-         
-                 <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "Billing" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "Billing" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/Billing" ,"Billing")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="Billing"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "Billing"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-        <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "ViewBill" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "ViewBill" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/ViewBill" ,"ViewBill")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="ViewBill"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "ViewBill"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-           <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "PaymentForm" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "PaymentForm" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/PaymentForm" ,"PaymentForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="PaymentForm"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "PaymentForm"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-            <ListItem button    sx={{
-    px: 3,
-    width: '100%', // Ensure full width
-    justifyContent: 'flex-start', // Align contents to the left
-    backgroundColor: activeMenu === "BillPaymentHistory" ? '#e3f2fd' : 'transparent',
-    borderLeft: activeMenu === "BillPaymentHistory" ? '4px solid #1976d2' : 'none',
-   cursor: 'pointer', }} onClick={() => handleNav("/receptionist-dashboard/BillPaymentHistory" ,"BillPaymentHistory")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LabIcon /></ListItemIcon>
-          <ListItemText primary="BillPaymentHistory"  primaryTypographyProps={{
-      fontWeight: 500,
-      color: activeMenu === "BillPaymentHistory"  ? '#1976d2' : 'inherit'
-    }} />
-        </ListItem>
-
-
-        {/* Settings */}
-        <ListItem button sx={{ px: 3 }} onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><SettingsIcon /></ListItemIcon>
-          <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-      </List>
-    </Box>
-
-    {/* Logout fixed at bottom */}
-    <Box sx={{ p: 2 }}>
-      <Divider sx={{ mb: 1 }} />
-      <List>
-        <ListItem button sx={{ px: 3 }}  onClick={() => {
-      localStorage.removeItem("jwt");
-      window.location.href = "/login";
-    }}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LogoutIcon /></ListItemIcon>
-          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-      </List>
-    </Box>
+      ))}
+    </List>
   </Box>
+
+  {/* 🚪 Logout at bottom */}
+ 
+</Box>
+
 );
 
 
   return (
-<Box
-  sx={{
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundImage: 'url("/images/hospital.jpg")', // 🖼️ Your image URL
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed', // Optional: makes image stay fixed during scroll
-  }}
->
+<Box>
 
-      <CssBaseline />
 
       {/* AppBar */}
       <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: '#1976d2' }}>
 <Toolbar
   sx={{
-    px: 2,
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    px: 2,
+    minHeight: '64px',
   }}
 >
-<Box sx={{ display: 'flex', alignItems: 'center' }}>
-    {isMobile && (
-      <IconButton
-        color="inherit"
-        onClick={() => setMobileOpen(prev => !prev)}
-        edge="start"
-        sx={{ mr: 1 }}
-      >
-        <MenuIcon />
-      </IconButton>
-    )}
+  {/* Left side: Menu + Title */}
+ <Box
+  onMouseEnter={() => setIsMenuHovered(true)}
+  onMouseLeave={() => setIsMenuHovered(false)}
+  sx={{
+    width: 48,
+    height: 48,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer'
+  }}
+>
+  {isMenuHovered && (
+    <IconButton
+      color="inherit"
+      onClick={() => setMobileOpen(prev => !prev)}
+      edge="start"
+      sx={{
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        transform: 'scale(1.1)',
+        transition: 'all 0.2s ease-in-out',
+      }}
+    >
+      <MenuIcon />
+    </IconButton>
+  )}
+</Box>
 
-    {/* Show logo only on desktop */}
-    {!isMobile && (
-      <>
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png"
-          alt="Hospital Logo"
-          style={{ width: 40, height: 40 }}
-        />
-        <Typography variant="h6" noWrap sx={{ ml: 2 }}>
-          Hospital Management System
-        </Typography>
-      </>
-    )}
+  {/* Right side: Logout */}
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <IconButton
+      color="inherit"
+      onClick={() => {
+        localStorage.removeItem("jwt");
+        window.location.href = "/login";
+      }}
+      edge="end"
+      title="Logout"
+    >
+      <LogoutIcon />
+    </IconButton>
   </Box>
-
-  {/* Right space filler or optional right-side actions */}
-  {/* You can add user avatar or notifications here if needed */}
 </Toolbar>
+
       </AppBar>
 
       {/* Sidebar - Responsive */}
       <Box component="nav">
 <Drawer
-  variant={isMobile ? 'temporary' : 'permanent'}
-  open={isMobile ? mobileOpen : true}
+  variant="temporary" // ← Always temporary
+  open={mobileOpen}   // ← Controlled only by state
   onClose={() => setMobileOpen(false)}
   ModalProps={{ keepMounted: true }}
   sx={{
-    display: { xs: 'block', md: 'block' }, 
     '& .MuiDrawer-paper': {
       width: drawerWidth,
       boxSizing: 'border-box',
@@ -414,13 +201,13 @@ const drawerContent = (
       backdropFilter: 'blur(10px)',
       borderRight: '1px solid #e0e0e0',
       paddingTop: '64px',
-      alignItems: 'flex-start', // ✅ aligns content to left on all screen sizes
+      alignItems: 'flex-start',
     },
   }}
 >
+  {drawerContent}
+</Drawer>
 
-          {drawerContent}
-        </Drawer>
       </Box>
 
 
@@ -428,9 +215,8 @@ const drawerContent = (
       <Box
   component="main"
   sx={{
-    flexGrow: 1,
     p: 3,
-    ml: { md: `${drawerWidth}px` }, // Add this
+    ml:3
   }}
 >
 
