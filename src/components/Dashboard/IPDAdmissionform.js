@@ -5,9 +5,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAdmissionAdvice } from '../../context/AdmissionAdviceContext';
-// const socket = io('http://localhost:8000', {
-//   withCredentials: true,
-// });
+const socket = io('http://localhost:8000', {
+  withCredentials: true,
+});
 
 const IPDAdmissionForm = () => {
   const navigate = useNavigate();
@@ -18,16 +18,15 @@ const { adviceData } = useAdmissionAdvice();
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-const initialPatientId = adviceData?.patiendDbId || patient?.id || patient || '';
+const initialPatientId = adviceData?.patientId || patient?.id || patient || '';
 const initialVisitId = adviceData?.visitId || visit?._id || '';
-const initialAdmittingDoctorId = adviceData?.doctorId || visit?.assignedDoctorId || '';
+const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
 
 const [patientId, setPatientId] = useState(initialPatientId);
 const [visitId, setVisitId] = useState(initialVisitId);
 const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
 
 const [patientName, setPatientName] = useState(adviceData?.patientName || patient?.name || visit?.patientName || '');
-
 const [doctorName, setDoctorName] = useState(location.state?.patient?.doctorName || '');
 
 
@@ -47,7 +46,6 @@ const [doctorName, setDoctorName] = useState(location.state?.patient?.doctorName
  useEffect(() => {
   fetchWards();
   fetchRoomCategories();
-
 
   
   socket.emit('joinReceptionistRoom');
@@ -93,27 +91,13 @@ setDoctorName(data.doctorName || '');
 
 
 
-
 useEffect(() => {
-  // console.log(adviceData);
   if (adviceData?.doctorName) {
     setDoctorName(adviceData.doctorName);
   }
 
   if (adviceData?.patientName) {
     setPatientName(adviceData.patientName);
-  }
-
-  if(adviceData?.patiendDbId){
-    setPatientId(adviceData.patiendDbId);
-  }
-
-  if(adviceData?.doctorId){
-    setAdmittingDoctorId(adviceData.doctorId);
-  }
-
-  if(adviceData?.visitId){
-    setVisitId(adviceData.visitId);
   }
 }, [adviceData]);
 
@@ -142,12 +126,8 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting for patientId=',patientId);
-    console.log('Admitting Doctor ID:', admittingDoctorId);
-    console.log(visitId);
-    console.log(wardId);
-    console.log(bedNumber);
-    console.log(roomCategoryId);
+    console.log('Submitting for patientId=', patientId);
+  console.log('Admitting Doctor ID:', admittingDoctorId);
     if (!patientId || !visitId || !wardId || !bedNumber || !roomCategoryId || !admittingDoctorId) {
       return toast.error('All required fields must be filled.');
     }

@@ -29,7 +29,6 @@ const DoctorDashboardHome = () => {
   const doctorRef = useRef(null);
   const tokenRef = useRef(null);
 const socketInitialized = useRef(false);
-const location = useLocation();
 useEffect(() => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('jwt');
