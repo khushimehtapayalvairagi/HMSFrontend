@@ -44,7 +44,8 @@ import ProcedureForm from './components/Dashboard/ProcedureForm';
 import AnesthesiaForm from './components/Dashboard/AnesthesiaForm';
 import ViewAnesthesiaRecord from './components/Dashboard/ViewAnthesiaRecord';
 import LabourRoom from './components/Dashboard/LabourRoom';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NurseDashboard from './components/Dashboard/NurseDashboard';
 import LabourRoomDetailViewer from './components/Dashboard/LabourRoomDetailViewer.js';
 import DailyReports from './components/Dashboard/DailyReports.js';
@@ -67,7 +68,7 @@ import OPDReportPage from './Admin/components/OPDReportPage.js';
 
 const App = () => {
   return (
-    
+    <>
     <Routes>
     <Route element={<ProtectedRoute role="ADMIN" />}>
 <Route
@@ -162,7 +163,8 @@ const App = () => {
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
-
+        <ToastContainer position="top-right" autoClose={3000} />
+</>
   );
 };
 

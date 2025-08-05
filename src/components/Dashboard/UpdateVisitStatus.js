@@ -14,12 +14,15 @@ const UpdateVisitStatusPage = () => {
   const socketInitialized = useRef(false);
 const [patientId, setPatientId] = useState('');
   const token = localStorage.getItem('jwt');
- useEffect(() => {
+useEffect(() => {
   const storedId = localStorage.getItem('currentPatientId');
-  if (storedId) {
+  const jwt = localStorage.getItem('jwt');
+
+  if (storedId && jwt) {
     setPatientId(storedId);
   }
 }, []);
+
 
 useEffect(() => {
   if (!patientId) return;
@@ -27,20 +30,26 @@ useEffect(() => {
 }, [patientId]);
 
   const fetchVisits = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8000/api/receptionist/visits/${patientId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  if (!token || !patientId) {
+    console.warn("Missing token or patientId");
+    return;
+  }
 
-      const visits = res.data.visits;
-setRegisteredVisits(visits.filter(v => v.status === 'Registered' && v.visitType === 'OPD'));
-setWaitingVisits(visits.filter(v => v.status === 'Waiting' && v.visitType === 'OPD'));
+  try {
+    const res = await axios.get(`http://localhost:8000/api/receptionist/visits/${patientId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch patient visits");
-    }
-  };
+    const visits = res.data.visits;
+    setRegisteredVisits(visits.filter(v => v.status === 'Registered' && v.visitType === 'OPD'));
+    setWaitingVisits(visits.filter(v => v.status === 'Waiting' && v.visitType === 'OPD'));
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to fetch patient visits");
+  }
+};
+
 
   const updateStatus = async (visitId, newStatus, declineReason = '') => {
     try {
@@ -52,8 +61,11 @@ setWaitingVisits(visits.filter(v => v.status === 'Waiting' && v.visitType === 'O
       await axios.put(`http://localhost:8000/api/receptionist/visits/status/${visitId}`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+try {
       toast.success(`Visit marked as ${newStatus}`);
+    }  catch (e) {
+  console.error("Toast failed", e);
+}
       fetchVisits();
 
       // Emit socket event after update

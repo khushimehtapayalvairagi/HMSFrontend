@@ -8,18 +8,19 @@ const socket = io('http://localhost:8000', { withCredentials: true });
 const SocketContext = () => {
   const { setAdviceData } = useAdmissionAdvice();
 
-  useEffect(() => {
-    socket.emit('joinReceptionistRoom');
+useEffect(() => {
+  socket.emit('joinReceptionistRoom');
 
-    socket.on('newIPDAdmissionAdvice', (data) => {
-      toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
-      setAdviceData(data); // 🌟 store the socket data globally
-    });
+  socket.on('newIPDAdmissionAdvice', (data) => {
+    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+    setAdviceData(data); // 🌟 store the socket data globally
+  });
 
-    return () => {
-      socket.off('newIPDAdmissionAdvice');
-    };
-  }, []);
+  return () => {
+    socket.off('newIPDAdmissionAdvice');
+  };
+}, []);
+
 
   return null;
 };

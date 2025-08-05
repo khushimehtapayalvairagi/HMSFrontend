@@ -40,7 +40,9 @@ const handleSubmit = async (e) => {
   const payload = {
     visitId: visit._id,
     patientId: visit.patientDbId._id,
-    doctorId: visit.assignedDoctorId,
+ doctorId: visit.assignedDoctorUserId,
+
+
     chiefComplaint,
     diagnosis,
     doctorNotes,

@@ -124,7 +124,7 @@ const handleSubmit = async e => {
 
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', padding: '2rem', background: '#f5f5f5', borderRadius: '10px' }}>
+    <div style={{ maxWidth: 600, margin: 'auto', padding: '2rem', background: '#f5f5f5', borderRadius: '10px' }}>
       <h2>Schedule Procedure</h2>
       <form onSubmit={handleSubmit} >
   <select name="patientId" value={formData.patientId} onChange={handleChange}>

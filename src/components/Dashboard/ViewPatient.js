@@ -90,15 +90,16 @@ const [dialogOpen, setDialogOpen] = useState(false);
   };
 
   const renderTableRow = (p, index) => (
-    <React.Fragment key={p.patientId}>
-      <TableRow hover>
-        <TableCell>{p.patientId}</TableCell>
+    <React.Fragment key={p.patientId} >
+      <TableRow hover sx={{ p: 1, border: 1 }}>
+          <TableCell>{index + 1}</TableCell>
+        <TableCell >{p.patientId}</TableCell>
         <TableCell>{p.fullName}</TableCell>
-        {!isMobile && <TableCell>{new Date(p.dob).toLocaleDateString()}</TableCell>}
-        {!isMobile && <TableCell>{p.gender}</TableCell>}
-        {!isMobile && <TableCell>{p.contactNumber}</TableCell>}
+        {!isMobile && <TableCell >{new Date(p.dob).toLocaleDateString()}</TableCell>}
+        {!isMobile && <TableCell >{p.gender}</TableCell>}
+        {!isMobile && <TableCell >{p.contactNumber}</TableCell>}
         <TableCell>{p.status}</TableCell>
-        <TableCell>
+        <TableCell >
         <IconButton onClick={() => {
   setSelectedPatient(p);
   setDialogOpen(true);
@@ -108,10 +109,10 @@ const [dialogOpen, setDialogOpen] = useState(false);
 
         </TableCell>
       </TableRow>
-      <TableRow>
-        <TableCell colSpan={isMobile ? 4 : 7} sx={{ p: 0, border: 0 }}>
+      <TableRow sx={{ p: 1, border: 1 }}>
+        <TableCell colSpan={isMobile ? 4 : 7} sx={{ p: 0, border: 1 }}>
           <Collapse in={openRow === index} timeout="auto" unmountOnExit>
-            <Box sx={{ p: 2, bgcolor: "#f9f9f9" }}>
+            <Box sx={{ p: 1, bgcolor: "black" , border: 1 }}>
               <Typography><strong>Email:</strong> {p.email}</Typography>
               <Typography><strong>Address:</strong> {p.address}</Typography>
               <Typography mt={1}><strong>Relatives:</strong></Typography>
@@ -167,19 +168,21 @@ const [dialogOpen, setDialogOpen] = useState(false);
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper}>
-          <Table size={isMobile ? "small" : "medium"}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Patient ID</TableCell>
-                <TableCell>Name</TableCell>
-                {!isMobile && <TableCell>DOB</TableCell>}
-                {!isMobile && <TableCell>Gender</TableCell>}
-                {!isMobile && <TableCell>Contact</TableCell>}
-                <TableCell>Status</TableCell>
-                <TableCell>More</TableCell>
-              </TableRow>
-            </TableHead>
+        <TableContainer component={Paper} >
+          <Table size={isMobile ? "small" : "medium" }>
+          <TableHead>
+  <TableRow sx={{ p: 0, border: 1 }}>
+    <TableCell>Sr. No.</TableCell>
+    <TableCell>Patient ID</TableCell>
+    <TableCell>Name</TableCell>
+    {!isMobile && <TableCell>DOB</TableCell>}
+    {!isMobile && <TableCell>Gender</TableCell>}
+    {!isMobile && <TableCell>Contact</TableCell>}
+    <TableCell>Status</TableCell>
+    <TableCell>More</TableCell>
+  </TableRow>
+</TableHead>
+
             <TableBody>
               {rowsToRender.map((p, i) => renderTableRow(p, i))}
             </TableBody>

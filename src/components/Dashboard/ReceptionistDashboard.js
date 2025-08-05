@@ -129,7 +129,7 @@ const drawerContent = (
 
 
       {/* AppBar */}
-      <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: '#1976d2' }}>
+      <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: 'purple' }}>
 <Toolbar
   sx={{
     display: 'flex',
@@ -216,7 +216,7 @@ const drawerContent = (
   component="main"
   sx={{
     p: 3,
-    ml:3
+    width:"100%"
   }}
 >
 

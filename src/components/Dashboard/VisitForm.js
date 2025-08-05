@@ -101,10 +101,13 @@ setSpecialties(specRes.data.specialties || []);
 
  if (visitType === 'IPD_Admission' || visitType === 'IPD_Referral') {
   const visitData = res.data.visit;
-  // console.log(visitData);
-  const doctorName = visitData.doctorName;
-  const patientName = visitData.patientName;
-  const patientDbId = visitData.patientDbId;
+
+
+ const doctorName = visitData?.doctorName || '';
+const patientName = visitData?.patientName || '';
+
+  const patientDbId = visitData?.patientId?._id || '';
+
 
   const commonState = {
     visit: visitData,

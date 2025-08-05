@@ -90,18 +90,7 @@ const drawerContent = (
     </Box>
 
     {/* Logout fixed at bottom */}
-    <Box sx={{ p: 2 }}>
-      <Divider sx={{ mb: 1 }} />
-      <List>
-        <ListItem button sx={{ px: 3 }}  onClick={() => {
-      localStorage.removeItem("jwt");
-      window.location.href = "/login";
-    }}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LogoutIcon /></ListItemIcon>
-          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-      </List>
-    </Box>
+  
   </Box>
 );
 
@@ -111,7 +100,7 @@ const drawerContent = (
       <CssBaseline />
 
       {/* AppBar */}
-   <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: '#1976d2' }}>
+   <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: 'purple' }}>
   <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       {isMobile && (
@@ -133,6 +122,19 @@ const drawerContent = (
         </>
       )}
     </Box>
+     <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton
+          color="inherit"
+          onClick={() => {
+            localStorage.removeItem("jwt");
+            window.location.href = "/login";
+          }}
+          edge="end"
+          title="Logout"
+        >
+          <LogoutIcon />
+        </IconButton>
+      </Box>
   </Toolbar>
 </AppBar>
 

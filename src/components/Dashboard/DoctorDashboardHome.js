@@ -1,12 +1,22 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import OPDConsultationForm from './OPDConsultationForm';
 import { useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Button,
+  Box,
+  Container,
+  Paper,
+  Stack
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLocation } from 'react-router-dom';
+
 const socket = io('http://localhost:8000', {
   withCredentials: true,
 });
@@ -14,11 +24,9 @@ const socket = io('http://localhost:8000', {
 const DoctorDashboardHome = () => {
   const [assignedVisits, setAssignedVisits] = useState([]);
   const [doctor, setDoctor] = useState(null);
-  const [expandedVisitId, setExpandedVisitId] = useState(null);
-const navigate = useNavigate();
-const toastDisplayedRef = useRef(false);
-const { visitId } = useParams();
-const doctorRef = useRef(null);
+  const navigate = useNavigate();
+  const toastDisplayedRef = useRef(false);
+  const doctorRef = useRef(null);
   const tokenRef = useRef(null);
 const socketInitialized = useRef(false);
 const location = useLocation();
@@ -62,15 +70,16 @@ const fetchVisits = async () => {
 
 
 
-useEffect(() => {
-  if (!doctor) return;
+  useEffect(() => {
+    if (!doctor) return;
 
   const doctorId = doctor.id;
   console.log(doctorId);
   doctorRef.current = doctor;
   tokenRef.current = localStorage.getItem('jwt');
 
-  socket.emit('joinDoctorRoom', doctorId);
+   socket.emit('joinDoctorRoom', doctorId); // ✅ emit to server to join the room
+
   console.log('Joined doctor room:', doctorId);
 
   if (!socketInitialized.current) {
@@ -82,56 +91,91 @@ useEffect(() => {
       }
     });
 
-    socketInitialized.current = true;
-  }
+      socketInitialized.current = true;
+    }
 
-  fetchVisits();
+    fetchVisits();
 
-  return () => {
-    socket.off('newAssignedPatient');
-    socketInitialized.current = false;
-  };
-}, [doctor]);
+    return () => {
+      socket.off('newAssignedPatient');
+      socketInitialized.current = false;
+    };
+  }, [doctor]);
 
-
-
- 
+  const waitingVisits = assignedVisits.filter(visit => visit.status === 'Waiting');
 
   return (
-    <div>
-      <h2>Welcome {doctor?.name}</h2>
-      <h3>Assigned Patients</h3>
-   {assignedVisits
-  .filter(visit => visit.status === 'Waiting' )
-  .map((visit) => (
-    <div key={visit._id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '20px' }}>
-      <h4>Consultation for Patient:</h4>
-      <p><strong>Patient ID:</strong> {visit.patientId}</p>
-      <p><strong>Patient Name:</strong> {visit.patientDbId?.fullName || 'N/A'}</p>
-      <p><strong>Status:</strong> {visit.status}</p>
-   
-  
-      {visit.status !== 'Completed' && (
-  <div style={{ display: 'flex', gap: '10px' }}>
-    <button onClick={() => navigate(`/doctor-dashboard/ConsultationForm/${visit._id}`, { state: { visit } })}>
-      Start Consultation
-    </button>
-    {visit.patientDbId?._id && (
-      <button onClick={() => navigate(`/doctor-dashboard/PreviousConsultantPatient/${visit.patientDbId._id}`)}>
-        View Previous Consultations
-      </button>
-    )}
-  </div>
-  
-)}
-</div>
-))}
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Welcome Dr. {doctor?.name}
+      </Typography>
 
+      <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+        Assigned Patients
+      </Typography>
 
-        <ToastContainer position="top-right" autoClose={3000} />
-    </div>
-   
+      {waitingVisits.length === 0 ? (
+        <Typography>No assigned patients at the moment.</Typography>
+      ) : (
+        waitingVisits.map((visit, index) => {
+          const isEven = index % 2 === 0;
+          const backgroundColor = isEven ? '#e3f2fd' : '#e8f5e9'; // light blue and light green
+          const borderColor = isEven ? '#9c27b0' : '#2e7d32'; // purple and green
+
+          return (
+            <Accordion
+              key={visit._id}
+              sx={{
+                mb: 2,
+                backgroundColor,
+                borderLeft: `6px solid ${borderColor}`,
+              }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {index + 1}. {visit.patientDbId?.fullName || 'Unnamed Patient'}-{"new patient"}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Paper elevation={2} sx={{ p: 2 }}>
+                  <Typography><strong>Patient ID:</strong> {visit.patientId}</Typography>
+                  <Typography><strong>Status:</strong> {visit.status}</Typography>
+
+                  <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() =>
+                        navigate(`/doctor-dashboard/ConsultationForm/${visit._id}`, {
+                          state: { visit },
+                        })
+                      }
+                    >
+                      Start Consultation
+                    </Button>
+
+                    {visit.patientDbId?._id && (
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() =>
+                          navigate(`/doctor-dashboard/PreviousConsultantPatient/${visit.patientDbId._id}`)
+                        }
+                      >
+                        View Previous Consultations
+                      </Button>
+                    )}
+                  </Stack>
+                </Paper>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })
+      )}
+
+      <ToastContainer position="top-right" autoClose={3000} />
+    </Container>
   );
-}
+};
 
 export default DoctorDashboardHome;

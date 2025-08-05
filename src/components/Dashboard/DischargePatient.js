@@ -2,50 +2,63 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  Button, IconButton
+} from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const DischargePatient = () => {
   const [admissions, setAdmissions] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedAdmissionId, setSelectedAdmissionId] = useState(null);
   const token = localStorage.getItem('jwt');
 
- const fetchAdmittedPatients = async () => {
-  try {
-    const token = localStorage.getItem('jwt');
-    const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const admittedAdmissions = [];
-
-    for (const patient of patientRes.data.patients) {
-      const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+  const fetchAdmittedPatients = async () => {
+    try {
+      const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const admissions = res.data.admissions || [];
-      const admitted = admissions.filter(adm => adm.status === 'Admitted');
+      const admittedAdmissions = [];
 
-      // Collect admissions not just patient
-      admittedAdmissions.push(...admitted);
+      for (const patient of patientRes.data.patients) {
+        const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const admissions = res.data.admissions || [];
+        const admitted = admissions.filter(adm => adm.status === 'Admitted');
+        admittedAdmissions.push(...admitted);
+      }
+
+      setAdmissions(admittedAdmissions);
+    } catch (err) {
+      toast.error('Failed to fetch admitted patients');
     }
+  };
 
-    setAdmissions(admittedAdmissions);
-  } catch (err) {
-    toast.error('Failed to fetch admitted patients');
-  }
-};
-
-
-  const handleDischarge = async (id) => {
+  const handleDischarge = async () => {
     try {
-      await axios.put(`http://localhost:8000/api/ipd/admissions/${id}/discharge`, {}, {
+      await axios.put(`http://localhost:8000/api/ipd/admissions/${selectedAdmissionId}/discharge`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('Patient discharged');
-      // Remove from current list
-      setAdmissions(prev => prev.filter(adm => adm._id !== id));
+      setAdmissions(prev => prev.filter(adm => adm._id !== selectedAdmissionId));
+      setOpenDialog(false);
     } catch (err) {
       toast.error('Unpaid bills');
     }
+  };
+
+  const handleOpenDialog = (id) => {
+    setSelectedAdmissionId(id);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedAdmissionId(null);
   };
 
   useEffect(() => {
@@ -77,12 +90,26 @@ const DischargePatient = () => {
                 <td>{adm.bedNumber}</td>
                 <td>{new Date(adm.createdAt).toLocaleString()}</td>
                 <td>{new Date(adm.expectedDischargeDate).toLocaleDateString()}</td>
-                <td><button onClick={() => handleDischarge(adm._id)}>Discharge</button></td>
+                <td>
+                  <IconButton onClick={() => handleOpenDialog(adm._id)} color="primary">
+                    <ExitToAppIcon />
+                  </IconButton>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirm Discharge</DialogTitle>
+        <DialogContent>Are you sure you want to discharge this patient?</DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary" variant="outlined">Cancel</Button>
+          <Button onClick={handleDischarge} color="primary" variant="contained">Discharge</Button>
+        </DialogActions>
+      </Dialog>
+
       <ToastContainer />
     </div>
   );

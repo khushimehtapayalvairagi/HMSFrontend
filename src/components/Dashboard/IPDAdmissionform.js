@@ -27,7 +27,9 @@ const [visitId, setVisitId] = useState(initialVisitId);
 const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
 
 const [patientName, setPatientName] = useState(adviceData?.patientName || patient?.name || visit?.patientName || '');
-const [doctorName, setDoctorName] = useState(patient?.doctorName || '');
+
+const [doctorName, setDoctorName] = useState(location.state?.patient?.doctorName || '');
+
 
 
 
@@ -45,7 +47,52 @@ const [doctorName, setDoctorName] = useState(patient?.doctorName || '');
  useEffect(() => {
   fetchWards();
   fetchRoomCategories();
+
+
+  
+  socket.emit('joinReceptionistRoom');
+ console.log('Joined receptionist room:');
+  socket.on('newIPDAdmissionAdvice', (data) => {
+    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+
+    setPatientId(data.patientId || '');
+    setVisitId(data.visitId || '');
+    setAdmittingDoctorId(data.admittingDoctorId || data.doctorId || '');
+setPatientName(data.patientName || '');
+setDoctorName(data.doctorName || '');
+
+
+    
+  });
+
+  
+
+  return () => {
+    socket.off('newIPDAdmissionAdvice');
+  };
 }, []);
+
+// useEffect(() => {
+//   const fetchPatientName = async () => {
+//     if (!patientId || patientName) return;
+//     try {
+//       const res = await axios.get(`http://localhost:8000/api/receptionist/patients/${patientId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       console.log("Patient API Response:", res.data);
+//       setPatientName(res.data.fullName || res.data.patient?.fullName || '');
+//     } catch (err) {
+//       console.error('Error fetching patient name:', err);
+//       toast.error('Failed to fetch patient name');
+//     }
+//   };
+
+//   fetchPatientName();
+// }, [patientId, patientName, token]);
+
+
+
+
 
 useEffect(() => {
   // console.log(adviceData);
@@ -134,6 +181,7 @@ useEffect(() => {
   const handleCancel = () => {
   // Clear all input fields
   setPatientName('');
+  setDoctorName("");
   setVisitId('');
   setAdmittingDoctorId('');
   setWardId('');
