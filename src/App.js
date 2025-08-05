@@ -1,5 +1,6 @@
 // App.js
 import React from 'react';
+import SocketContext from './context/SocketContext.js';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminDashboard from './Admin/components/AdminDashboard';
 import AddUser from './Admin/components/Add_user';
@@ -66,6 +67,7 @@ import OPDReportPage from './Admin/components/OPDReportPage.js';
 
 const App = () => {
   return (
+    
     <Routes>
     <Route element={<ProtectedRoute role="ADMIN" />}>
 <Route
@@ -100,7 +102,7 @@ const App = () => {
       
       </Route>
       </Route>
-          <Route element={<ProtectedRoute role="STAFF" />}>
+          <Route element={<><SocketContext/> <ProtectedRoute role="STAFF" /> </>}>
  <Route
   path="/receptionist-dashboard"element={<ReceptionistDashboard />}
 >

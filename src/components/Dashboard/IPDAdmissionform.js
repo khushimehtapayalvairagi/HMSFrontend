@@ -5,9 +5,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAdmissionAdvice } from '../../context/AdmissionAdviceContext';
-const socket = io('http://localhost:8000', {
-  withCredentials: true,
-});
+// const socket = io('http://localhost:8000', {
+//   withCredentials: true,
+// });
 
 const IPDAdmissionForm = () => {
   const navigate = useNavigate();
@@ -18,16 +18,16 @@ const { adviceData } = useAdmissionAdvice();
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-const initialPatientId = adviceData?.patientId || patient?.id || patient || '';
+const initialPatientId = adviceData?.patiendDbId || patient?.id || patient || '';
 const initialVisitId = adviceData?.visitId || visit?._id || '';
-const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
+const initialAdmittingDoctorId = adviceData?.doctorId || visit?.assignedDoctorId || '';
 
 const [patientId, setPatientId] = useState(initialPatientId);
 const [visitId, setVisitId] = useState(initialVisitId);
 const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
 
 const [patientName, setPatientName] = useState(adviceData?.patientName || patient?.name || visit?.patientName || '');
-const [doctorName, setDoctorName] = useState(location.state?.doctorName || '');
+const [doctorName, setDoctorName] = useState(patient?.doctorName || '');
 
 
 
@@ -45,83 +45,28 @@ const [doctorName, setDoctorName] = useState(location.state?.doctorName || '');
  useEffect(() => {
   fetchWards();
   fetchRoomCategories();
-
-  
-  socket.emit('joinReceptionistRoom');
-
-  socket.on('newIPDAdmissionAdvice', (data) => {
-    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
-
-    setPatientId(data.patientId || '');
-    setVisitId(data.visitId || '');
-    setAdmittingDoctorId(data.admittingDoctorId || data.doctorId || '');
-setPatientName(data.patientName || '');
-setDoctorName(data.doctorName || '');
-
-
-    
-  });
-
-  
-
-  return () => {
-    socket.off('newIPDAdmissionAdvice');
-  };
 }, []);
 
-// useEffect(() => {
-//   const fetchPatientName = async () => {
-//     if (!patientId || patientName) return;
-//     try {
-//       const res = await axios.get(`http://localhost:8000/api/receptionist/patients/${patientId}`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       console.log("Patient API Response:", res.data);
-//       setPatientName(res.data.fullName || res.data.patient?.fullName || '');
-//     } catch (err) {
-//       console.error('Error fetching patient name:', err);
-//       toast.error('Failed to fetch patient name');
-//     }
-//   };
-
-//   fetchPatientName();
-// }, [patientId, patientName, token]);
-
 useEffect(() => {
-  const fetchDoctorName = async () => {
-    if (!admittingDoctorId || doctorName?.trim()) return; // ✅ FIXED condition
-
-    try {
-      const res = await axios.get(
-        `http://localhost:8000/api/receptionist/doctors/${admittingDoctorId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const fetchedName =
-        res.data?.user?.name || 
-        res.data?.doctor?.user?.name || 
-        res.data?.doctor?.fullName || '';
-
-      setDoctorName(fetchedName);
-    } catch (err) {
-      console.error('Error fetching doctor name:', err.response?.data || err.message);
-      toast.error('Failed to fetch doctor name');
-    }
-  };
-
-  fetchDoctorName();
-}, [admittingDoctorId, doctorName, token]);
-
-
-useEffect(() => {
+  // console.log(adviceData);
   if (adviceData?.doctorName) {
     setDoctorName(adviceData.doctorName);
   }
 
   if (adviceData?.patientName) {
     setPatientName(adviceData.patientName);
+  }
+
+  if(adviceData?.patiendDbId){
+    setPatientId(adviceData.patiendDbId);
+  }
+
+  if(adviceData?.doctorId){
+    setAdmittingDoctorId(adviceData.doctorId);
+  }
+
+  if(adviceData?.visitId){
+    setVisitId(adviceData.visitId);
   }
 }, [adviceData]);
 
@@ -150,8 +95,12 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting for patientId=', patientId);
-  console.log('Admitting Doctor ID:', admittingDoctorId);
+    console.log('Submitting for patientId=',patientId);
+    console.log('Admitting Doctor ID:', admittingDoctorId);
+    console.log(visitId);
+    console.log(wardId);
+    console.log(bedNumber);
+    console.log(roomCategoryId);
     if (!patientId || !visitId || !wardId || !bedNumber || !roomCategoryId || !admittingDoctorId) {
       return toast.error('All required fields must be filled.');
     }

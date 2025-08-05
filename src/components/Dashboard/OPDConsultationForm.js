@@ -35,12 +35,12 @@ const handleSubmit = async (e) => {
     return;
   }
 
+  console.log(visit);
+
   const payload = {
     visitId: visit._id,
     patientId: visit.patientDbId._id,
- doctorId: visit.assignedDoctorUserId,
-
-
+    doctorId: visit.assignedDoctorId,
     chiefComplaint,
     diagnosis,
     doctorNotes,

@@ -13,10 +13,10 @@ const VisitForm = () => {
   const [referredBy, setReferredBy] = useState('');
   const [amount, setAmount] = useState('');
   const [isPaid, setIsPaid] = useState(false);
-const [specialties, setSpecialties] = useState([]);
-const [specialtyName, setSpecialtyName] = useState('');
-const [dayOfWeek, setDayOfWeek] = useState('');
-const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [specialties, setSpecialties] = useState([]);
+  const [specialtyName, setSpecialtyName] = useState('');
+  const [dayOfWeek, setDayOfWeek] = useState('');
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
 
   const printRef = useRef();
 
@@ -65,6 +65,7 @@ setSpecialties(specRes.data.specialties || []);
 
 
   const handleSubmit = async (e) => {
+    // console.log(assignedDoctorId);
     e.preventDefault();
     const token = localStorage.getItem('jwt');
 
@@ -96,13 +97,14 @@ setSpecialties(specRes.data.specialties || []);
       const res = await axios.post("http://localhost:8000/api/receptionist/visits", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // console.log(res);
 
  if (visitType === 'IPD_Admission' || visitType === 'IPD_Referral') {
   const visitData = res.data.visit;
-
-  const doctorName = visitData?.assignedDoctorUserId?.fullName || '';
-  const patientName = visitData?.patientId?.fullName || '';
-  const patientDbId = visitData?.patientId?._id || '';
+  // console.log(visitData);
+  const doctorName = visitData.doctorName;
+  const patientName = visitData.patientName;
+  const patientDbId = visitData.patientDbId;
 
   const commonState = {
     visit: visitData,
@@ -112,6 +114,8 @@ setSpecialties(specRes.data.specialties || []);
       doctorName: doctorName
     }
   };
+
+  // console.log(commonState);
 
   if (visitType === 'IPD_Admission') {
     navigate('/receptionist-dashboard/IPDAdmissionForm', {

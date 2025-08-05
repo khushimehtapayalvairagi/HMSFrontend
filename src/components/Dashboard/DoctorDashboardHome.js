@@ -25,6 +25,7 @@ const location = useLocation();
 useEffect(() => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('jwt');
+  console.log(storedUser);
   if (storedUser && token) {
     setDoctor(storedUser);
     doctorRef.current = storedUser;
@@ -33,15 +34,11 @@ useEffect(() => {
 }, []);
 
 
-
-
-
-
   
 const fetchVisits = async () => {
   const token = tokenRef.current;
   const doctorId = doctorRef.current?.id;
-
+  // console.log("Raghav: ", doctorId);
   if (!doctorId || !token) {
     console.warn("Missing doctorId or token");
     return;
@@ -56,6 +53,7 @@ const fetchVisits = async () => {
         }
       }
     );
+    // console.log(res.data.visits);
     setAssignedVisits(res.data.visits || []);
   } catch (err) {
     console.error('Error fetching assigned visits:', err.response?.data || err);
@@ -68,6 +66,7 @@ useEffect(() => {
   if (!doctor) return;
 
   const doctorId = doctor.id;
+  console.log(doctorId);
   doctorRef.current = doctor;
   tokenRef.current = localStorage.getItem('jwt');
 
@@ -76,6 +75,7 @@ useEffect(() => {
 
   if (!socketInitialized.current) {
     socket.on('newAssignedPatient', async (data) => {
+      console.log(data);
       if (data.doctorId === doctorRef.current?.id) {
         await fetchVisits();
         toast.success(`🩺 New patient assigned: ${data.patientName || 'Patient'}`);
