@@ -3,6 +3,9 @@ import {
   AppBar, Toolbar, Typography, Box, Drawer, List, ListItem, ListItemText,
   CssBaseline, Divider, Avatar, ListItemIcon, IconButton, useMediaQuery
 } from '@mui/material';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'; // For transactions
+import EventNoteIcon from '@mui/icons-material/EventNote';     // For history/logs
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy'; // For inventory list
 
 import {
   Home as HomeIcon, Person as PersonIcon, Settings as SettingsIcon,
@@ -59,73 +62,43 @@ const drawerContent = (
 
     {/* Navigation Modules */}
     <Box sx={{ flexGrow: 1 }}>
-      <List>
-        {/* Home */}
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/InventoryForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
-          <ListItemText primary="InventoryForm" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-    
 
-        {/* Profile */}
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/InventoryList")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><PersonIcon /></ListItemIcon>
-          <ListItemText primary="InventoryList" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
+     <List>
+  {/* Inventory Form */}
+  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/InventoryForm")}>
+    <ListItemIcon sx={{ minWidth: 36 }}><MedicalInformationIcon /></ListItemIcon>
+    <ListItemText primary="Inventory Form" primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
 
-      
-      
-           <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/RecordTransactionForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
-          <ListItemText primary="RecordTransactionForm" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-           <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/TransactionHistoryForm")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><HomeIcon /></ListItemIcon>
-          <ListItemText primary="TransactionHistoryForm" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
+  {/* Inventory List */}
+  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/InventoryList")}>
+    <ListItemIcon sx={{ minWidth: 36 }}><PharmacyIcon /></ListItemIcon>
+    <ListItemText primary="Inventory List" primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
 
+  {/* Record Transaction */}
+  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/RecordTransactionForm")}>
+    <ListItemIcon sx={{ minWidth: 36 }}><ReceiptLongIcon /></ListItemIcon>
+    <ListItemText primary="Record Transaction" primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
 
-        {/* Modules under Profile */}
-        {/* <ListItem button sx={{ px: 3 }} onClick={() => handleNav("/receptionist-dashboard/Doctor-Availablity-check")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><ReceptionIcon /></ListItemIcon>
-          <ListItemText primary="DoctorAvailable " primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem> */}
+  {/* Transaction History */}
+  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => handleNav("/inventoryManager-dashboard/TransactionHistoryForm")}>
+    <ListItemIcon sx={{ minWidth: 36 }}><EventNoteIcon /></ListItemIcon>
+    <ListItemText primary="Transaction History" primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
 
- {/* <ListItem button sx={{ px: 3 }} onClick={() => handleNav("/receptionist-dashboard/visit-form")}>
-          <ListItemIcon sx={{ minWidth: 36 }}><MedicalInformationIcon /></ListItemIcon>
-          <ListItemText primary="Visit Form " primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem> */}
+  {/* Settings */}
+  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => isMobile && setMobileOpen(false)}>
+    <ListItemIcon sx={{ minWidth: 36 }}><SettingsIcon /></ListItemIcon>
+    <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
+  </ListItem>
+</List>
 
-
-
-
-
-
-        
-
-       
-
-        {/* Settings */}
-        <ListItem button  sx={{ px: 3, cursor: 'pointer' }} onClick={() => isMobile && setMobileOpen(false)}>
-          <ListItemIcon sx={{ minWidth: 36 }}><SettingsIcon /></ListItemIcon>
-          <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-      </List>
     </Box>
 
     {/* Logout fixed at bottom */}
-    <Box sx={{ p: 2 }}>
-      <Divider sx={{ mb: 1 }} />
-      <List>
-        <ListItem button sx={{ px: 3 }}  onClick={() => {
-      localStorage.removeItem("jwt");
-      window.location.href = "/login";
-    }}>
-          <ListItemIcon sx={{ minWidth: 36 }}><LogoutIcon /></ListItemIcon>
-          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
-        </ListItem>
-      </List>
-    </Box>
+   
   </Box>
 );
 
@@ -135,7 +108,7 @@ const drawerContent = (
       <CssBaseline />
 
       {/* AppBar */}
-   <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: '#1976d2' }}>
+   <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: 'purple' }}>
   <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       {isMobile && (
@@ -157,6 +130,19 @@ const drawerContent = (
         </>
       )}
     </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                localStorage.removeItem("jwt");
+                window.location.href = "/login";
+              }}
+              edge="end"
+              title="Logout"
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Box>
   </Toolbar>
 </AppBar>
 
