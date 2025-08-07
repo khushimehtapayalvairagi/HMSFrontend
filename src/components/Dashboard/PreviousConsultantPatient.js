@@ -17,15 +17,15 @@ const PreviousConsultations = () => {
   const [relatedAdmission, setRelatedAdmission] = useState(null);
 
   const token = localStorage.getItem('jwt');
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchAllData = async () => {
       try {
         const [consultRes, admitRes] = await Promise.all([
-          axios.get(`http://localhost:8000/api/doctor/opd-consultations/${patientId}`, {
+          axios.get(`${BASE_URL}/api/doctor/opd-consultations/${patientId}`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get(`http://localhost:8000/api/ipd/admissions/${patientId}`, {
+          axios.get(`${BASE_URL}/api/ipd/admissions/${patientId}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);

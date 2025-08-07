@@ -6,7 +6,7 @@ const RoomCategory = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [formVisible, setFormVisible] = useState(true); // 🔹 Toggle form visibility
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
@@ -30,7 +30,7 @@ const RoomCategory = () => {
       const token = localStorage.getItem("jwt");
 
       const res = await axios.post(
-        "http://localhost:8000/api/admin/room-categories",
+        `${BASE_URL}/api/admin/room-categories`,
         form,
         {
           headers: {

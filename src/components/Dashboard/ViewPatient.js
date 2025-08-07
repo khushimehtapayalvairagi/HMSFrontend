@@ -41,7 +41,7 @@ const ViewPatient = () => {
   const [openRow, setOpenRow] = useState(null);
 const [selectedPatient, setSelectedPatient] = useState(null);
 const [dialogOpen, setDialogOpen] = useState(false);
-
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -50,7 +50,7 @@ const [dialogOpen, setDialogOpen] = useState(false);
       try {
         const token = localStorage.getItem("jwt");
         const res = await axios.get(
-          "http://localhost:8000/api/receptionist/patients",
+          `${BASE_URL}/api/receptionist/patients`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const activePatients = res.data.patients?.filter(
@@ -71,7 +71,7 @@ const [dialogOpen, setDialogOpen] = useState(false);
     try {
       const token = localStorage.getItem("jwt");
       const res = await axios.get(
-        `http://localhost:8000/api/receptionist/patients/${searchId}`,
+        `${BASE_URL}/api/receptionist/patients/${searchId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const patient = res.data.patient;

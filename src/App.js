@@ -29,7 +29,7 @@ import ViewDepartment from './Admin/components/ViewDepartment';
 import ReceptionistDashboard from './components/Dashboard/ReceptionistDashboard';
 import PatientForm from './components/Dashboard/patient';
 import ViewPatient from './components/Dashboard/ViewPatient';
-import DoctorAvailabilityForm from './components/Dashboard/DoctorAvailable';
+
 import VisitForm from './components/Dashboard/VisitForm';
 import DoctorDashboard from './components/Dashboard/DoctorDashboard';
 // import OPDConsultationForm from './components/Dashboard/OPDConsulationForm';
@@ -109,7 +109,6 @@ const App = () => {
 >
   <Route path="patient-form" element={<PatientForm/>} />
    <Route path="viewPatient" element={<ViewPatient/>} />
-   <Route path="Doctor-Availablity-check" element={<DoctorAvailabilityForm/>} />
       <Route path="visit-form" element={<VisitForm/>} />
        <Route path="patient-visits-viewer" element={<PatientVisitsViewer/>} />
 <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage/>} />

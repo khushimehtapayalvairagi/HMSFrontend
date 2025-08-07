@@ -12,12 +12,12 @@ const AddWard = () => {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({}); // 🔹 new
 const [showForm, setShowForm] = useState(true); // 🔥 controls form visibility
-
+ const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchRoomCategories = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await axios.get('http://localhost:8000/api/admin/room-categories', {
+        const res = await axios.get(`${BASE_URL}/api/admin/room-categories`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setRoomCategories(res.data.roomCategories || []);
@@ -83,7 +83,7 @@ const [showForm, setShowForm] = useState(true); // 🔥 controls form visibility
     try {
       const token = localStorage.getItem("jwt");
       const res = await axios.post(
-        "http://localhost:8000/api/admin/wards",
+      `${BASE_URL}/api/admin/wards`,
         form,
         {
           headers: {

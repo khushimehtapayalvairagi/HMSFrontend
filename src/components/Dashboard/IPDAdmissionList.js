@@ -11,6 +11,7 @@ const location = useLocation();
 const [patientName, setPatientName] = useState(location.state?.patientName || '');
 
   const [admissions, setAdmissions] = useState([]);
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const [patientName, setPatientName] = useState(location.state?.patientName || ''
     async function fetchAdmissions() {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/ipd/admissions/${patientId}`,
+          `${BASE_URL}/api/ipd/admissions/${patientId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log("Fetching admissions for:", patientId);

@@ -3,6 +3,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function InventoryForm() {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const [form, setForm] = useState({
     itemName: '',
     itemCode: '',
@@ -57,7 +59,7 @@ function InventoryForm() {
     };
 
     try {
-      const res = await fetch('http://localhost:8000/api/inventory/items', {
+      const res = await fetch(`${BASE_URL}/api/inventory/items`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

@@ -6,14 +6,14 @@ import './ViewReferralPartner.css'; // ✅ Import external CSS
 const ViewReferralPartner = () => {
   const [partners, setPartners] = useState([]);
   const [error, setError] = useState('');
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchPartners = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await axios.get('http://localhost:8000/api/admin/referral-partners', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+       const res = await axios.get(`${BASE_URL}/api/admin/referral-partners`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
         setPartners(res.data.partners);
       } catch (err) {
         console.error('Error fetching referral partners:', err);

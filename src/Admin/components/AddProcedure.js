@@ -11,7 +11,7 @@ const Procedure = () => {
   const [message, setMessage] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [showForm, setShowForm] = useState(true);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setFieldErrors({ ...fieldErrors, [e.target.name]: '' }); // clear error on change
@@ -26,7 +26,7 @@ const Procedure = () => {
       const token = localStorage.getItem('jwt');
 
       const response = await axios.post(
-        'http://localhost:8000/api/admin/procedures',
+       `${BASE_URL}/api/admin/procedures`,
         {
           name: form.name,
           description: form.description,

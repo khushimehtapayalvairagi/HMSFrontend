@@ -12,6 +12,7 @@ const UpdateVisitStatusPage = () => {
   const [waitingVisits, setWaitingVisits] = useState([]);
   const [declineReasons, setDeclineReasons] = useState({});
   const socketInitialized = useRef(false);
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
 const [patientId, setPatientId] = useState('');
   const token = localStorage.getItem('jwt');
 useEffect(() => {
@@ -36,7 +37,7 @@ useEffect(() => {
   }
 
   try {
-    const res = await axios.get(`http://localhost:8000/api/receptionist/visits/${patientId}`, {
+    const res = await axios.get(`${BASE_URL}/api/receptionist/visits/${patientId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -58,7 +59,7 @@ useEffect(() => {
         payload.declineReason = declineReason;
       }
 
-      await axios.put(`http://localhost:8000/api/receptionist/visits/status/${visitId}`, payload, {
+      await axios.put(`${BASE_URL}/api/receptionist/visits/status/${visitId}`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 try {

@@ -4,12 +4,12 @@ import axios from 'axios';
 const ViewOperationTheatre = () => {
   const [theaters, setTheaters] = useState([]);
   const [error, setError] = useState('');
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchTheaters = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await axios.get('http://localhost:8000/api/admin/operation-theaters', {
+        const res = await axios.get(`${BASE_URL}/api/admin/operation-theaters`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

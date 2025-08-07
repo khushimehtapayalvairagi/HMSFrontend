@@ -10,7 +10,7 @@ const AddDepartment = () => {
   });
   const [message, setMessage] = useState('');
   const [formVisible, setFormVisible] = useState(true);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -21,7 +21,7 @@ const AddDepartment = () => {
       const token = localStorage.getItem("jwt");
 
       const res = await axios.post(
-        "http://localhost:8000/api/admin/departments",
+`${BASE_URL}/api/admin/departments`,
         form,
         {
           headers: {

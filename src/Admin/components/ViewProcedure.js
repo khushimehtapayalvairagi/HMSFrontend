@@ -6,12 +6,12 @@ const ViewProcedure = () => {
   const [procedures, setProcedures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchProcedures = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const response = await axios.get('http://localhost:8000/api/admin/procedures', {
+        const response = await axios.get(`${BASE_URL}/api/admin/procedures`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

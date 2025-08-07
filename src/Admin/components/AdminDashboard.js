@@ -297,19 +297,21 @@ const modules = [
 const styles = {
   container: {
     display: 'flex',
-    height: '50vh',
+    height: '100vh', // full viewport height
     fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
     flexDirection: 'row',
+    overflow: 'hidden'
   },
   sidebar: {
     width: '260px',
-  
     color: '#111827',
     display: 'flex',
     flexDirection: 'column',
     boxShadow: '2px 0 6px rgba(0,0,0,0.05)',
     padding: '20px 15px',
-    height:"50vh"
+    backgroundColor: '#ffffff',
+    height: '100vh',
+    overflowY: 'auto',
   },
   title: {
     textAlign: 'center',
@@ -321,7 +323,7 @@ const styles = {
   nav: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start', // 🔥 aligns all to the left
+    alignItems: 'flex-start',
     width: '100%',
   },
   hr: {
@@ -330,27 +332,26 @@ const styles = {
     margin: '10px 0',
     width: '100%',
   },
-dropdown: {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '30px',
-  backgroundColor: '#f3f4f6',  // Light gray background
-  borderRadius: '4px',
-  marginTop: '6px',
-  padding: '4px 0px 4px 16px', // Top-right-bottom-left padding
-  marginLeft: '10px',           // Align just under the module
-  borderLeft: '3px solid #0284c7',
-  width: 'calc(100% - 10px)',   // Slightly reduced width to match indent
-},
-nestedDropdown: {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-  marginTop: '4px',
-  paddingLeft: '24px',         // Not too deep
-  width: '100%',
-},
-
+  dropdown: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    backgroundColor: '#f9fafb',
+    borderRadius: '6px',
+    marginTop: '6px',
+    padding: '8px 0px 8px 12px',
+    marginLeft: '6px',
+    borderLeft: '3px solid #0284c7',
+    width: 'calc(100% - 10px)',
+  },
+  nestedDropdown: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    marginTop: '4px',
+    paddingLeft: '16px',
+    width: '100%',
+  },
   logoutButton: {
     marginTop: 'auto',
     padding: '10px 15px',
@@ -370,18 +371,14 @@ nestedDropdown: {
     padding: '30px',
     background: '#f3f4f6',
     overflowY: 'auto',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-      height:"220vh"
+    height: '100vh',
   },
 };
-
 
 const linkStyle = {
   padding: '10px 16px',
   textDecoration: 'none',
-  color: '#1f2937', // Tailwind gray-800
+  color: '#1f2937',
   fontWeight: '600',
   width: '100%',
   textAlign: 'left',
@@ -390,28 +387,31 @@ const linkStyle = {
   marginBottom: '6px',
   backgroundColor: 'transparent',
   cursor: 'pointer',
-};
-const activeLinkStyle = {
-  ...linkStyle,
-  backgroundColor: '#e0f2fe', // Light blue background
-  color: '#0284c7',           // Blue text
-  fontWeight: '700',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
 };
 
+const activeLinkStyle = {
+  ...linkStyle,
+  backgroundColor: '#e0f2fe',
+  color: '#0284c7',
+  fontWeight: '700',
+};
 
 const dropdownLinkStyle = {
   ...linkStyle,
   fontSize: '14px',
-  padding: '8px 20px',
+  padding: '8px 12px',
   marginLeft: '0px',
   marginBottom: '4px',
   fontWeight: '500',
-  transition: 'background-color 0.2s ease',
-  borderRadius: '4px',
+  backgroundColor: 'transparent',
 };
 
 const hoverStyle = {
-  backgroundColor: '#e0f2fe', // Tailwind light-blue-100
+  backgroundColor: '#e0f2fe',
 };
+
 
 export default AdminDashboard;

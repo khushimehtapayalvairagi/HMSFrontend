@@ -62,6 +62,7 @@ const LabourRoom = () => {
     babyName: '', gender: '', dobBaby: '', timeOfBirth: '',
     weight: '', deliveryType: ''
   });
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const token = localStorage.getItem('jwt');
   const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {};
@@ -71,7 +72,7 @@ const LabourRoom = () => {
     const fetchAllLabourProcedures = async () => {
 
       try {
-        const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const pts = patientRes.data.patients;
@@ -79,7 +80,7 @@ const LabourRoom = () => {
 
         let allLabour = [];
         await Promise.all(pts.map(async p => {
-          const sched = await axios.get(`http://localhost:8000/api/procedures/schedules/${p._id}`, {
+          const sched = await axios.get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const labourOnly = (sched.data.procedures || [])
@@ -100,7 +101,7 @@ const LabourRoom = () => {
     const fetchDetail = async () => {
       if (!selectedProcedure) return;
       try {
-        const res = await axios.get(`http://localhost:8000/api/procedures/labour-details/${selectedProcedure._id}`, {
+        const res = await axios.get(`${BASE_URL}/api/procedures/labour-details/${selectedProcedure._id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.detail) setForm(res.data.detail);
@@ -129,7 +130,7 @@ const LabourRoom = () => {
       capturedByUserId: user.id
     };
     try {
-      await axios.post('http://localhost:8000/api/procedures/labour-details', payload, {
+      await axios.post(`${BASE_URL}/api/procedures/labour-details`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Labour room details saved!');

@@ -18,6 +18,7 @@ const [billingSummaryData, setBillingSummaryData] = useState(null);
 const [fumigationData, setFumigationData] = useState([]);
 const [theaters, setTheaters] = useState([]);
   const [error, setError] = useState('');
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
 const [selectedOtRoom, setSelectedOtRoom] = useState('');
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
@@ -25,7 +26,7 @@ const [selectedOtRoom, setSelectedOtRoom] = useState('');
     const fetchTheaters = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await axios.get('http://localhost:8000/api/admin/operation-theaters', {
+        const res = await axios.get(`${BASE_URL}/api/admin/operation-theaters`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -43,7 +44,7 @@ const [selectedOtRoom, setSelectedOtRoom] = useState('');
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/admin/departments', { headers });
+        const res = await axios.get(`${BASE_URL}/api/admin/departments`, { headers });
         setDepartments(res.data.departments || []);
       } catch (err) {
         console.error('Failed to fetch departments', err);
@@ -67,18 +68,18 @@ const [selectedOtRoom, setSelectedOtRoom] = useState('');
     let endpoint = '';
 
     if (reportType === 'central') {
-      endpoint = 'http://localhost:8000/api/reports/ipd-register/central';
+      endpoint = `${BASE_URL}/api/reports/ipd-register/central`;
     } else if (reportType === 'department') {
-      endpoint = 'http://localhost:8000/api/reports/ipd-register/department-wise';
+      endpoint = `${BASE_URL}/api/reports/ipd-register/department-wise`;
     } else if (reportType === 'ot') {
-      endpoint = 'http://localhost:8000/api/reports/procedures/ot-register';
+      endpoint = `${BASE_URL}/api/reports/procedures/ot-register`;
     }
 if (reportType === 'anesthesia') {
-  endpoint = 'http://localhost:8000/api/reports/anesthesia-register';
+  endpoint = `${BASE_URL}/api/reports/anesthesia-register`;
   params.procedureType = 'OT'; // Optional: 'OT' or 'Labour Room' if needed
 }
 else if (reportType === 'birth') {
-  endpoint = 'http://localhost:8000/api/reports/birth-records';
+  endpoint =  `${BASE_URL}/api/reports/birth-records`;
 params = {
   startDate,
   endDate,
@@ -88,14 +89,15 @@ params = {
 
 }
 else if (reportType === 'billing') {
-  endpoint = 'http://localhost:8000/api/reports/billing-summary';
+  endpoint = `${BASE_URL}/api/reports/billing-summary`;
+
 }
 else if (reportType === 'paymentReconciliation') {
-  endpoint = 'http://localhost:8000/api/reports/payment-reconciliation';
+  endpoint = `${BASE_URL}/api/reports/payment-reconciliation`;
 }
 
 else if (reportType === 'fumigation') {
-  endpoint = 'http://localhost:8000/api/reports/ot-fumigation-report';
+  endpoint =`${BASE_URL}/api/reports/ot-fumigation-report`;
   params = {
     startDate,
     endDate,

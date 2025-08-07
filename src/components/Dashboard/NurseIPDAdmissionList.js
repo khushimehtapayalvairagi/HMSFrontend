@@ -3,18 +3,27 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaBed, FaChevronDown, FaChevronUp, FaHospital, FaClipboardList, FaUserMd, FaPlus } from 'react-icons/fa';
+import {
+  FaBed,
+  FaChevronDown,
+  FaChevronUp,
+  FaHospital,
+  FaClipboardList,
+  FaUserMd,
+  FaPlus
+} from 'react-icons/fa';
 
 const NurseIPDAdmissionList = () => {
   const [patientsWithAdmissions, setPatientsWithAdmissions] = useState([]);
   const [expandedPatientId, setExpandedPatientId] = useState(null);
   const token = localStorage.getItem('jwt');
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -23,7 +32,7 @@ const NurseIPDAdmissionList = () => {
 
         for (const patient of allPatients) {
           const ipdRes = await axios.get(
-            `http://localhost:8000/api/ipd/admissions/${patient._id}`,
+            `${BASE_URL}/api/ipd/admissions/${patient._id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
@@ -31,10 +40,25 @@ const NurseIPDAdmissionList = () => {
           const admittedAdmissions = admissions.filter(a => a.status === 'Admitted');
 
           if (admittedAdmissions.length > 0) {
-            admittedPatients.push({
-              patient,
-              admissions: admittedAdmissions,
-            });
+            // Fetch procedure schedules for this patient
+            const procedureRes = await axios.get(
+              `${BASE_URL}/api/procedures/schedules/${patient._id}`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const procedures = procedureRes.data.procedures || [];
+
+            // Check if there's at least one non-completed procedure
+            const hasNonCompletedProcedure = procedures.some(
+              (p) => p.status !== 'Completed'
+            );
+
+            if (hasNonCompletedProcedure) {
+              admittedPatients.push({
+                patient,
+                admissions: admittedAdmissions,
+              });
+            }
           }
         }
 
@@ -46,7 +70,7 @@ const NurseIPDAdmissionList = () => {
     };
 
     fetchData();
-  }, [token]);
+  }, [token, BASE_URL]);
 
   const handleToggle = (patientId) => {
     setExpandedPatientId(prev => (prev === patientId ? null : patientId));
@@ -70,7 +94,9 @@ const NurseIPDAdmissionList = () => {
       </h2>
 
       {patientsWithAdmissions.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#6c757d' }}>No admitted patients found.</p>
+        <p style={{ textAlign: 'center', color: '#6c757d' }}>
+          No admitted patients found.
+        </p>
       ) : (
         patientsWithAdmissions.map(({ patient, admissions }) => (
           <div
@@ -119,8 +145,14 @@ const NurseIPDAdmissionList = () => {
                       marginBottom: '1rem',
                     }}
                   >
-                    <p><FaHospital style={{ marginRight: '6px' }} /><strong>Ward:</strong> {adm.wardId?.name}</p>
-                    <p><FaBed style={{ marginRight: '6px' }} /><strong>Bed:</strong> {adm.bedNumber}</p>
+                    <p>
+                      <FaHospital style={{ marginRight: '6px' }} />
+                      <strong>Ward:</strong> {adm.wardId?.name}
+                    </p>
+                    <p>
+                      <FaBed style={{ marginRight: '6px' }} />
+                      <strong>Bed:</strong> {adm.bedNumber}
+                    </p>
                     <p><strong>Status:</strong> {adm.status}</p>
                     <div style={{ textAlign: 'right' }}>
                       <button

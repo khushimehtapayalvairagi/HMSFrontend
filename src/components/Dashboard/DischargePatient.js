@@ -13,17 +13,18 @@ const DischargePatient = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAdmissionId, setSelectedAdmissionId] = useState(null);
   const token = localStorage.getItem('jwt');
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const fetchAdmittedPatients = async () => {
     try {
-      const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+      const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const admittedAdmissions = [];
 
       for (const patient of patientRes.data.patients) {
-        const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+        const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -40,7 +41,7 @@ const DischargePatient = () => {
 
   const handleDischarge = async () => {
     try {
-      await axios.put(`http://localhost:8000/api/ipd/admissions/${selectedAdmissionId}/discharge`, {}, {
+      await axios.put(`${BASE_URL}/api/ipd/admissions/${selectedAdmissionId}/discharge`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('Patient discharged');

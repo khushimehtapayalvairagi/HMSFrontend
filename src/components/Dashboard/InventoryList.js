@@ -9,10 +9,11 @@ function InventoryList() {
   const [detailItem, setDetailItem] = useState(null);
   const token = localStorage.getItem('jwt');
   const navigate = useNavigate();
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const fetchItems = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/inventory/items', {
+      const res = await fetch(`${BASE_URL}/api/inventory/items`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error(await res.text());

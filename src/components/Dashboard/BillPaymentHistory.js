@@ -13,13 +13,14 @@ export default function BillPaymentHistory() {
 
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
       const token = localStorage.getItem('jwt');
   
       const fetchAdmittedPatients = async () => {
         try {
-          const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+          const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
             headers: { Authorization: `Bearer ${token}` }
           });
   
@@ -27,7 +28,7 @@ export default function BillPaymentHistory() {
           const admittedPatients = [];
   
           for (const patient of allPatients) {
-            const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+            const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
   
@@ -48,14 +49,14 @@ export default function BillPaymentHistory() {
 
   useEffect(() => {
     if (!selectedPatient) return setBills([]);
-    axios.get(`http://localhost:8000/api/billing/bills/patient/${selectedPatient}`, { headers })
+    axios.get(`${BASE_URL}/api/billing/bills/patient/${selectedPatient}`, { headers })
       .then(res => setBills(res.data.bills))
       .catch(() => setError('Could not load bills'));
   }, [selectedPatient]);
 
   useEffect(() => {
     if (!selectedBill) return setPayments([]);
-    axios.get(`http://localhost:8000/api/billing/payments/${selectedBill._id}`, { headers })
+    axios.get(`${BASE_URL}/api/billing/payments/${selectedBill._id}`, { headers })
       .then(res => setPayments(res.data.payments))
       .catch(() => setError('Could not load payments'));
   }, [selectedBill]);

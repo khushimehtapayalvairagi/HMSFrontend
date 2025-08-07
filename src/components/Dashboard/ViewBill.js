@@ -9,6 +9,7 @@ function ViewBill() {
   const [error, setError] = useState('');
   const [patients, setPatients] = useState([]);
 
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -17,7 +18,7 @@ function ViewBill() {
  
      const fetchAdmittedPatients = async () => {
        try {
-         const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+         const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
            headers: { Authorization: `Bearer ${token}` }
          });
  
@@ -25,7 +26,7 @@ function ViewBill() {
          const admittedPatients = [];
  
          for (const patient of allPatients) {
-           const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+           const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
              headers: { Authorization: `Bearer ${token}` }
            });
  
@@ -55,10 +56,10 @@ function ViewBill() {
     try {
       let res;
       if (billId) {
-        res = await axios.get(`http://localhost:8000/api/billing/bills/${billId}`, { headers });
+        res = await axios.get(`${BASE_URL}/api/billing/bills/${billId}`, { headers });
         setResult({ type: 'single', data: res.data.bill });
       } else if (patientId) {
-        res = await axios.get(`http://localhost:8000/api/billing/bills/patient/${patientId}`, { headers });
+        res = await axios.get(`${BASE_URL}/api/billing/bills/patient/${patientId}`, { headers });
         setResult({ type: 'list', data: res.data.bills });
       } else {
         setError('Enter either a Bill ID or Patient ID');

@@ -13,6 +13,7 @@ const ProcedureForm = () => {
   const [procedures, setProcedures] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [labourRooms, setLabourRooms] = useState([]);
   const [formData, setFormData] = useState({
      patientId: initialPatientId || '',
@@ -37,11 +38,11 @@ const fetchInitialData = async () => {
       roomRes,
       lrRes
     ] = await Promise.all([
-      axios.get('http://localhost:8000/api/receptionist/patients', { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get('http://localhost:8000/api/receptionist/procedures', { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get('http://localhost:8000/api/receptionist/doctors', { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get('http://localhost:8000/api/receptionist/operation-theaters', { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get('http://localhost:8000/api/receptionist/labour-rooms', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/patients`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/procedures`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/operation-theaters`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/labour-rooms`, { headers: { Authorization: `Bearer ${token}` } }),
     ]);
 
     const allPatients = patientRes.data.patients;
@@ -49,7 +50,7 @@ const fetchInitialData = async () => {
     // Fetch admissions for each patient and filter only admitted ones
     const admittedPatients = [];
     for (const patient of allPatients) {
-      const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+      const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -78,7 +79,7 @@ useEffect(() => {
     if (!formData.patientId) return;
     const token = localStorage.getItem('jwt');
     axios
-      .get(`http://localhost:8000/api/ipd/admissions/${formData.patientId}`, { headers: { Authorization: `Bearer ${token}` } })
+      .get(`${BASE_URL}/api/ipd/admissions/${formData.patientId}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => setIpdAdmissions(res.data.admissions))
       .catch(() => toast.error('Failed to load admissions'));
   }, [formData.patientId]);
@@ -105,7 +106,7 @@ const handleSubmit = async e => {
     };
 
     const res = await axios.post(
-      'http://localhost:8000/api/procedures/schedules',
+      `${BASE_URL}/api/procedures/schedules`,
       normalizedFormData,
       { headers: { Authorization: `Bearer ${token}` } }
     );

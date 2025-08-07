@@ -6,16 +6,17 @@ const ViewSpecialty = () => {
   const [specialties, setSpecialties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchSpecialties = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const res = await axios.get("http://localhost:8000/api/admin/specialties", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const res = await axios.get(`${BASE_URL}/api/admin/specialties`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
         setSpecialties(res.data.specialties);
       } catch (err) {
         console.error("Failed to fetch specialties:", err);

@@ -13,23 +13,7 @@ export const CREATE_SPECIALITY_REQUEST = 'CREATE_SPECIALITY_REQUEST';
 export const CREATE_SPECIALITY_SUCCESS = 'CREATE_SPECIALITY_SUCCESS';
 export const CREATE_SPECIALITY_FAILURE = 'CREATE_SPECIALITY_FAILURE';
 
-export const createSpeciality = ({ name, description }) => async dispatch => {
-  dispatch({ type: CREATE_SPECIALITY_REQUEST });
-  try {
-    const res = await axios.post(`${API_BASE_URL}/admin/specialties`, {
-      name, description
-    }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
-      withCredentials: true
-    });
-    dispatch({ type: CREATE_SPECIALITY_SUCCESS });
-    return { success: true, message: res.data.message };
-  } catch (err) {
-    const msg = err.response?.data?.message || err.message;
-    dispatch({ type: CREATE_SPECIALITY_FAILURE, payload: msg });
-    return { success: false, message: msg };
-  }
-};
+
 
 export const fetchDoctors = () => async (dispatch) => {
   dispatch({ type: FETCH_USERS_REQUEST });

@@ -16,6 +16,7 @@ const DailyReports = () => {
   const [nurseNotes, setNurseNotes] = useState('');
   const [treatments, setTreatments] = useState('');
   const [medicine, setMedicine] = useState('');
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,10 +27,11 @@ const DailyReports = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `http://localhost:8000/api/ipd/reports`,
+        `${BASE_URL}/api/ipd/reports`,
         {
           ipdAdmissionId,
-          recordedByUserId: user.id,
+         recordedByUserId: user.userId || user.id,
+
           vitals,
           nurseNotes,
           treatmentsAdministeredText: treatments,

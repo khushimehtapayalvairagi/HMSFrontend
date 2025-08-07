@@ -25,6 +25,9 @@ const AddUser = () => {
   const [specialties, setSpecialties] = useState([]);
   const [departments, setDepartments] = useState([]);
 const [errors, setErrors] = useState({});
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+console.log('BASE_URL:', BASE_URL);
+
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -35,10 +38,10 @@ const [errors, setErrors] = useState({});
       };
 
       try {
-        const [spec, dept] = await Promise.all([
-          axios.get('http://localhost:8000/api/admin/specialties', config),
-          axios.get('http://localhost:8000/api/admin/departments', config)
-        ]);
+      const [spec, dept] = await Promise.all([
+  axios.get(`${BASE_URL}/api/admin/specialties`, config),
+  axios.get(`${BASE_URL}/api/admin/departments`, config)
+]);
 
         const specialtiesArray = Array.isArray(spec.data)
           ? spec.data
@@ -127,10 +130,10 @@ const handleChange = (e) => {
     }
   }
     try {
-      const res = await axios.post('http://localhost:8000/api/admin/users', payload, {
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        withCredentials: true
-      });
+    const res = await axios.post(`${BASE_URL}/api/admin/users`, payload, {
+  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  withCredentials: true
+});
     toast.success(res.data.message || 'User registered successfully!');
 
 

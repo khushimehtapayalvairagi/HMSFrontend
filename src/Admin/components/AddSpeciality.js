@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createSpeciality } from '../../State/Auth/Actions';
+import axios from 'axios';
 import './AddUser.css'; // reuse styles
 
 const AddSpeciality = () => {
-  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -20,15 +20,24 @@ const AddSpeciality = () => {
       return;
     }
 
-    const result = await dispatch(createSpeciality({ name, description }));
-
-    if (result.success) {
-      setMessage(result.message);
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/admin/specialties`,
+        { name, description },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setMessage(res.data.message);
       setName('');
       setDescription('');
       setErrors({});
-    } else {
-      setErrors({ name: result.message.includes('exists') ? result.message : null });
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      setErrors({ name: msg.includes('exists') ? msg : null });
       setMessage(null);
     }
   };

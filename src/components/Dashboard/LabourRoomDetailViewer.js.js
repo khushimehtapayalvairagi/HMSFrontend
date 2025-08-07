@@ -16,13 +16,14 @@ const LabourRoomDetailViewer = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const token = localStorage.getItem('jwt');
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const patients = patientRes.data.patients;
@@ -36,14 +37,14 @@ const LabourRoomDetailViewer = () => {
         await Promise.all(
           patients.map(async (p) => {
             try {
-              const scheduleRes = await axios.get(`http://localhost:8000/api/procedures/schedules/${p._id}`, {
+              const scheduleRes = await axios.get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
                 headers: { Authorization: `Bearer ${token}` }
               });
               const labourProcedures = scheduleRes.data.procedures?.filter(proc => proc.procedureType === 'Labour Room');
               await Promise.all(
                 labourProcedures.map(async (lp) => {
                   try {
-                    const detailRes = await axios.get(`http://localhost:8000/api/procedures/labour-details/${lp._id}`, {
+                    const detailRes = await axios.get(`${BASE_URL}/api/procedures/labour-details/${lp._id}`, {
                       headers: { Authorization: `Bearer ${token}` }
                     });
                     if (detailRes.data.detail) {

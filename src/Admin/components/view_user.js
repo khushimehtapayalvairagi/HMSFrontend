@@ -10,7 +10,7 @@ const ViewUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     if (type) {
       const role = type.toUpperCase();
@@ -20,35 +20,36 @@ const ViewUsers = () => {
   }, [type]);
 
   const loadUsers = async (role) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("jwt");
-      let response;
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("jwt");
+    let response;
 
-      if (role === 'DOCTOR') {
-        response = await axios.get('http://localhost:8000/api/admin/doctors', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-        setFilteredUsers(response.data.doctors || []);
-      } else {
-        response = await axios.get('http://localhost:8000/api/admin/staff', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
-        setFilteredUsers(response.data.staff || []);
-      }
-    } catch (error) {
-      console.error('Error loading users:', error);
-      setFilteredUsers([]);
-    } finally {
-      setLoading(false);
+    if (role === 'DOCTOR') {
+      response = await axios.get(`${BASE_URL}/api/admin/doctors`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+      setFilteredUsers(response.data.doctors || []);
+    } else {
+      response = await axios.get(`${BASE_URL}/api/admin/staff`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+      setFilteredUsers(response.data.staff || []);
     }
-  };
+  } catch (error) {
+    console.error('Error loading users:', error);
+    setFilteredUsers([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleSearch = () => {
     const filtered = filteredUsers.filter((user) => {

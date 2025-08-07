@@ -26,7 +26,7 @@ const ViewDailyReports = () => {
 
   const [anchorEl, setAnchorEl] = useState(null); // NEW
   const [menuPatient, setMenuPatient] = useState(null); // NEW
-
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleOpenDialog = (patient) => {
     setSelectedPatient(patient);
     setDialogOpen(true);
@@ -40,7 +40,7 @@ const ViewDailyReports = () => {
   useEffect(() => {
     const fetchSingleAdmissionReports = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/ipd/reports/${ipdAdmissionId}`, {
+        const res = await axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSingleAdmissionReports(res.data.reports || []);
@@ -51,7 +51,7 @@ const ViewDailyReports = () => {
 
     const fetchAllReports = async () => {
       try {
-        const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -59,7 +59,7 @@ const ViewDailyReports = () => {
         const admittedPatientsWithReports = [];
 
         for (const patient of allPatients) {
-          const ipdRes = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+          const ipdRes = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -68,7 +68,7 @@ const ViewDailyReports = () => {
           const enrichedAdmissions = [];
 
           for (const admission of admittedAdmissions) {
-            const reportRes = await axios.get(`http://localhost:8000/api/ipd/reports/${admission._id}`, {
+            const reportRes = await axios.get(`${BASE_URL}/api/ipd/reports/${admission._id}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -116,7 +116,11 @@ const ViewDailyReports = () => {
                 Report #{singleAdmissionReports.length - index}
               </h4>
               <p><strong>Date:</strong> {new Date(report.reportDateTime).toLocaleString()}</p>
-              <p><strong>Recorded By:</strong> {report.recordedByUserId?.name} ({report.recordedByUserId?.role})</p>
+             <p><strong>Recorded By:</strong> 
+  {report.recordedByUserId?.userId?.name} 
+  ({report.recordedByUserId?.userId?.role})
+</p>
+
               <ul style={{ paddingLeft: '1.2rem' }}>
                 <li><strong>Temperature:</strong> {report.vitals?.temperature}</li>
                 <li><strong>Pulse:</strong> {report.vitals?.pulse}</li>

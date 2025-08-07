@@ -19,7 +19,7 @@ const VisitForm = () => {
   const [loadingDoctors, setLoadingDoctors] = useState(false);
 
   const printRef = useRef();
-
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [doctors, setDoctors] = useState([]);
   const [referralPartners, setReferralPartners] = useState([]);
  const navigate = useNavigate()
@@ -35,13 +35,13 @@ const VisitForm = () => {
 
       try {
       const [docRes, refRes, specRes] = await Promise.all([
-  axios.get('http://localhost:8000/api/receptionist/doctors', {
+  axios.get(`${BASE_URL}/api/receptionist/doctors`, {
     headers: { Authorization: `Bearer ${token}` },
   }),
-  axios.get('http://localhost:8000/api/receptionist/referral-partners', {
+  axios.get(`${BASE_URL}/api/receptionist/referral-partners`, {
     headers: { Authorization: `Bearer ${token}` },
   }),
-  axios.get('http://localhost:8000/api/receptionist/specialties', {
+  axios.get(`${BASE_URL}/api/receptionist/specialties`, {
     headers: { Authorization: `Bearer ${token}` },
   }),
 ]);  console.log({
@@ -94,7 +94,7 @@ setSpecialties(specRes.data.specialties || []);
         payload.referredBy = referredBy;
       }
 
-      const res = await axios.post("http://localhost:8000/api/receptionist/visits", payload, {
+      const res = await axios.post(`${BASE_URL}/api/receptionist/visits`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       // console.log(res);

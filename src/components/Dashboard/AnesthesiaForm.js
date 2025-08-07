@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 const AnesthesiaForm = () => {
   const { procedureScheduleId } = useParams();  // from /anesthesia/:procedureId
   const [doctors, setDoctors] = useState([]);
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [form, setForm] = useState({
     procedureScheduleId: procedureScheduleId || '',
     anestheticId: '',
@@ -25,7 +25,7 @@ const AnesthesiaForm = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
-    axios.get('http://localhost:8000/api/receptionist/doctors', {
+    axios.get(`${BASE_URL}/api/receptionist/doctors`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       setDoctors(res.data.doctors || []);
@@ -52,7 +52,7 @@ const AnesthesiaForm = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:8000/api/procedures/anesthesia-records',
+        `${BASE_URL}/api/procedures/anesthesia-records`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

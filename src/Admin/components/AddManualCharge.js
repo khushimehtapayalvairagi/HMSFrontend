@@ -12,7 +12,7 @@ const AddManualCharge = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(true); // Toggle state
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
@@ -25,7 +25,7 @@ const AddManualCharge = () => {
 
     try {
       const token = localStorage.getItem('jwt');
-      const res = await axios.post('http://localhost:8000/api/admin/manual-charge-items', form, {
+      const res = await axios.post(`${BASE_URL}/api/admin/manual-charge-items`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

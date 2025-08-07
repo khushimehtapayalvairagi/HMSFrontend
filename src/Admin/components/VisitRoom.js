@@ -4,16 +4,17 @@ import axios from "axios";
 const VisitRoom = () => {
   const [labourRooms, setLabourRooms] = useState([]);
   const [error, setError] = useState("");
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const res = await axios.get("http://localhost:8000/api/admin/labour-rooms", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const res = await axios.get(`${BASE_URL}/api/admin/labour-rooms`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
         setLabourRooms(res.data.labourRooms || []);
       } catch (err) {
         console.error("Failed to fetch labour rooms:", err);

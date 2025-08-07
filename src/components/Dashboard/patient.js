@@ -15,7 +15,7 @@ const PatientForm = () => {
     relatives: [{ name: '', contactNumber: '', relationship: '' }]
   });
   const [submittedData, setSubmittedData] = useState(null);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   // Style objects
   const cardStyle = {
     backgroundColor: 'green',
@@ -72,7 +72,7 @@ const PatientForm = () => {
     const token = localStorage.getItem('jwt');
     if (!token) return toast.error('Please log in first');
     try {
-      const res = await axios.post('http://localhost:8000/api/receptionist/patients', form, {
+      const res = await axios.post(`${BASE_URL}/api/receptionist/patients`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.status === 201) {

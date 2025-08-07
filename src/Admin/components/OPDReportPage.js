@@ -15,14 +15,14 @@ const OPDReportPage = () => {
   const [doctorWiseData, setDoctorWiseData] = useState([]);
   const [reportType, setReportType] = useState('central'); // NEW
 const [hasFetched, setHasFetched] = useState(false);
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/admin/departments', { headers });
+        const res = await axios.get(`${BASE_URL}/api/admin/departments`, { headers });
         setDepartments(res.data.departments || []);
       } catch (err) {
         console.error('Failed to fetch departments', err);
@@ -43,25 +43,26 @@ const handleFetchReports = async () => {
   try {
     setHasFetched(false); // Reset flag while fetching
 
-    if (reportType === 'central') {
-      const res = await axios.get('http://localhost:8000/api/reports/opd-register', { params, headers });
-      setCentralData(res.data.consultations || []);
-    }
+if (reportType === 'central') {
+  const res = await axios.get(`${BASE_URL}/api/reports/opd-register`, { params, headers });
+  setCentralData(res.data.consultations || []);
+}
 
-    if (reportType === 'department') {
-      const res = await axios.get('http://localhost:8000/api/reports/opd-register/department-wise', { params, headers });
-      setDepartmentWiseData(res.data.departmentWiseRegister || {});
-    }
+if (reportType === 'department') {
+  const res = await axios.get(`${BASE_URL}/api/reports/opd-register/department-wise`, { params, headers });
+  setDepartmentWiseData(res.data.departmentWiseRegister || {});
+}
 
-    if (reportType === 'doctor') {
-      const res = await axios.get('http://localhost:8000/api/reports/opd-register/doctor-wise', { params, headers });
-      setDoctorWiseData(res.data || []);
-    }
+if (reportType === 'doctor') {
+  const res = await axios.get(`${BASE_URL}/api/reports/opd-register/doctor-wise`, { params, headers });
+  setDoctorWiseData(res.data || []);
+}
 
-    if (reportType === 'newold') {
-      const res = await axios.get('http://localhost:8000/api/reports/opd-register/new-vs-old', { params, headers });
-      setNewVsOldData(res.data || null);
-    }
+if (reportType === 'newold') {
+  const res = await axios.get(`${BASE_URL}/api/reports/opd-register/new-vs-old`, { params, headers });
+  setNewVsOldData(res.data || null);
+}
+
 
     setHasFetched(true); // Set flag after successful fetch
 

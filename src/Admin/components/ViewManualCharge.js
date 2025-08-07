@@ -6,11 +6,11 @@ const ViewManualCharge = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const fetchItems = async () => {
     try {
       const token = localStorage.getItem('jwt');
-      const res = await axios.get('http://localhost:8000/api/admin/manual-charge-items', {
+      const res = await axios.get(`${BASE_URL}/api/admin/manual-charge-items`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

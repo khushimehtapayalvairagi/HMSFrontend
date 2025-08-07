@@ -5,9 +5,10 @@ import { useParams } from 'react-router-dom';
 function EditInventoryForm({ onUpdated }) {
   const [form, setForm] = useState(null);
   const { id } = useParams();
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/inventory/items/${id}`, {
+    fetch(`${BASE_URL}/api/inventory/items/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
     })
       .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
@@ -30,7 +31,7 @@ function EditInventoryForm({ onUpdated }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:8000/api/inventory/items/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/inventory/items/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

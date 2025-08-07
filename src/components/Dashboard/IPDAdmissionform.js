@@ -15,6 +15,7 @@ const IPDAdmissionForm = () => {
   const token = localStorage.getItem('jwt');
 const { adviceData } = useAdmissionAdvice();
 
+
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
@@ -41,6 +42,7 @@ const [doctorName, setDoctorName] = useState(location.state?.patient?.doctorName
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
  useEffect(() => {
@@ -104,7 +106,7 @@ useEffect(() => {
 
   const fetchWards = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/receptionist/wards', {
+      const res = await axios.get(`${BASE_URL}/api/receptionist/wards`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWards(res.data.wards || []);
@@ -115,7 +117,7 @@ useEffect(() => {
 
   const fetchRoomCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/receptionist/room-categories', {
+      const res = await axios.get(`${BASE_URL}/api/receptionist/room-categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRoomCategories(res.data.roomCategories || []);
@@ -148,7 +150,7 @@ useEffect(() => {
     };
 
     try {
-      await axios.post('http://localhost:8000/api/ipd/admissions', payload, {
+      await axios.post(`${BASE_URL}/api/ipd/admissions`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('IPD Admission successful!');

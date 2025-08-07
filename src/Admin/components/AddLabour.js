@@ -5,7 +5,7 @@ const AddLabour = () => {
   const [form, setForm] = useState({ name: '', description: '' });
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(true); // 🔄 toggle state
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -16,7 +16,7 @@ const AddLabour = () => {
       const token = localStorage.getItem("jwt");
 
       const res = await axios.post(
-        "http://localhost:8000/api/admin/labour-rooms",
+        `${BASE_URL}/api/admin/labour-rooms`,
         form,
         {
           headers: {

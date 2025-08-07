@@ -8,6 +8,7 @@ const CreateBillForm = () => {
   const location = useLocation();
   const { patientId: passedPatientId, ipdAdmissionId: passedAdmissionId } = location.state || {};
 const [anesthesiaRecords, setAnesthesiaRecords] = useState([]);
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const [dailyReports, setDailyReports] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -27,7 +28,7 @@ const [dailyReports, setDailyReports] = useState([]);
 
     try {
       // Step 1: Get all procedures for this patient
-      const procRes = await axios.get(`http://localhost:8000/api/procedures/schedules/${patientId}`, {
+      const procRes = await axios.get(`${BASE_URL}/api/procedures/schedules/${patientId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -39,7 +40,7 @@ const [dailyReports, setDailyReports] = useState([]);
           .filter(p => p.status === 'Scheduled' || p.status === 'Completed') // Optional filter
           .map(p =>
             axios
-              .get(`http://localhost:8000/api/procedures/anesthesia-records/${p._id}`, {
+              .get(`${BASE_URL}/api/procedures/anesthesia-records/${p._id}`, {
                 headers: { Authorization: `Bearer ${token}` },
               })
               .then(res => ({
@@ -64,7 +65,7 @@ useEffect(() => {
   const token = localStorage.getItem('jwt');
 console.log("Calling reports API for", ipdAdmissionId);
 
-  axios.get(`http://localhost:8000/api/ipd/reports/${ipdAdmissionId}`, {
+  axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
   .then(res => setDailyReports(res.data.reports || []))
@@ -75,7 +76,7 @@ console.log("Calling reports API for", ipdAdmissionId);
     const user = JSON.parse(localStorage.getItem('user'));
     setUserId(user?.id);
 
-    axios.get('http://localhost:8000/api/billing/manual-charge-items', {
+    axios.get(`${BASE_URL}/api/billing/manual-charge-items`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => setManualItems(res.data.items))
       .catch(() => toast.error('Failed to load manual charge items'));
@@ -85,7 +86,7 @@ console.log("Calling reports API for", ipdAdmissionId);
     const token = localStorage.getItem('jwt');
     if (!patientId) return;
 
-    axios.get(`http://localhost:8000/api/procedures/schedules/${patientId}`, {
+    axios.get(`${BASE_URL}/api/procedures/schedules/${patientId}`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       const filtered = (res.data.procedures || []).filter(p => p.status === 'Completed' && !p.isBilled);
@@ -98,7 +99,7 @@ console.log("Calling reports API for", ipdAdmissionId);
 
     const fetchAdmittedPatients = async () => {
       try {
-        const patientRes = await axios.get('http://localhost:8000/api/receptionist/patients', {
+        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -106,7 +107,7 @@ console.log("Calling reports API for", ipdAdmissionId);
         const admittedPatients = [];
 
         for (const patient of allPatients) {
-          const res = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, {
+          const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -128,7 +129,7 @@ console.log("Calling reports API for", ipdAdmissionId);
   useEffect(() => {
     if (!patientId) return;
     const token = localStorage.getItem('jwt');
-    axios.get(`http://localhost:8000/api/ipd/admissions/${patientId}`, {
+    axios.get(`${BASE_URL}/api/ipd/admissions/${patientId}`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       const admitted = res.data.admissions.filter(a => a.status === 'Admitted');
@@ -194,7 +195,7 @@ console.log("Calling reports API for", ipdAdmissionId);
 
    try {
   const token = localStorage.getItem('jwt');
-  await axios.post('http://localhost:8000/api/billing/bills', payload, {
+  await axios.post(`${BASE_URL}/api/billing/bills`, payload, {
     headers: { Authorization: `Bearer ${token}` }
   });
   toast.success('Bill created successfully!');

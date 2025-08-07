@@ -11,7 +11,7 @@ const OPDConsultationForm = () => {
   const { visitId } = useParams();  // 👈 get visitId from route
    const [visit, setVisit] = useState(location.state?.visit || null);
   const [loading, setLoading] = useState(true);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   // Form states...
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
@@ -40,7 +40,7 @@ const handleSubmit = async (e) => {
   const payload = {
     visitId: visit._id,
     patientId: visit.patientDbId._id,
- doctorId: visit.assignedDoctorUserId,
+ doctorId: visit.assignedDoctorId,
 
 
     chiefComplaint,
@@ -56,7 +56,7 @@ const handleSubmit = async (e) => {
   try {
     console.log("Payload being sent:", payload);
 
-    await axios.post('http://localhost:8000/api/doctor/opd-consultations', payload, {
+    await axios.post(`${BASE_URL}/api/doctor/opd-consultations`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

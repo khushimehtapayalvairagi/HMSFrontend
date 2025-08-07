@@ -26,11 +26,11 @@ const NurseScheduledProcedures = () => {
   const [procedures, setProcedures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Scheduled');
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const fetchAllProcedures = async () => {
     const token = localStorage.getItem('jwt');
     try {
-      const res = await axios.get('http://localhost:8000/api/receptionist/patients', {
+      const res = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -38,7 +38,7 @@ const NurseScheduledProcedures = () => {
 
       const allProcedurePromises = patients.map(patient =>
         axios
-          .get(`http://localhost:8000/api/procedures/schedules/${patient._id}`, {
+          .get(`${BASE_URL}/api/procedures/schedules/${patient._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then(res => res.data.procedures.map(proc => ({ ...proc, patient })))
@@ -59,7 +59,7 @@ const NurseScheduledProcedures = () => {
     const token = localStorage.getItem('jwt');
     try {
       await axios.put(
-        `http://localhost:8000/api/procedures/schedules/${id}/status`,
+        `${BASE_URL}/api/procedures/schedules/${id}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

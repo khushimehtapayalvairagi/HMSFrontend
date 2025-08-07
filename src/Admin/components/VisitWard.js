@@ -5,12 +5,12 @@ import './VisitWard.css'; // Import external CSS
 const VisitWard = () => {
   const [wards, setWards] = useState([]);
   const [loading, setLoading] = useState(true);
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchWards = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await axios.get('http://localhost:8000/api/admin/wards', {
+        const res = await axios.get(`${BASE_URL}/api/admin/wards`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

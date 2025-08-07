@@ -26,6 +26,8 @@ const DoctorDashboardHome = () => {
   const [doctor, setDoctor] = useState(null);
   const navigate = useNavigate();
   const toastDisplayedRef = useRef(false);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const doctorRef = useRef(null);
   const tokenRef = useRef(null);
 const socketInitialized = useRef(false);
@@ -53,7 +55,7 @@ const fetchVisits = async () => {
 
   try {
     const res = await axios.get(
-      `http://localhost:8000/api/doctor/visits/doctor/${doctorId}`,
+      `${BASE_URL}/api/doctor/visits/doctor/${doctorId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`

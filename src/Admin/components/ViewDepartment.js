@@ -5,13 +5,13 @@ import "./ViewDepartment.css"; // 👈 import external CSS
 const ViewDepartment = () => {
   const [departments, setDepartments] = useState([]);
   const [error, setError] = useState('');
-
+   const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
         const token = localStorage.getItem("jwt");
 
-        const res = await axios.get("http://localhost:8000/api/admin/departments", {
+        const res = await axios.get(`${BASE_URL}/api/admin/departments`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`

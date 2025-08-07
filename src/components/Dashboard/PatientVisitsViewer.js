@@ -25,7 +25,7 @@ const PatientVisitsViewer = () => {
   const [patientId, setPatientId] = useState('');
   const [visits, setVisits] = useState([]);
   const [loading, setLoading] = useState(false);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     if (patientId.trim() === '') {
       setVisits([]);
@@ -46,7 +46,7 @@ const PatientVisitsViewer = () => {
 
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8000/api/receptionist/visits/${patientId}`, {
+      const res = await axios.get(`${BASE_URL}/api/receptionist/visits/${patientId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

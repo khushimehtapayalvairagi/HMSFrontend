@@ -6,7 +6,7 @@ const AddOperationTheatre = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(true);
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
@@ -19,7 +19,7 @@ const AddOperationTheatre = () => {
 
     try {
       const token = localStorage.getItem('jwt');
-      const res = await axios.post('http://localhost:8000/api/admin/operation-theaters', form, {
+      const res = await axios.post( `${BASE_URL}/api/admin/operation-theaters`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

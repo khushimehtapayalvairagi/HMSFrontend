@@ -1,40 +1,61 @@
 // Login.jsx
 import React, { useState, useEffect } from 'react';
 import './Login.css';
-import { login } from '../../State/Auth/Actions';
+
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { jwt, user } = useSelector((store) => store.auth);
+  
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  useEffect(() => {
-    if (jwt && user) {
-      if (user.role === "ADMIN") navigate("/admin-dashboard");
-      else if (user.designation === "Receptionist") navigate("/receptionist-dashboard");
-      else if (user.role === "DOCTOR") navigate("/doctor-dashboard");
-      else if (user.designation === "Head Nurse") navigate("/nurse-dashboard");
-      else if (user.designation === "Inventory Manager") navigate("/inventoryManager-dashboard");
-      else toast.error("Unknown role, cannot navigate", { position: "top-center", autoClose: 4000 });
-    }
-  }, [jwt, user, navigate]);
+  // useEffect(() => {
+  //   if (jwt && user) {
+  //     if (user.role === "ADMIN") navigate("/admin-dashboard");
+  //     else if (user.designation === "Receptionist") navigate("/receptionist-dashboard");
+  //     else if (user.role === "DOCTOR") navigate("/doctor-dashboard");
+  //     else if (user.designation === "Head Nurse") navigate("/nurse-dashboard");
+  //     else if (user.designation === "Inventory Manager") navigate("/inventoryManager-dashboard");
+  //     else toast.error("Unknown role, cannot navigate", { position: "top-center", autoClose: 4000 });
+  //   }
+  // }, [jwt, user, navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(login({ email, password }));
-    } catch (err) {
-      toast.error("Invalid email or password");
-    }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+      email,
+      password,
+    });
+
+    const { token, user } = response.data;
+
+    // Save token and user in localStorage
+    localStorage.setItem("jwt", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // Navigate based on role/designation
+    if (user.role === "ADMIN") navigate("/admin-dashboard");
+    else if (user.designation === "Receptionist") navigate("/receptionist-dashboard");
+    else if (user.role === "DOCTOR") navigate("/doctor-dashboard");
+    else if (user.designation === "Head Nurse") navigate("/nurse-dashboard");
+    else if (user.designation === "Inventory Manager") navigate("/inventoryManager-dashboard");
+    else toast.error("Unknown role, cannot navigate", { position: "top-center", autoClose: 4000 });
+
+  } catch (err) {
+    console.error("Login error:", err.response?.data || err.message);
+    toast.error(err.response?.data?.message || "Invalid email or password");
+  }
+};
+
 
   return (
     <div className="hospital-login-container">

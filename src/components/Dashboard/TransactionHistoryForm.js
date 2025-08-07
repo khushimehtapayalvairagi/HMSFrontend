@@ -9,13 +9,13 @@ const TransactionHistoryForm = () => {
   const [transactions, setTransactions] = useState([]);
   const [loadingItems, setLoadingItems] = useState(true);
   const [loadingTxns, setLoadingTxns] = useState(false);
-
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     // fetch all inventory items—which you already have an endpoint for
     const loadItems = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await fetch('http://localhost:8000/api/inventory/items', {
+        const res = await fetch(`${BASE_URL}/api/inventory/items`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) throw new Error(await res.text());
@@ -46,7 +46,7 @@ const TransactionHistoryForm = () => {
     try {
       setLoadingTxns(true);
       const token = localStorage.getItem('jwt');
-      const res = await fetch(`http://localhost:8000/api/inventory/transactions/${itemId}`, {
+      const res = await fetch(`${BASE_URL}/api/inventory/transactions/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error(await res.text());

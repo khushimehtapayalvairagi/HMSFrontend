@@ -15,12 +15,12 @@ const ViewAnesthesiaRecord = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const fetchAllAnesthesiaRecords = async () => {
     const token = localStorage.getItem('jwt');
     try {
       const patientRes = await axios.get(
-        'http://localhost:8000/api/receptionist/patients',
+        `${BASE_URL}/api/receptionist/patients`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -28,7 +28,7 @@ const ViewAnesthesiaRecord = () => {
 
       const allProcedurePromises = patients.map(p =>
         axios
-          .get(`http://localhost:8000/api/procedures/schedules/${p._id}`, {
+          .get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then(res => res.data.procedures.map(proc => ({ ...proc, patient: p })))
@@ -41,7 +41,7 @@ const ViewAnesthesiaRecord = () => {
       const anesthesiaRecords = await Promise.all(
         filteredProcedures.map(p =>
           axios
-            .get(`http://localhost:8000/api/procedures/anesthesia-records/${p._id}`, {
+            .get(`${BASE_URL}/api/procedures/anesthesia-records/${p._id}`, {
               headers: { Authorization: `Bearer ${token}` },
             })
             .then(res => ({

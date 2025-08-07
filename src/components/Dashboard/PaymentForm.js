@@ -9,19 +9,19 @@ export default function PaymentForm({ onPaymentSuccess }) {
   const [form, setForm] = useState({ amount: '', method: 'Cash', externalRef: '' });
   const [payments, setPayments] = useState([]);
   const [error, setError] = useState('');
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => {
     const fetchAdmittedPatients = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/receptionist/patients', { headers });
+        const res = await axios.get(`${BASE_URL}/api/receptionist/patients`, { headers });
         const allPatients = res.data.patients;
         const admittedPatients = [];
 
         for (const patient of allPatients) {
-          const ipd = await axios.get(`http://localhost:8000/api/ipd/admissions/${patient._id}`, { headers });
+          const ipd = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, { headers });
           const admissions = ipd.data.admissions || [];
           if (admissions.some(adm => adm.status === 'Admitted')) {
             admittedPatients.push(patient);
@@ -44,7 +44,7 @@ export default function PaymentForm({ onPaymentSuccess }) {
       return;
     }
 
-    axios.get(`http://localhost:8000/api/billing/bills/patient/${selectedPatient}`, { headers })
+    axios.get(`${BASE_URL}/api/billing/bills/patient/${selectedPatient}`, { headers })
       .then(res => {
         const pending = res.data.bills.filter(b => b.payment_status === 'Pending');
         const first = pending[0] ?? null;
@@ -65,7 +65,7 @@ export default function PaymentForm({ onPaymentSuccess }) {
   }, [bill]);
 
   const fetchPayments = () => {
-    axios.get(`http://localhost:8000/api/billing/payments/${bill._id}`, { headers })
+    axios.get(`${BASE_URL}/api/billing/payments/${bill._id}`, { headers })
       .then(res => setPayments(res.data.payments))
       .catch(() => console.error('Failed to load payments'));
   };
@@ -94,7 +94,7 @@ export default function PaymentForm({ onPaymentSuccess }) {
         received_by_user_id_ref: JSON.parse(localStorage.user).id
       };
 
-      const { data } = await axios.post('http://localhost:8000/api/billing/payments', payload, { headers });
+      const { data } = await axios.post(`${BASE_URL}/api/billing/payments`, payload, { headers });
       setBill(data.updatedBill);
       onPaymentSuccess?.(data.updatedBill, data.payment);
       fetchPayments();
