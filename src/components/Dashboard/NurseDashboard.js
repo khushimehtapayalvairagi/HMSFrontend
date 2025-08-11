@@ -63,10 +63,7 @@ const NurseDashboard = () => {
           </ListItem>
 
           {/* Settings */}
-          <ListItem button sx={{ px: 3 }} onClick={() => isMobile && setMobileOpen(false)}>
-            <ListItemIcon sx={{ minWidth: 36 }}><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
-          </ListItem>
+         
 
         </List>
       </Box>
