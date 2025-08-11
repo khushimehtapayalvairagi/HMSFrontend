@@ -152,7 +152,7 @@ const drawerContent = (
     cursor: 'pointer'
   }}
 >
-  {isMenuHovered && (
+  
     <IconButton
       color="inherit"
       onClick={() => setMobileOpen(prev => !prev)}
@@ -165,7 +165,7 @@ const drawerContent = (
     >
       <MenuIcon />
     </IconButton>
-  )}
+  
 </Box>
 
   {/* Right side: Logout */}
@@ -174,7 +174,7 @@ const drawerContent = (
       color="inherit"
       onClick={() => {
         localStorage.removeItem("jwt");
-        window.location.href = "/login";
+        window.location.href = "/";
       }}
       edge="end"
       title="Logout"

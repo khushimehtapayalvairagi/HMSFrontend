@@ -104,7 +104,7 @@ const NurseDashboard = () => {
               color="inherit"
               onClick={() => {
                 localStorage.removeItem("jwt");
-                window.location.href = "/login";
+                window.location.href = "/";
               }}
               edge="end"
               title="Logout"

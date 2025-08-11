@@ -89,10 +89,7 @@ const drawerContent = (
   </ListItem>
 
   {/* Settings */}
-  <ListItem button sx={{ px: 3, cursor: 'pointer' }} onClick={() => isMobile && setMobileOpen(false)}>
-    <ListItemIcon sx={{ minWidth: 36 }}><SettingsIcon /></ListItemIcon>
-    <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
-  </ListItem>
+ 
 </List>
 
     </Box>
@@ -135,7 +132,7 @@ const drawerContent = (
               color="inherit"
               onClick={() => {
                 localStorage.removeItem("jwt");
-                window.location.href = "/login";
+                window.location.href = "/";
               }}
               edge="end"
               title="Logout"
