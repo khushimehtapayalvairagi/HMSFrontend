@@ -169,7 +169,7 @@ if (reportType === 'newold') {
                     <td style={{ padding: '10px', border: '1px solid #ddd' }}>{new Date(c.consultationDateTime).toLocaleString()}</td>
                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{c.patientId?.fullName || c.patientId?.name || 'N/A'}</td>
                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{c.doctorId?.userId?.name || 'N/A'}</td>
-                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{c.doctorId?.departments?.name || 'N/A'}</td>
+                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{c.doctorId?.department?.name || 'N/A'}</td>
                     <td style={{ padding: '10px', border: '1px solid #ddd' }}>{c.diagnosis || 'N/A'}</td>
                   </tr>
                 ))
