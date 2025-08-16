@@ -6,6 +6,7 @@ const RecordTransactionForm = ({ userId: propUserId, onSuccess }) => {
   const [items, setItems] = useState([]);
   const [itemCode, setItemCode] = useState('');
   const [itemId, setItemId] = useState(null);
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [userId, setUserId] = useState(propUserId);
   const [form, setForm] = useState({
     transactionType: '',
@@ -17,7 +18,7 @@ const RecordTransactionForm = ({ userId: propUserId, onSuccess }) => {
     const loadItems = async () => {
       try {
         const token = localStorage.getItem('jwt');
-        const res = await fetch('http://localhost:8000/api/inventory/items', {
+        const res = await fetch(`${BASE_URL}/api/inventory/items`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) throw new Error(await res.text());
@@ -60,7 +61,7 @@ const RecordTransactionForm = ({ userId: propUserId, onSuccess }) => {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/inventory/transactions', {
+      const res = await fetch(`${BASE_URL}/api/inventory/transactions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

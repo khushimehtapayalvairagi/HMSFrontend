@@ -174,7 +174,6 @@ const fetchVisits = async () => {
         })
       )}
 
-      <ToastContainer position="top-right" autoClose={3000} />
     </Container>
   );
 };

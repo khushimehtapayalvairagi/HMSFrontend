@@ -13,17 +13,27 @@ const IPDAdmissionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('jwt');
-const { adviceData } = useAdmissionAdvice();
+const { adviceData, setAdviceData } = useAdmissionAdvice();
 
 
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-const initialPatientId = adviceData?.patientId || patient?.id || patient || '';
+// const initialPatientId =
+//   adviceData?.patientDbId || // <-- Ensure this holds the ObjectId from Mongo
+//   patient?._id ||             // If coming from patient object
+//   visit?.patientId ||         // If coming from visit object
+//   '';
+
 const initialVisitId = adviceData?.visitId || visit?._id || '';
 const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
+const [patientDbId, setPatientDbId] = useState(
+  adviceData?.patientDbId || 
+  patient?.patientDbId || 
+  patient?.id || ''
+);
 
-const [patientId, setPatientId] = useState(initialPatientId);
+// const [patientId, setPatientId] = useState(initialPatientId);
 const [visitId, setVisitId] = useState(initialVisitId);
 const [admittingDoctorId, setAdmittingDoctorId] = useState(initialAdmittingDoctorId);
 
@@ -53,12 +63,22 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   socket.emit('joinReceptionistRoom');
  console.log('Joined receptionist room:');
   socket.on('newIPDAdmissionAdvice', (data) => {
-    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+    toast.info(`Doctor advised admission for Patient ID: ${data.patientName}`);
 
-    setPatientId(data.patientId || '');
+  // setPatientId(data.patientDisplayId || ''); // for UI
+setPatientDbId(data.patientDbId || '');    // actual ObjectId for API
+ 
     setVisitId(data.visitId || '');
-    setAdmittingDoctorId(data.admittingDoctorId || data.doctorId || '');
-setPatientName(data.patientName || '');
+  
+setAdmittingDoctorId(
+  data.admittingDoctorId 
+  || data.doctorId 
+  || visit?.assignedDoctorId 
+  || adviceData?.admittingDoctorId 
+  || ''
+);
+console.log("🔥 DoctorId from advice/socket:", data.admittingDoctorId, data.doctorId);
+    setPatientName(data.patientName || '');
 setDoctorName(data.doctorName || '');
 
 
@@ -72,23 +92,7 @@ setDoctorName(data.doctorName || '');
   };
 }, []);
 
-// useEffect(() => {
-//   const fetchPatientName = async () => {
-//     if (!patientId || patientName) return;
-//     try {
-//       const res = await axios.get(`http://localhost:8000/api/receptionist/patients/${patientId}`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       console.log("Patient API Response:", res.data);
-//       setPatientName(res.data.fullName || res.data.patient?.fullName || '');
-//     } catch (err) {
-//       console.error('Error fetching patient name:', err);
-//       toast.error('Failed to fetch patient name');
-//     }
-//   };
 
-//   fetchPatientName();
-// }, [patientId, patientName, token]);
 
 
 
@@ -98,9 +102,9 @@ useEffect(() => {
     setDoctorName(adviceData.doctorName);
   }
 
-  if (adviceData?.patientName) {
-    setPatientName(adviceData.patientName);
-  }
+  // if (adviceData?.patientName) {
+  //   setPatientName(adviceData.patientName);
+  // }
 }, [adviceData]);
 
 
@@ -128,9 +132,30 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting for patientId=', patientId);
+    console.log('Submitting for patientId=', patientDbId);
   console.log('Admitting Doctor ID:', admittingDoctorId);
-    if (!patientId || !visitId || !wardId || !bedNumber || !roomCategoryId || !admittingDoctorId) {
+console.log("🚀 Sending payload:", {
+  patientId: patientDbId,
+  visitId,
+  wardId,
+  bedNumber,
+  roomCategoryId,
+  admittingDoctorId,
+  expectedDischargeDate
+});
+// const missingFields = [];
+// if (!patientDbId) missingFields.push('patientId');
+// if (!visitId) missingFields.push('visitId');
+// if (!wardId) missingFields.push('wardId');
+// if (!bedNumber) missingFields.push('bedNumber');
+// if (!roomCategoryId) missingFields.push('roomCategoryId');
+// if (!admittingDoctorId) missingFields.push('admittingDoctorId');
+
+// console.log('Missing fields:', missingFields);
+
+
+
+  if (!patientDbId || !visitId || !wardId || !bedNumber || !roomCategoryId || !admittingDoctorId) {
       return toast.error('All required fields must be filled.');
     }
 
@@ -140,7 +165,8 @@ useEffect(() => {
     }
 
     const payload = {
-      patientId,
+      patientId:patientDbId, 
+
       visitId,
       wardId,
       bedNumber,
@@ -148,6 +174,7 @@ useEffect(() => {
       admittingDoctorId,
       expectedDischargeDate
     };
+console.log("Payload to send:", payload);
 
     try {
       await axios.post(`${BASE_URL}/api/ipd/admissions`, payload, {
@@ -163,6 +190,7 @@ useEffect(() => {
   const handleCancel = () => {
   // Clear all input fields
   setPatientName('');
+setPatientDbId("");
   setDoctorName("");
   setVisitId('');
   setAdmittingDoctorId('');
@@ -171,15 +199,16 @@ useEffect(() => {
   setRoomCategoryId('');
   setExpectedDischargeDate('');
   setSubmitted(false); // In case it's needed
+    setAdviceData(null);
   toast.info('Admission form reset.');
 };
 
   
 const handleView = () => {
-  if (!patientId) {
+  if (!patientDbId) {
     return toast.error('No patient selected.');
   }
-  navigate(`/receptionist-dashboard/IPDAdmissionList/${patientId}`, {
+  navigate(`/receptionist-dashboard/IPDAdmissionList/${patientDbId}`, {
     state: {
       patientName, // 👈 pass patient name here
     },
@@ -190,8 +219,7 @@ const handleView = () => {
 
   return (
      <div style={{ maxWidth: 600, margin: '2rem auto' }}>
-      <ToastContainer position="top-right" autoClose={3000} />
-
+             <ToastContainer/>
       {!submitted ? (
         <>
    

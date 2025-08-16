@@ -106,7 +106,7 @@ setSpecialties(specRes.data.specialties || []);
  const doctorName = visitData?.doctorName || '';
 const patientName = visitData?.patientName || '';
 
-  const patientDbId = visitData?.patientId?._id || '';
+ const patientDbId = visitData?.patientDbId || '';
 
 
   const commonState = {

@@ -12,7 +12,7 @@ useEffect(() => {
   socket.emit('joinReceptionistRoom');
 
   socket.on('newIPDAdmissionAdvice', (data) => {
-    toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
+    toast.info(`Doctor advised admission for Patient ID: ${data.patientName}`);
     setAdviceData(data); // 🌟 store the socket data globally
   });
 

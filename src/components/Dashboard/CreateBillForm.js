@@ -91,6 +91,7 @@ console.log("Calling reports API for", ipdAdmissionId);
     }).then(res => {
       const filtered = (res.data.procedures || []).filter(p => p.status === 'Completed' && !p.isBilled);
       setSchedules(filtered);
+      
     }).catch(() => toast.error('Failed to load procedures'));
   }, [patientId]);
 
@@ -253,7 +254,8 @@ if (errorMessage === 'This procedure has already been billed.') {
               const adm = admissions.find(a => a._id === ipdAdmissionId);
               return adm && (
                 <>
-                  <p><strong>Doctor:</strong> {adm.admittingDoctorId?.name || 'N/A'}</p>
+                  <p><strong>Doctor:</strong> {adm.admittingDoctorId?.userId?.name || 'N/A'
+}</p>
                   <p><strong>Room Category:</strong> {adm.roomCategoryId?.name || 'N/A'}</p>
                 </>
               );
