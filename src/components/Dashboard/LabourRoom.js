@@ -127,7 +127,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
       ...form,
       procedureScheduleId: selectedProcedure._id,
       patientId: selectedProcedure.patientId,
-      capturedByUserId: user.id
+      capturedByUserId: user._id
     };
     try {
       await axios.post(`${BASE_URL}/api/procedures/labour-details`, payload, {

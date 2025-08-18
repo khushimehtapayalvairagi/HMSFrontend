@@ -10,8 +10,8 @@ const TransactionHistoryForm = () => {
   const [loadingItems, setLoadingItems] = useState(true);
   const [loadingTxns, setLoadingTxns] = useState(false);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
-    // fetch all inventory items—which you already have an endpoint for
     const loadItems = async () => {
       try {
         const token = localStorage.getItem('jwt');
@@ -31,10 +31,9 @@ const TransactionHistoryForm = () => {
   }, []);
 
   useEffect(() => {
-    // whenever selectedCode changes, find matching itemId
     const match = items.find(it => it.itemCode === selectedCode);
     setItemId(match?._id || null);
-    setTransactions([]); // reset old
+    setTransactions([]);
   }, [selectedCode, items]);
 
   const handleSubmit = async e => {
@@ -61,7 +60,93 @@ const TransactionHistoryForm = () => {
   };
 
   return (
-    <div>
+    <div className="txn-container">
+      {/* Internal CSS */}
+      <style>{`
+        .txn-container {
+          max-width: 1000px;
+          margin: 1rem auto;
+          padding: 1rem;
+        }
+        form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+        label {
+          flex: 1;
+          min-width: 200px;
+        }
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          margin-top: 0.25rem;
+          font-size: 1rem;
+        }
+        button {
+          padding: 0.6rem 1rem;
+          background: #1976d2;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+        button:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+          white-space: nowrap;
+        }
+        th {
+          background-color: #f5f5f5;
+          font-weight: bold;
+        }
+        .table-wrapper {
+          overflow-x: auto;
+        }
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+          form {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          table, thead, tbody, th, td, tr {
+            display: block;
+          }
+          thead {
+            display: none;
+          }
+          tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            background: #fafafa;
+          }
+          td {
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 8px;
+          }
+          td::before {
+            content: attr(data-label);
+            font-weight: bold;
+          }
+        }
+      `}</style>
+
       <h3>Fetch Transaction History by Item Code</h3>
       <form onSubmit={handleSubmit}>
         <label>
@@ -80,31 +165,41 @@ const TransactionHistoryForm = () => {
             ))}
           </select>
         </label>
-        <button type="submit" disabled={!selectedCode || loadingItems}>Get Transactions</button>
+        <button type="submit" disabled={!selectedCode || loadingItems}>
+          Get Transactions
+        </button>
       </form>
 
       {loadingItems && <p>Loading items…</p>}
       {loadingTxns && <p>Loading transactions…</p>}
 
       {transactions.length > 0 && (
-        <table border="1" cellPadding="8" style={{ marginTop: '1rem' }}>
-          <thead>
-            <tr>
-              <th>Date</th><th>Type</th><th>Quantity</th><th>Remarks</th><th>User</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map(txn => (
-              <tr key={txn._id}>
-                <td>{new Date(txn.createdAt).toLocaleString()}</td>
-                <td>{txn.transactionType}</td>
-                <td>{txn.quantity}</td>
-                <td>{txn.remarks || '-'}</td>
-                <td>{txn.userId?.name || 'Unknown'} ({txn.userId?.role || 'N/A'})</td>
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Remarks</th>
+                <th>User</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {transactions.map(txn => (
+                <tr key={txn._id}>
+                  <td data-label="Date">{new Date(txn.createdAt).toLocaleString()}</td>
+                  <td data-label="Type">{txn.transactionType}</td>
+                  <td data-label="Quantity">{txn.quantity}</td>
+                  <td data-label="Remarks">{txn.remarks || '-'}</td>
+                  <td data-label="User">
+                    {txn.userId?.name || 'Unknown'} ({txn.userId?.role || 'N/A'})
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <ToastContainer position="top-right" autoClose={3000} />
