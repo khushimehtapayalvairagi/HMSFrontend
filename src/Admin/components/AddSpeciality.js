@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './AddUser.css'; // reuse styles
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddSpeciality = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState(null);
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -22,7 +22,7 @@ const AddSpeciality = () => {
 
     try {
       const res = await axios.post(
-        `${BASE_URL}/admin/specialties`,
+        `${BASE_URL}/api/admin/specialties`,
         { name, description },
         {
           headers: {
@@ -31,23 +31,26 @@ const AddSpeciality = () => {
           withCredentials: true,
         }
       );
-      setMessage(res.data.message);
+
+      toast.success(res.data.message || "Specialty created successfully ✅");
       setName('');
       setDescription('');
       setErrors({});
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
-      setErrors({ name: msg.includes('exists') ? msg : null });
-      setMessage(null);
+      if (msg.includes("exists")) {
+        toast.error("Specialty already exists ❌");
+        setErrors({ name: msg });
+      } else {
+        toast.error(msg);
+      }
     }
   };
 
- return (
+  return (
     <div className="specialty-container">
       <div className="specialty-card">
         <h2 className="specialty-title">Add Specialty</h2>
-
-        {message && <div className="specialty-success">{message}</div>}
 
         <form onSubmit={handleSubmit} className="specialty-form">
           <input
@@ -80,7 +83,10 @@ const AddSpeciality = () => {
         </form>
       </div>
 
-      {/* Internal CSS */}
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
+      {/* Internal CSS for styling & responsiveness */}
       <style>
         {`
           .specialty-container {
@@ -89,6 +95,7 @@ const AddSpeciality = () => {
             align-items: center;
             background-color: #f4f6f8;
             min-height: 100vh;
+            padding: 20px;
           }
 
           .specialty-card {
@@ -137,6 +144,7 @@ const AddSpeciality = () => {
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
           }
 
           .specialty-button:hover {
@@ -148,11 +156,27 @@ const AddSpeciality = () => {
             font-size: 14px;
           }
 
-          .specialty-success {
-            color: green;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
+          /* ✅ Mobile responsive styles */
+          @media (max-width: 600px) {
+            .specialty-card {
+              padding: 20px;
+              border-radius: 8px;
+            }
+
+            .specialty-title {
+              font-size: 20px;
+            }
+
+            .specialty-input,
+            .specialty-textarea {
+              font-size: 14px;
+              padding: 10px;
+            }
+
+            .specialty-button {
+              font-size: 14px;
+              padding: 10px;
+            }
           }
         `}
       </style>
