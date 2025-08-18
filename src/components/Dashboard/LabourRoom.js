@@ -66,35 +66,58 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const token = localStorage.getItem('jwt');
   const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {};
+const tokenData = JSON.parse(atob(localStorage.getItem('jwt').split('.')[1]));
+const capturedByUserId = tokenData.userId; // always User._id
 
   //︁1. Fetch patients and their labour room schedules
-  useEffect(() => {
-    const fetchAllLabourProcedures = async () => {
+ useEffect(() => {
+  const fetchAllLabourProcedures = async () => {
+    try {
+      const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const pts = patientRes.data.patients;
+      setPatients(pts);
 
-      try {
-        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, {
+      let allLabour = [];
+      await Promise.all(pts.map(async p => {
+        const sched = await axios.get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const pts = patientRes.data.patients;
-        setPatients(pts);
 
-        let allLabour = [];
-        await Promise.all(pts.map(async p => {
-          const sched = await axios.get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const labourOnly = (sched.data.procedures || [])
-            .filter(proc => proc.procedureType === 'Labour Room');
-          labourOnly.forEach(proc => proc.patientObj = p);
-          allLabour.push(...labourOnly);
-        }));
-        setLabourProcedures(allLabour);
-      } catch (err) {
-        toast.error('Failed to fetch Labour Room procedures');
-      }
-    };
-    fetchAllLabourProcedures();
-  }, [token]);
+        const labourOnly = (sched.data.procedures || [])
+          .filter(proc => proc.procedureType === 'Labour Room');
+
+        // 🔎 Check if detail already exists for this procedure
+        for (let proc of labourOnly) {
+          try {
+            const detailRes = await axios.get(
+              `${BASE_URL}/api/procedures/labour-details/${proc._id}`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // only add if no detail exists
+            if (!detailRes.data.detail) {
+              proc.patientObj = p;
+              allLabour.push(proc);
+            }
+          } catch (err) {
+            // if API returns 404 (no detail yet), still include
+            proc.patientObj = p;
+            allLabour.push(proc);
+          }
+        }
+      }));
+
+      setLabourProcedures(allLabour);
+    } catch (err) {
+      toast.error('Failed to fetch Labour Room procedures');
+    }
+  };
+
+  fetchAllLabourProcedures();
+}, [token]);
+
 
   //︁2. Load existing details once “selectedProcedure” is set
   useEffect(() => {
@@ -126,8 +149,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
     const payload = {
       ...form,
       procedureScheduleId: selectedProcedure._id,
-      patientId: selectedProcedure.patientId,
-      capturedByUserId: user._id
+     patientId: selectedProcedure.patientObj?._id, 
+     capturedByUserId
     };
     try {
       await axios.post(`${BASE_URL}/api/procedures/labour-details`, payload, {

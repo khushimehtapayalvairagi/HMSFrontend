@@ -105,7 +105,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
               value={form.name}
               onChange={handleChange}
               required
-              style={{ width: '90%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
+                style={{ width: '95%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
             />
             {fieldErrors.name && (
               <div style={{ color: 'red', marginTop: '5px' }}>{fieldErrors.name}</div>
@@ -121,7 +121,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
               onChange={handleChange}
               required
               rows="3"
-              style={{ width: '90%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
+              style={{ width: '95%', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
             />
           </div>
 

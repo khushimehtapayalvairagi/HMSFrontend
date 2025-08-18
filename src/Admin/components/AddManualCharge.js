@@ -148,7 +148,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
             </div>
 
             <button type="submit" style={{
-              padding: '12px 24px',
+              padding: '12px 12px',
               backgroundColor: '#007bff',
               color: '#fff',
               border: 'none',

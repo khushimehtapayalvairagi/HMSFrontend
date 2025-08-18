@@ -79,7 +79,13 @@ const handleChange = (e) => {
         ...prev,
         contactNumber: 'Contact number must be numeric and up to 10 digits only.',
       }));
-    }  else {
+    } else if (value.length !== 10) {
+    setErrors((prev) => ({
+      ...prev,
+      contactNumber: 'Contact number must be exactly 10 digits.',
+    }));
+  }
+     else {
       setErrors((prev) => ({ ...prev, contactNumber: '' }));
     }
   } else {

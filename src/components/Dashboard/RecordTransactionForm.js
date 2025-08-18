@@ -15,19 +15,29 @@ const RecordTransactionForm = ({ userId: propUserId, onSuccess }) => {
   });
 
   useEffect(() => {
-    const loadItems = async () => {
-      try {
-        const token = localStorage.getItem('jwt');
-        const res = await fetch(`${BASE_URL}/api/inventory/items`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error(await res.text());
-        const data = await res.json();
-        setItems(data.items || []);
-      } catch (err) {
-        toast.error('Failed loading items: ' + err.message);
+   const loadItems = async () => {
+  try {
+    const token = localStorage.getItem('jwt');
+    const res = await fetch(`${BASE_URL}/api/inventory/items`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      // If backend sends 404, treat it as "no items"
+      if (res.status === 404) {
+        setItems([]); 
+        return;
       }
-    };
+      throw new Error(await res.text());
+    }
+
+    const data = await res.json();
+    setItems(data.items || []); // if no items, this becomes []
+  } catch (err) {
+    toast.error('Failed loading items: ' + err.message);
+  }
+};
+
     loadItems();
 
     const storedItem = JSON.parse(localStorage.getItem('itemForTransaction'));

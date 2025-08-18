@@ -252,7 +252,7 @@ const styles = {
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    minWidth: "150px"
+    minWidth: "80px"
   },
   bedSelect: {
     flex: "1 1 120px",
@@ -279,7 +279,7 @@ const styles = {
     cursor: "pointer"
   },
   submitBtn: {
-    padding: "12px 24px",
+    padding: "12px 12px",
     backgroundColor: "#2ecc71",
     color: "#fff",
     border: "none",
