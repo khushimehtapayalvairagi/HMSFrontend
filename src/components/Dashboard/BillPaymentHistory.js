@@ -5,6 +5,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function BillPaymentHistory() {
   const [patients, setPatients] = useState([]);
@@ -18,6 +19,7 @@ export default function BillPaymentHistory() {
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     const fetchAdmittedPatients = async () => {
@@ -99,55 +101,155 @@ export default function BillPaymentHistory() {
       )}
 
       {/* Bill Details Dialog */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth  fullScreen={isMobile}>
         <DialogTitle>Bill Details</DialogTitle>
         <DialogContent>
           {selectedBill && (
             <>
-          <h4>Charges Summary</h4>
-<table
-  style={{
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginBottom: '1rem',
-    border: '1px solid #ccc'
-  }}
->
-  <thead>
-    <tr style={{ backgroundColor: '#f0f0f0' }}>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>#</th>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>Description</th>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>Type</th>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>Qty</th>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>Unit Price</th>
-      <th style={{ border: '1px solid #ccc', padding: '8px' }}>Subtotal</th>
-    </tr>
-  </thead>
-  <tbody>
-    {selectedBill.items?.map((item, idx) => (
-      <tr key={idx}>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>{idx + 1}</td>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>{item.description || '—'}</td>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>{item.item_type || '—'}</td>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>{item.quantity}</td>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>₹{item.unit_price}</td>
-        <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-          ₹{(item.quantity * item.unit_price).toFixed(2)}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-  <tfoot>
-    <tr style={{ fontWeight: 'bold' }}>
-      <td colSpan="5" style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'right' }}>
-        Total:
-      </td>
-      <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-        ₹{selectedBill.items?.reduce((sum, i) => sum + i.quantity * i.unit_price, 0).toFixed(2)}
-      </td>
-    </tr>
-  </tfoot>
-</table>
+<h4>Charges Summary</h4>
+
+{isMobile ? (
+  // ---------- MOBILE: CARD VIEW ----------
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    {(selectedBill.items || []).map((item, idx) => {
+      const qty = Number(item?.quantity || 0);
+      const unit = Number(item?.unit_price || 0);
+      const sub = qty * unit;
+
+      return (
+        <div
+          key={idx}
+          style={{
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            padding: '10px 12px',
+            background: '#fff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          }}
+        >
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            Item #{idx + 1}
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '120px 1fr',
+              rowGap: 6,
+              columnGap: 8,
+              fontSize: '0.95rem',
+            }}
+          >
+            <div style={{ color: '#666' }}>Description</div>
+            <div>{item?.description || '—'}</div>
+
+            <div style={{ color: '#666' }}>Type</div>
+            <div>{item?.item_type || '—'}</div>
+
+            <div style={{ color: '#666' }}>Qty</div>
+            <div>{qty}</div>
+
+            <div style={{ color: '#666' }}>Unit Price</div>
+            <div>₹{unit.toFixed(2)}</div>
+
+            <div style={{ color: '#666' }}>Subtotal</div>
+            <div style={{ fontWeight: 600 }}>₹{sub.toFixed(2)}</div>
+          </div>
+        </div>
+      );
+    })}
+
+    {/* Total Card */}
+    <div
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 8,
+        padding: '10px 12px',
+        background: '#fafafa',
+        marginTop: 6,
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontWeight: 700,
+      }}
+    >
+      <span>Total</span>
+      <span>
+        ₹
+        {(selectedBill.items || [])
+          .reduce((sum, i) => sum + Number(i.quantity || 0) * Number(i.unit_price || 0), 0)
+          .toFixed(2)}
+      </span>
+    </div>
+  </div>
+) : (
+  // ---------- DESKTOP: TABLE VIEW ----------
+  <div style={{ overflowX: 'auto' }}>
+    <table
+      style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBottom: '1rem',
+        border: '1px solid #ccc',
+        minWidth: '600px',
+      }}
+    >
+      <thead>
+        <tr style={{ backgroundColor: '#f0f0f0' }}>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>#</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Description</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Type</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Qty</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Unit Price</th>
+          <th style={{ border: '1px solid #ccc', padding: '8px' }}>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {(selectedBill.items || []).map((item, idx) => {
+          const qty = Number(item?.quantity || 0);
+          const unit = Number(item?.unit_price || 0);
+          const sub = qty * unit;
+
+          return (
+            <tr key={idx}>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>{idx + 1}</td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                {item?.description || '—'}
+              </td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                {item?.item_type || '—'}
+              </td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>{qty}</td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                ₹{unit.toFixed(2)}
+              </td>
+              <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                ₹{sub.toFixed(2)}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+      <tfoot>
+        <tr style={{ fontWeight: 'bold' }}>
+          <td
+            colSpan={5}
+            style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'right' }}
+          >
+            Total:
+          </td>
+          <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+            ₹
+            {(selectedBill.items || [])
+              .reduce((sum, i) => sum + Number(i.quantity || 0) * Number(i.unit_price || 0), 0)
+              .toFixed(2)}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+)}
+
+
 
 
               <h4>Payment History</h4>

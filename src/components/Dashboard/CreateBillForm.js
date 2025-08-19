@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const CreateBillForm = () => {
   const location = useLocation();
   const { patientId: passedPatientId, ipdAdmissionId: passedAdmissionId } = location.state || {};
@@ -382,6 +383,7 @@ if (errorMessage === 'This procedure has already been billed.') {
           Create Bill
         </button>
       </form>
+       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

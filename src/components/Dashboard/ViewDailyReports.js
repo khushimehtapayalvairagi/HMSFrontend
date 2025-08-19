@@ -116,10 +116,12 @@ const ViewDailyReports = () => {
                 Report #{singleAdmissionReports.length - index}
               </h4>
               <p><strong>Date:</strong> {new Date(report.reportDateTime).toLocaleString()}</p>
-             <p><strong>Recorded By:</strong> 
+     <p>
+  <strong>Recorded By:</strong> 
   {report.recordedByUserId?.userId?.name} 
   ({report.recordedByUserId?.userId?.role})
 </p>
+
 
               <ul style={{ paddingLeft: '1.2rem' }}>
                 <li><strong>Temperature:</strong> {report.vitals?.temperature}</li>
@@ -195,7 +197,11 @@ const ViewDailyReports = () => {
           adm.reports.map((report, idx) => (
             <div key={report._id} style={styles.dialogReportCard}>
               <p><strong>Report {adm.reports.length - idx}</strong> — {new Date(report.reportDateTime).toLocaleString()}</p>
-              <p><strong>Recorded By:</strong> {report.recordedByUserId?.name} ({report.recordedByUserId?.role})</p>
+             <p><strong>Recorded By:</strong> 
+  {report.recordedByUserId?.userId?.name} 
+  ({report.recordedByUserId?.userId?.role})
+</p>
+
               <ul style={{ paddingLeft: '1.2rem' }}>
                 <li><strong>Temperature:</strong> {report.vitals?.temperature}</li>
                 <li><strong>Pulse:</strong> {report.vitals?.pulse}</li>

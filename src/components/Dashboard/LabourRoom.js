@@ -145,7 +145,8 @@ setLabourProcedures(allLabour);
     const payload = {
       ...form,
       procedureScheduleId: selectedProcedure._id,
-     patientId: selectedProcedure.patientObj?._id, capturedByUserId: user._id || user.id
+     patientId: selectedProcedure.patientObj?._id, 
+     capturedByUserId: user._id || user.id
     };
     try {
       await axios.post(`${BASE_URL}/api/procedures/labour-details`, payload, {

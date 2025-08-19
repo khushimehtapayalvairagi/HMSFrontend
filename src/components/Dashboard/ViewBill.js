@@ -141,11 +141,13 @@ function ViewBill() {
               <p><strong>Status:</strong> {b.payment_status}</p>
 
               <h4 style={{ marginTop: '1rem' }}>Charges Summary</h4>
-              <table style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                fontSize: '0.95rem'
-              }}>
+           <div style={{ overflowX: "auto" }}>
+             <table style={{
+    width: "100%",
+    borderCollapse: "collapse",
+    fontSize: "0.9rem",
+    minWidth: "600px" // ensures columns don't shrink too much
+  }}>
                 <thead style={{ backgroundColor: '#f0f0f0' }}>
                   <tr>
                     <th style={th}>#</th>
@@ -177,6 +179,7 @@ function ViewBill() {
                   </tr>
                 </tfoot>
               </table>
+              </div>
             </div>
           ))}
         </div>
