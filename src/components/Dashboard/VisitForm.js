@@ -55,7 +55,7 @@ setReferralPartners(refRes.data.partners || []);
 setSpecialties(specRes.data.specialties || []);
       } catch (error) {
         console.error("Error fetching data", error);
-        alert("Failed to load doctor or referral data");
+        toast.error("Failed to load doctor or referral data");
       }
     };
 

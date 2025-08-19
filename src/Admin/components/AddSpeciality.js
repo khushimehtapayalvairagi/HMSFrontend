@@ -95,7 +95,7 @@ const AddSpeciality = () => {
             align-items: center;
             background-color: #f4f6f8;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
           }
 
           .specialty-card {

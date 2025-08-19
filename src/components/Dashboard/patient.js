@@ -14,6 +14,8 @@ const PatientForm = () => {
     address: '',
     relatives: [{ name: '', contactNumber: '', relationship: '' }]
   });
+  const [errors, setErrors] = useState({});
+
   const [submittedData, setSubmittedData] = useState(null);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
   // Style objects
@@ -35,7 +37,16 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
     const { name, value } = e.target;
     if (name === 'contactNumber' && !validateContact(value)) {
       return toast.error('Contact number must be up to 10 digits');
+    } if (value.length < 10) {
+      setErrors((p) => ({ ...p, contactNumber: "Contact number must be 10 digits" }));
+    } else {
+      setErrors((p) => {
+        const { contactNumber, ...rest } = p;
+        return rest;
+      });
     }
+  
+    
     setForm((p) => ({ ...p, [name]: value }));
   };
 
@@ -69,6 +80,14 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+     if (form.contactNumber.length !== 10) {
+    return toast.error("Contact number must be exactly 10 digits");
+  }
+   for (let rel of form.relatives) {
+    if (rel.contactNumber.length !== 10) {
+      return toast.error("Relative contact must be exactly 10 digits");
+    }
+  }
     const token = localStorage.getItem('jwt');
     if (!token) return toast.error('Please log in first');
     try {
