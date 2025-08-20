@@ -19,11 +19,11 @@ const { adviceData, setAdviceData } = useAdmissionAdvice();
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-// const initialPatientId =
-//   adviceData?.patientDbId || // <-- Ensure this holds the ObjectId from Mongo
-//   patient?._id ||             // If coming from patient object
-//   visit?.patientId ||         // If coming from visit object
-//   '';
+const initialPatientId =
+  adviceData?.patientDbId || // <-- Ensure this holds the ObjectId from Mongo
+  patient?._id ||             // If coming from patient object
+  visit?.patientId ||         // If coming from visit object
+  '';
 
 const initialVisitId = adviceData?.visitId || visit?._id || '';
 const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
@@ -98,13 +98,13 @@ setDoctorName(data.doctorName || '');
 
 
 useEffect(() => {
-  if (adviceData?.doctorName) {
-    setDoctorName(adviceData.doctorName);
+  if (adviceData) {
+    setPatientDbId(adviceData.patientDbId || '');
+    setVisitId(adviceData.visitId || '');
+    setAdmittingDoctorId(adviceData.admittingDoctorId || '');
+    setPatientName(adviceData.patientName || '');
+    setDoctorName(adviceData.doctorName || '');
   }
-
-  // if (adviceData?.patientName) {
-  //   setPatientName(adviceData.patientName);
-  // }
 }, [adviceData]);
 
 
