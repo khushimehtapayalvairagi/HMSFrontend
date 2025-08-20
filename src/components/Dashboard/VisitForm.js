@@ -229,7 +229,7 @@ localStorage.setItem('currentPatientId', patientId);
       setLoadingDoctors(true);
       const token = localStorage.getItem('jwt');
       const res = await axios.post(
-        'http://localhost:8000/api/receptionist/doctors',
+        `${BASE_URL}/api/receptionist/doctors`,
         { specialtyName, dayOfWeek },
         {
           headers: { Authorization: `Bearer ${token}` },
