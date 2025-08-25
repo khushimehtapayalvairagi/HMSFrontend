@@ -134,7 +134,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   placeholder="DOB"
   value={form.dob}
   onChange={handleChange}
-  pattern="\d{2}-\d{2}-\d{4}"
   required
   style={{ flex: 1 }}
 />
@@ -285,7 +284,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={2500} />
     </div>
   );
 };
