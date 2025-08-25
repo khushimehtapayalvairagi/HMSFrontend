@@ -1,20 +1,43 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddSpeciality = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [specialties, setSpecialties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  const handleSubmit = async e => {
+  // ✅ Fetch specialties
+  const fetchSpecialties = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const res = await axios.get(`${BASE_URL}/api/admin/specialties`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSpecialties(res.data.specialties);
+    } catch (err) {
+      toast.error("Failed to load specialties ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSpecialties();
+  }, []);
+
+  // ✅ Add single specialty
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-    if (!name.trim()) newErrors.name = 'Name is required.';
-    if (!description.trim()) newErrors.description = 'Description is required.';
+    if (!name.trim()) newErrors.name = "Name is required.";
+    if (!description.trim()) newErrors.description = "Description is required.";
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);
       return;
@@ -24,162 +47,182 @@ const AddSpeciality = () => {
       const res = await axios.post(
         `${BASE_URL}/api/admin/specialties`,
         { name, description },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-          },
-          withCredentials: true,
-        }
+        { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
       );
-
-      toast.success(res.data.message || "Specialty created successfully ✅");
-      setName('');
-      setDescription('');
+      toast.success(res.data.message || "Specialty created ✅");
+      setName("");
+      setDescription("");
       setErrors({});
+      fetchSpecialties(); // refresh list
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
-      if (msg.includes("exists")) {
-        toast.error("Specialty already exists ❌");
-        setErrors({ name: msg });
-      } else {
-        toast.error(msg);
-      }
+      toast.error(msg);
+      if (msg.includes("exists")) setErrors({ name: msg });
+    }
+  };
+
+  // ✅ Bulk upload
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a file first!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setUploading(true);
+      const res = await axios.post(`${BASE_URL}/api/admin/speciality`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success(res.data.message || "Bulk upload successful ✅");
+      setFile(null);
+      fetchSpecialties();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Upload failed ❌");
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <div className="specialty-container">
-      <div className="specialty-card">
-        <h2 className="specialty-title">Add Specialty</h2>
+    <div
+      style={{
+        maxWidth: "900px",
+        margin: "0 auto",
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Manage Specialties
+      </h2>
 
-        <form onSubmit={handleSubmit} className="specialty-form">
+      {/* Add Specialty Form */}
+      <div
+        style={{
+          padding: "15px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          marginBottom: "20px",
+        }}
+      >
+        <h3>Add Specialty</h3>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <input
-            name="name"
+            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
             placeholder="Specialty Name"
             value={name}
-            onChange={e => {
+            onChange={(e) => {
               setName(e.target.value);
-              setErrors(prev => ({ ...prev, name: undefined }));
+              setErrors((prev) => ({ ...prev, name: undefined }));
             }}
-            className="specialty-input"
           />
-          {errors.name && <div className="specialty-error">{errors.name}</div>}
+          {errors.name && <span style={{ color: "red", fontSize: "0.9rem" }}>{errors.name}</span>}
 
           <textarea
-            name="description"
+            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
             placeholder="Description"
             value={description}
-            onChange={e => {
+            onChange={(e) => {
               setDescription(e.target.value);
-              setErrors(prev => ({ ...prev, description: undefined }));
+              setErrors((prev) => ({ ...prev, description: undefined }));
             }}
-            className="specialty-textarea"
           />
-          {errors.description && (
-            <div className="specialty-error">{errors.description}</div>
-          )}
+          {errors.description && <span style={{ color: "red", fontSize: "0.9rem" }}>{errors.description}</span>}
 
-          <button type="submit" className="specialty-button">Create</button>
+          <button
+            type="submit"
+            style={{
+              padding: "10px",
+              background: "#007bff",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Create
+          </button>
         </form>
       </div>
 
-      {/* Toast Container */}
+      {/* Bulk Upload */}
+      <div
+        style={{
+          padding: "15px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          marginBottom: "20px",
+        }}
+      >
+        <h3>Bulk Upload Specialties</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <input
+            type="file"
+            accept=".csv,.xlsx"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          <button
+            onClick={handleUpload}
+            disabled={uploading}
+            style={{
+              padding: "10px",
+              background: uploading ? "#aaa" : "#28a745",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+        </div>
+      </div>
+
+      {/* Specialties List */}
+      <div
+        style={{
+          padding: "15px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          overflowX: "auto",
+        }}
+      >
+        <h3>Specialty List</h3>
+        {loading ? (
+          <p>Loading...</p>
+        ) : specialties.length === 0 ? (
+          <p>No specialties found.</p>
+        ) : (
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "0.95rem",
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>#</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Name</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {specialties.map((spec, i) => (
+                <tr key={spec._id}>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{i + 1}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{spec.name}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{spec.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-
-      {/* Internal CSS for styling & responsiveness */}
-      <style>
-        {`
-          .specialty-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f6f8;
-            min-height: 100vh;
-            padding: 10px;
-          }
-
-          .specialty-card {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 500px;
-          }
-
-          .specialty-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-          }
-
-          .specialty-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-          }
-
-          .specialty-input,
-          .specialty-textarea {
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          .specialty-textarea {
-            min-height: 100px;
-            resize: vertical;
-          }
-
-          .specialty-button {
-            padding: 12px;
-            background-color: #1976d2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-          }
-
-          .specialty-button:hover {
-            background-color: #155a9b;
-          }
-
-          .specialty-error {
-            color: red;
-            font-size: 14px;
-          }
-
-          /* ✅ Mobile responsive styles */
-          @media (max-width: 600px) {
-            .specialty-card {
-              padding: 20px;
-              border-radius: 8px;
-            }
-
-            .specialty-title {
-              font-size: 20px;
-            }
-
-            .specialty-input,
-            .specialty-textarea {
-              font-size: 14px;
-              padding: 10px;
-            }
-
-            .specialty-button {
-              font-size: 14px;
-              padding: 10px;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };

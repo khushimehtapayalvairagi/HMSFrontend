@@ -127,15 +127,19 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
             required
             style={{ flex: 1 }}
           />
-          <input
-            type="date"
-            name="dob"
-            placeholder="📅 Date of Birth"
-            value={form.dob}
-            onChange={handleChange}
-            required
-            style={{ flex: 1 }}
-          />
+    
+<input
+  type="text"
+  name="dob"
+  placeholder="DOB"
+  value={form.dob}
+  onChange={handleChange}
+  pattern="\d{2}-\d{2}-\d{4}"
+  required
+  style={{ flex: 1 }}
+/>
+
+
         </div>
 
         {/* Gender & Contact */}

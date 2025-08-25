@@ -67,11 +67,33 @@ import IPDReportPage from './Admin/components/IPDReportPage.js';
 import OPDReportPage from './Admin/components/OPDReportPage.js';
 
 const App = () => {
+  const ReceptionistRoutes = () => (
+  <Routes>
+    <Route path="patient-form" element={<PatientForm />} />
+    <Route path="viewPatient" element={<ViewPatient />} />
+    <Route path="visit-form" element={<VisitForm />} />
+    <Route path="patient-visits-viewer" element={<PatientVisitsViewer />} />
+    <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} />
+    <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
+    <Route path="ProcedureForm" element={<ProcedureForm />} />
+    <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
+    <Route path="LabourRoom" element={<LabourRoom />} />
+    <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
+    <Route path="Billing" element={<CreateBillForm />} />
+    <Route path="ViewBill" element={<ViewBill />} />
+    <Route path="PaymentForm" element={<PaymentForm />} />
+    <Route path="DischargePatient" element={<DischargePatient />} />
+    <Route path="BillPaymentHistory" element={<BillPaymentHistory />} />
+  </Routes>
+);
+
+
+
   return (
     <>
     <Routes>
     <Route element={<ProtectedRoute role="ADMIN" />}>
-<Route
+    <Route
         path="/admin-dashboard"
          element={<AdminDashboard />} 
       >
@@ -100,7 +122,26 @@ const App = () => {
                      <Route path="view-partners" element={<ViewRefferalPartner/>} />  
                        <Route path="operation-theatre" element={<AddOperationTheatre />} />
                      <Route path="view-operation-theatre" element={<ViewOperationTheatre/>} />          
+                    <Route path="receptionist/*" element={<ReceptionistRoutes />} />
+              <Route path="nurse/*">
+  <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
+  <Route path="DailyReports" element={<DailyReports />} />
+  <Route path="ViewDailyReports" element={<ViewDailyReports />} />
+  <Route path="NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
+</Route>
+  <Route path="inventory/InventoryForm" element={<InventoryForm />} />
+  <Route path="inventory/InventoryList" element={<InventoryList />} />
+  <Route path="inventory/RecordTransactionForm" element={<RecordTransactionForm />} />
+  <Route path="inventory/TransactionHistoryForm" element={<TransactionHistoryForm />} />
       
+      <Route path="doctor/*">
+      
+  <Route index element={<DoctorDashboardHome />} />
+  <Route path="home" element={<DoctorDashboardHome />} />
+  <Route path="ConsultationForm/:visitId" element={<OPDConsultationForm />} />
+  <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />
+</Route>
+
       </Route>
       </Route>
           <Route element={<><SocketContext/> <ProtectedRoute role="STAFF" /> </>}>
@@ -135,6 +176,7 @@ const App = () => {
  <Route index element={<DoctorDashboardHome />} />
 <Route path="home" element={<DoctorDashboardHome />} />
    <Route index element={<OPDConsultationForm />} />
+   
    <Route path="ConsultationForm/:visitId" element={<OPDConsultationForm />} />
     <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />  
 
@@ -157,6 +199,7 @@ const App = () => {
 <Route path ="RecordTransactionForm" element={<RecordTransactionForm/>}/>
 <Route path ="TransactionHistoryForm" element={<TransactionHistoryForm/>}/>
 </Route>
+
 </Route>
 
       <Route path="/" element={<Login />} />

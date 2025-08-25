@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./ViewSpecialty.css"; // External CSS
+import BulkUploadSpecialty from "./BulkUploadSpecialty";
 
 const ViewSpecialty = () => {
   const [specialties, setSpecialties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-   const BASE_URL = process.env.REACT_APP_BASE_URL;
-  useEffect(() => {
-    const fetchSpecialties = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  // ✅ Define fetchSpecialties once, outside useEffect
+  const fetchSpecialties = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
       const res = await axios.get(`${BASE_URL}/api/admin/specialties`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        setSpecialties(res.data.specialties);
-      } catch (err) {
-        console.error("Failed to fetch specialties:", err);
-        setError("Failed to load specialties");
-      } finally {
-        setLoading(false);
-      }
-    };
+      setSpecialties(res.data.specialties);
+    } catch (err) {
+      console.error("Failed to fetch specialties:", err);
+      setError("Failed to load specialties");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // ✅ Call fetchSpecialties when component mounts
+  useEffect(() => {
     fetchSpecialties();
   }, []);
 
@@ -35,6 +39,10 @@ const ViewSpecialty = () => {
   return (
     <div className="specialty-container">
       <h2 className="specialty-title">Specialties</h2>
+
+      {/* ✅ Pass fetchSpecialties so BulkUpload can refresh the list */}
+      <BulkUploadSpecialty onUploadSuccess={fetchSpecialties} />
+
       {specialties.length === 0 ? (
         <p>No specialties found.</p>
       ) : (

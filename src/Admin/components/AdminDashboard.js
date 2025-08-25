@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Box, IconButton } from '@mui/material';
-import { Logout as LogoutIcon } from '@mui/icons-material';
+import { Box, IconButton, Menu, MenuItem,Button } from '@mui/material';
+import { Logout as LogoutIcon,ExpandMore, AssignmentInd } from '@mui/icons-material';
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false); // closed by default on mobile
@@ -18,9 +18,33 @@ const AdminDashboard = () => {
   const [departmentDropdownOpen, setDepartmentDropdownOpen] = useState(false);
   const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+const [receptionistAnchor, setReceptionistAnchor] = useState(null);
   const [activeModuleLabel, setActiveModuleLabel] = useState('');
-  const location = useLocation();
+   const [nurseDropdownOpen, setNurseDropdownOpen] = useState(false);
+const [inventoryDropdownOpen, setInventoryDropdownOpen] = useState(false);
+const [doctorDropdownOpen, setDoctorDropdownOpen] = useState(false);
+// === Receptionist dropdown state (for sidebar) ===
+const [receptionistDropdownOpen, setReceptionistDropdownOpen] = useState(false);
 
+// === Role menu (navbar) ===
+const [roleAnchor, setRoleAnchor] = useState(null);
+const openRoleMenu = (event) => setRoleAnchor(event.currentTarget);
+const closeRoleMenu = () => setRoleAnchor(null);
+
+// === Staff submenu (navbar) ===
+const [staffAnchor, setStaffAnchor] = useState(null);
+const openStaffMenu = (event) => setStaffAnchor(event.currentTarget);
+const closeStaffMenu = () => setStaffAnchor(null);
+const [nurseAnchor, setNurseAnchor] = useState(null);
+const openNurseMenu = (event) => setNurseAnchor(event.currentTarget);
+const closeNurseMenu = () => setNurseAnchor(null);
+const [inventoryAnchor, setInventoryAnchor] = useState(null);
+const openInventoryMenu = (event) => setInventoryAnchor(event.currentTarget);
+const closeInventoryMenu = () => setInventoryAnchor(null);
+
+  const location = useLocation();
+   const openReceptionistMenu = (event) => setReceptionistAnchor(event.currentTarget);
+  const closeReceptionistMenu = () => setReceptionistAnchor(null);
   // ✅ Close all dropdowns when navigating
   useEffect(() => {
     setUserMenuOpen(false);
@@ -35,7 +59,8 @@ const AdminDashboard = () => {
     setSpecialtyDropdownOpen(false);
     setDepartmentDropdownOpen(false);
     setReportDropdownOpen(false);
-
+     setNurseDropdownOpen(false)
+     setReceptionistDropdownOpen(false)
     // auto close sidebar on mobile when navigating
     if (window.innerWidth < 768) setSidebarOpen(false);
   }, [location.pathname]);
@@ -49,6 +74,75 @@ const AdminDashboard = () => {
   }, [location.pathname]);
 
   const modules = [
+//     {
+//   label: 'Receptionist Dashboard',
+//   icon: '📋',
+//   dropdownOpen: receptionistDropdownOpen,
+//   setDropdownOpen: setReceptionistDropdownOpen,
+//   content: (
+//     <>
+//       <Link to="receptionist/patient-form" style={dropdownLinkStyle}>👤 Patient</Link>
+//       <Link to="receptionist/viewPatient" style={dropdownLinkStyle}>👀 View Patient</Link>
+//       <Link to="receptionist/visit-form" style={dropdownLinkStyle}>📝 Visit Form</Link>
+//       <Link to="receptionist/patient-visits-viewer" style={dropdownLinkStyle}>📋 Patient Visits Viewer</Link>
+//       <Link to="receptionist/UpdatePatientStatus" style={dropdownLinkStyle}>🔄 Update Patient Status</Link>
+//       <Link to="receptionist/IPDAdmissionForm" style={dropdownLinkStyle}>🏥 IPD Admission Form</Link>
+//       <Link to="receptionist/ProcedureForm" style={dropdownLinkStyle}>🧪 Procedure Form</Link>
+//       <Link to="receptionist/ViewAnesthesiaForm" style={dropdownLinkStyle}>💉 View Anesthesia Form</Link>
+//       <Link to="receptionist/LabourRoom" style={dropdownLinkStyle}>👶 Labour Room</Link>
+//       <Link to="receptionist/ViewLabourRoom" style={dropdownLinkStyle}>👀 View Labour Room</Link>
+//       <Link to="receptionist/Billing" style={dropdownLinkStyle}>💳 Billing</Link>
+//       <Link to="receptionist/ViewBill" style={dropdownLinkStyle}>🧾 View Bill</Link>
+//       <Link to="receptionist/PaymentForm" style={dropdownLinkStyle}>💰 Payment Form</Link>
+//       <Link to="receptionist/DischargePatient" style={dropdownLinkStyle}>🚪 Discharge Patient</Link>
+//       <Link to="receptionist/BillPaymentHistory" style={dropdownLinkStyle}>📜 Bill Payment History</Link>
+//     </>
+//   )
+// },
+
+// {
+//   label: 'Nurse Dashboard',
+//   icon: '🧑‍⚕️',
+//   dropdownOpen: nurseDropdownOpen,
+//   setDropdownOpen: setNurseDropdownOpen,
+//   content: (
+//     <>
+//       <Link to="nurse/NurseIPDAdmissionList" style={dropdownLinkStyle}>🏥 IPD Admissions</Link>
+//       <Link to="nurse/ViewDailyReports" style={dropdownLinkStyle}>📋 Daily Reports</Link>
+//       <Link to="nurse/NurseScheduledProcedures" style={dropdownLinkStyle}>🧪 Scheduled Procedures</Link>
+//     </>
+//   )
+// },
+
+// {
+//   label: 'Inventory Manager',
+//   icon: '📦',
+//   dropdownOpen: inventoryDropdownOpen,
+//   setDropdownOpen: setInventoryDropdownOpen,
+//   content: (
+//     <>
+//       <Link to="inventory/InventoryForm" style={dropdownLinkStyle}>➕ Inventory Form</Link>
+//       <Link to="inventory/InventoryList" style={dropdownLinkStyle}>📋 Inventory List</Link>
+//       <Link to="inventory/RecordTransactionForm" style={dropdownLinkStyle}>💰 Record Transaction</Link>
+//       <Link to="inventory/TransactionHistoryForm" style={dropdownLinkStyle}>📜 Transaction History</Link>
+//     </>
+//   )
+// },
+// {
+//   label: 'Doctor Dashboard',
+//   icon: '🩺',
+//   dropdownOpen: doctorDropdownOpen,
+//   setDropdownOpen: setDoctorDropdownOpen,
+//   content: (
+//     <>
+//       <Link to="doctor/home" style={dropdownLinkStyle}>🏠 Home</Link>
+     
+//     </>
+//   )
+// },
+
+
+
     {
       label: 'Reports',
       icon: '📊',
@@ -211,7 +305,164 @@ const AdminDashboard = () => {
           {sidebarOpen ? '✖' : '☰'}
         </button>
         <h5>Hospital Management System</h5>
-    <Box sx={styles.logoutIconDesktop}>
+       
+         <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 1 }}>
+      <IconButton color="inherit" onClick={openRoleMenu} title="Roles">
+  <AssignmentInd />
+</IconButton>
+      <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
+         <MenuItem
+    onClick={() => {
+      // Close other modules
+      modules.forEach(m => m.setDropdownOpen(false));
+      setDoctorDropdownOpen(true); // open doctor sidebar
+      setActiveModuleLabel("Doctor Dashboard");
+      closeRoleMenu();
+    }}
+  >
+    🩺 Doctor
+  </MenuItem>
+    <MenuItem
+    onClick={(e) => {
+      closeRoleMenu();
+      openStaffMenu(e);
+    }}
+  >
+    👥 Staff ▸
+  </MenuItem>
+</Menu>
+<Menu anchorEl={staffAnchor} open={Boolean(staffAnchor)} onClose={closeStaffMenu}>
+ <MenuItem
+    onClick={(e) => {
+      closeStaffMenu();
+      openReceptionistMenu(e);
+    }}
+  >
+
+    📋 Receptionist ▸
+  </MenuItem>
+
+ <MenuItem
+  onClick={(e) => {
+    closeStaffMenu();
+    openNurseMenu(e);
+  }}
+>
+  🧑‍⚕️ Nurse ▸
+</MenuItem>
+
+
+ <MenuItem
+  onClick={(e) => {
+    closeStaffMenu();
+    openInventoryMenu(e);
+  }}
+>
+  📦 Inventory Manager ▸
+</MenuItem>
+
+</Menu>
+    <Menu
+  anchorEl={receptionistAnchor}
+  open={Boolean(receptionistAnchor)}
+  onClose={closeReceptionistMenu}
+  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+  transformOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  {[
+    { to: "receptionist/patient-form", label: "👤 Patient" },
+    { to: "receptionist/viewPatient", label: "👀 View Patient" },
+    { to: "receptionist/visit-form", label: "📝 Visit Form" },
+    { to: "receptionist/patient-visits-viewer", label: "📋 Patient Visits Viewer" },
+    { to: "receptionist/UpdatePatientStatus", label: "🔄 Update Patient Status" },
+    { to: "receptionist/IPDAdmissionForm", label: "🏥 IPD Admission Form" },
+    { to: "receptionist/ProcedureForm", label: "🧪 Procedure Form" },
+    { to: "receptionist/ViewAnesthesiaForm", label: "💉 View Anesthesia Form" },
+    { to: "receptionist/LabourRoom", label: "👶 Labour Room" },
+    { to: "receptionist/ViewLabourRoom", label: "👀 View Labour Room" },
+    { to: "receptionist/Billing", label: "💳 Billing" },
+    { to: "receptionist/ViewBill", label: "🧾 View Bill" },
+    { to: "receptionist/PaymentForm", label: "💰 Payment Form" },
+    { to: "receptionist/DischargePatient", label: "🚪 Discharge Patient" },
+    { to: "receptionist/BillPaymentHistory", label: "📜 Bill Payment History" },
+  ].map((item, i) => (
+    <MenuItem
+      key={i}
+      component={Link}
+      to={item.to}
+      onClick={() => {
+        // close receptionist menu
+        closeReceptionistMenu();
+        // close ALL other sidebar dropdowns too
+        modules.forEach(m => m.setDropdownOpen(false));
+        setReceptionistDropdownOpen(false);
+        setActiveModuleLabel(item.label);
+      }}
+    >
+      {item.label}
+    </MenuItem>
+  ))}
+</Menu>
+{/* === Nurse Submenu === */}
+<Menu
+  anchorEl={nurseAnchor}
+  open={Boolean(nurseAnchor)}
+  onClose={closeNurseMenu}
+  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+  transformOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  {[
+    { to: "nurse/NurseIPDAdmissionList", label: "🏥 IPD Admissions" },
+    { to: "nurse/ViewDailyReports", label: "📋 Daily Reports" },
+    { to: "nurse/NurseScheduledProcedures", label: "🧪 Scheduled Procedures" },
+  ].map((item, i) => (
+    <MenuItem
+      key={i}
+      component={Link}
+      to={item.to}
+      onClick={() => {
+        closeNurseMenu();
+        modules.forEach(m => m.setDropdownOpen(false));
+        setNurseDropdownOpen(false);
+        setActiveModuleLabel(item.label);
+      }}
+    >
+      {item.label}
+    </MenuItem>
+  ))}
+</Menu>
+{/* === Inventory Manager Submenu === */}
+<Menu
+  anchorEl={inventoryAnchor}
+  open={Boolean(inventoryAnchor)}
+  onClose={closeInventoryMenu}
+  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+  transformOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  {[
+    { to: "inventory/InventoryForm", label: "➕ Inventory Form" },
+    { to: "inventory/InventoryList", label: "📋 Inventory List" },
+    { to: "inventory/RecordTransactionForm", label: "💰 Record Transaction" },
+    { to: "inventory/TransactionHistoryForm", label: "📜 Transaction History" },
+  ].map((item, i) => (
+    <MenuItem
+      key={i}
+      component={Link}
+      to={item.to}
+      onClick={() => {
+        closeInventoryMenu();
+        modules.forEach(m => m.setDropdownOpen(false));
+        setInventoryDropdownOpen(false);
+        setActiveModuleLabel(item.label);
+      }}
+    >
+      {item.label}
+    </MenuItem>
+  ))}
+</Menu>
+
+
+
     <IconButton
       color="inherit"
       onClick={() => {

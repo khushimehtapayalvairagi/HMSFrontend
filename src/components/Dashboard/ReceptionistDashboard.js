@@ -81,10 +81,11 @@ const drawerContent = (
         { label: "ViewAnesthesiaForm", path: "/receptionist-dashboard/ViewAnesthesiaForm", icon: <AnesthesiaIcon /> },
         { label: "LabourRoom", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
         { label: "ViewLabourRoom", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },
-        { label: "DischargePatient", path: "/receptionist-dashboard/DischargePatient", icon: <LabIcon /> },
+  
         { label: "Billing", path: "/receptionist-dashboard/Billing", icon: <BillingIcon /> },
         { label: "ViewBill", path: "/receptionist-dashboard/ViewBill", icon: <ViewBillIcon /> },
         { label: "PaymentForm", path: "/receptionist-dashboard/PaymentForm", icon: <PaymentIcon /> },
+              { label: "DischargePatient", path: "/receptionist-dashboard/DischargePatient", icon: <LabIcon /> },
         { label: "BillPaymentHistory", path: "/receptionist-dashboard/BillPaymentHistory", icon: <HistoryIcon /> },
       ].map(({ label, path, icon }) => (
         <ListItem

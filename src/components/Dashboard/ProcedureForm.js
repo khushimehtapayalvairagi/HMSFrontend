@@ -117,6 +117,9 @@ const handleSubmit = async e => {
     if (formData.procedureType === 'OT') {
       navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
     }
+    else  if (formData.procedureType === 'Labour Room') {
+      navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
+    }
 
   } catch (error) {
     toast.error(error.response?.data?.message || 'Scheduling failed');

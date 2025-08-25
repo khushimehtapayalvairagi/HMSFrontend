@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react';
 import './ViewUsers.css';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 
 const ViewUsers = () => {
   const { type } = useParams();
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [userType, setUserType] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-   const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     if (type) {
       const role = type.toUpperCase();
@@ -20,36 +26,68 @@ const ViewUsers = () => {
   }, [type]);
 
   const loadUsers = async (role) => {
-  setLoading(true);
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      let response;
+
+      if (role === 'DOCTOR') {
+        response = await axios.get(`${BASE_URL}/api/admin/doctors`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
+        setFilteredUsers(response.data.doctors || []);
+      } else {
+        response = await axios.get(`${BASE_URL}/api/admin/staff`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
+        setFilteredUsers(response.data.staff || []);
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+      setFilteredUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+const deleteUser = async (id) => {
   try {
     const token = localStorage.getItem("jwt");
-    let response;
+    await axios.delete(`${BASE_URL}/api/admin/users`, {
+      data: { id, role: userType }, // axios delete needs `data` field
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
 
-    if (role === 'DOCTOR') {
-      response = await axios.get(`${BASE_URL}/api/admin/doctors`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-      setFilteredUsers(response.data.doctors || []);
-    } else {
-      response = await axios.get(`${BASE_URL}/api/admin/staff`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-      setFilteredUsers(response.data.staff || []);
-    }
+    toast.success(`${userType} deleted successfully`);
+    loadUsers(userType);
   } catch (error) {
-    console.error('Error loading users:', error);
-    setFilteredUsers([]);
+    console.error("Error deleting user:", error);
+    toast.error("Failed to delete user");
   } finally {
-    setLoading(false);
+    setAnchorEl(null);
+    setSelectedUserId(null);
   }
 };
 
+
+  const handleMenuOpen = (event, userId) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedUserId(userId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedUserId(null);
+  };
+
+  const handleSetInactive = () => {
+    if (selectedUserId) {
+     deleteUser(selectedUserId);
+    }
+  };
 
   const handleSearch = () => {
     const filtered = filteredUsers.filter((user) => {
@@ -74,7 +112,7 @@ const ViewUsers = () => {
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            handleSearch(); // optional: live search
+            handleSearch();
           }}
           className="add-user-input-field"
         />
@@ -83,34 +121,44 @@ const ViewUsers = () => {
       {loading ? (
         <p>Loading...</p>
       ) : filteredUsers.length > 0 ? (
-        <>
-          {userType === 'DOCTOR' ? (
-            <table className="users-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
+        <table className="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              {userType === "DOCTOR" && (
+                <>
                   <th>Doctor Type</th>
                   <th>Specialty</th>
-                     <th>Department</th>
+                  <th>Department</th>
                   <th>Medical License</th>
                   <th>Schedule</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.userId?.name || user.name || '-'}</td>
-                    <td>{user.userId?.email || user.email || '-'}</td>
-                    <td>{user.userId?.role || user.role || '-'}</td>
+                </>
+              )}
+              {userType === "STAFF" && (
+                <>
+                  <th>Designation</th>
+                  <th>Contact</th>
+                  <th>Department</th>
+                </>
+              )}
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.map((user) => (
+              <tr key={user._id}>
+                <td>{user.userId?.name || user.name || '-'}</td>
+                <td>{user.userId?.email || user.email || '-'}</td>
+                <td>{user.userId?.role || user.role || '-'}</td>
+
+                {userType === "DOCTOR" && (
+                  <>
                     <td>{user.doctorType || '-'}</td>
                     <td>{user.specialty?.name || '-'}</td>
-                   <td>
-                      {user.department && typeof user.department.name === 'string'
-                        ? user.department.name
-                        : '-'}
-                    </td>
+                    <td>{user.department?.name || '-'}</td>
                     <td>{user.medicalLicenseNumber || '-'}</td>
                     <td>
                       {Array.isArray(user.schedule) ? (
@@ -123,44 +171,40 @@ const ViewUsers = () => {
                         'No schedule'
                       )}
                     </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <table className="users-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Designation</th>
-                  <th>Contact</th>
-                  <th>Department</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.userId?.name || user.name}</td>
-                    <td>{user.userId?.email || user.email}</td>
-                    <td>{user.userId?.role || user.role}</td>
+                
+                  </>
+                )}
+
+                {userType === "STAFF" && (
+                  <>
                     <td>{user.designation || '-'}</td>
                     <td>{user.contactNumber || '-'}</td>
-                    <td>
-                      {user.department && typeof user.department.name === 'string'
-                        ? user.department.name
-                        : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </>
+                    <td>{user.department?.name || '-'}</td>
+                  </>
+                )}
+
+                <td>{user.isActive ? "Active ✅" : "Inactive ❌"}</td>
+                <td>
+                  <IconButton onClick={(e) => handleMenuOpen(e, user._id)}>
+                    <MoreVertIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         userType && <p>No users found</p>
       )}
+
+      {/* Dropdown menu (only one option: Inactive) */}
+      <Menu
+  anchorEl={anchorEl}
+  open={Boolean(anchorEl)}
+  onClose={handleMenuClose}
+>
+  <MenuItem onClick={handleSetInactive}>Set Inactive</MenuItem>
+</Menu>
     </div>
   );
 };

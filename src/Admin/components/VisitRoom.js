@@ -26,6 +26,7 @@ const VisitRoom = () => {
   }, []);
 
   return (
+    
     <div style={{ padding: '20px' }}>
       <h2>Visit Labour Rooms</h2>
 
