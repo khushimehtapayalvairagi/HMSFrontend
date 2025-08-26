@@ -85,7 +85,14 @@ const AddDepartment = () => {
       setFile(null);
       fetchDepartments();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Upload failed ❌");
+      const errData = error.response?.data;
+      if (errData?.errorRows) {
+        toast.error(`Validation failed at rows: ${errData.errorRows.join(", ")}`);
+      } else if (errData?.duplicateRows) {
+        toast.error(`Already exists at rows: ${errData.duplicateRows.join(", ")}`);
+      } else {
+        toast.error(errData?.message || "Upload failed ❌");
+      }
     } finally {
       setUploading(false);
     }

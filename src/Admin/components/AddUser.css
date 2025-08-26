@@ -1,69 +1,48 @@
 .form-container2 {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding: 20px;
-  margin-top: 40px;
+  margin: 20px auto;
   width: 80%;
-  box-sizing: border-box;
+  max-width: 800px;
   background-color: #fff;
   border-radius: 12px;
-  padding: 25px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s ease;
 }
 
-/* Mobile-friendly full width */
+/* Mobile-friendly */
 @media (max-width: 768px) {
   .form-container2 {
     width: 95%;
-    margin-top: 20px;
-    padding: 15px;
-  }
-}
-
-.form-card {
-  width: 100%;
-  max-width: 2000px;
-  min-width: 300px;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s ease;
-}
-
-/* Mobile padding optimization */
-@media (max-width: 768px) {
-  .form-card {
     padding: 15px;
   }
 }
 
 .form-title {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: center;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
-/* Input and select responsiveness */
+/* Inputs */
 form input,
-form select {
+form select,
+.bulk-dropdown {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
 }
 
-/* Flex wrap for schedule row on mobile */
+/* Schedule row */
 .schedule-row {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -74,6 +53,7 @@ button {
   border-radius: 6px;
   color: white;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 button:hover {
@@ -89,26 +69,31 @@ button:hover {
 }
 
 .submit-btn {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
 }
 
-.message {
+/* Bulk upload card */
+.bulk-upload-card {
+  margin-bottom: 25px;
+}
+
+.bulk-upload-box {
+  margin-top: 15px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 10px;
   text-align: center;
-  font-weight: bold;
-  margin-bottom: 20px;
 }
 
-.message.success {
-  color: green;
-}
-
-.message.error {
-  color: red;
+.bulk-upload-box h4 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1rem;
 }
 
 .error-text {
   color: red;
   font-size: 0.85rem;
-  margin-top: 4px;
 }

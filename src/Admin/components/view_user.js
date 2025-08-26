@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton, Menu, MenuItem } from "@mui/material";
-
+import { BulkUpload } from './Add_user';   
 const ViewUsers = () => {
   const { type } = useParams();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -103,6 +103,11 @@ const deleteUser = async (id) => {
 
   return (
     <div className="view-users-container">
+      <div className="bulk-upload-card">
+  <h3>Bulk Upload {userType}</h3>
+  <BulkUpload role={userType} BASE_URL={BASE_URL} onUploadSuccess={() => loadUsers(userType)} />
+</div>
+
       <h3>📋 View {userType || 'Users'}</h3>
 
       <div className="search-container">

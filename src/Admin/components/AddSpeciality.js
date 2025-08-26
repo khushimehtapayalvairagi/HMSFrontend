@@ -44,10 +44,13 @@ const AddSpeciality = () => {
     }
 
     try {
+       const token = localStorage.getItem("jwt");
       const res = await axios.post(
         `${BASE_URL}/api/admin/specialties`,
         { name, description },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
+        {
+  headers: { Authorization: `Bearer ${token}` },
+  }
       );
       toast.success(res.data.message || "Specialty created ✅");
       setName("");
@@ -62,28 +65,47 @@ const AddSpeciality = () => {
   };
 
   // ✅ Bulk upload
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file first!");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
+ const handleUpload = async () => {
+  if (!file) {
+    alert("Please select a file first!");
+    return;
+  }
 
-    try {
-      setUploading(true);
-      const res = await axios.post(`${BASE_URL}/api/admin/speciality`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      toast.success(res.data.message || "Bulk upload successful ✅");
-      setFile(null);
-      fetchSpecialties();
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Upload failed ❌");
-    } finally {
-      setUploading(false);
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    setUploading(true);
+    const token = localStorage.getItem("jwt"); // get token
+
+    const res = await axios.post(
+      `${BASE_URL}/api/admin/speciality`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // 🔑 attach token
+        },
+      }
+    );
+
+    toast.success(res.data.message || "Bulk upload successful ✅");
+    setFile(null);
+    fetchSpecialties();
+  }catch (error) {
+    const errData = error.response?.data;
+    if (errData?.errorRows) {
+      toast.error(`Validation failed at rows: ${errData.errorRows.join(", ")}`);
+    } else if (errData?.duplicateRows) {
+      toast.error(`Already exists at rows: ${errData.duplicateRows.join(", ")}`);
+    } else {
+      toast.error(errData?.message || "Upload failed ❌");
     }
-  };
+  }finally {
+    setUploading(false);
+  }
+};
+
 
   return (
     <div
