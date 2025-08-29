@@ -261,7 +261,12 @@ const isMobile = useMediaQuery('(max-width:600px)');
                     <p><strong>Date:</strong> {new Date(p.payment_date).toLocaleString()}</p>
                     <p><strong>Amount:</strong> ₹{p.amount_paid}</p>
                     <p><strong>Method:</strong> {p.payment_method}</p>
-                    <p><strong>By:</strong> {p.received_by_user_id_ref.name}</p>
+                     <p>
+  <strong>By:</strong>{" "}
+  {p.received_by_user_id_ref 
+    ? `${p.received_by_user_id_ref?.name} (${p.received_by_user_id_ref?.role})` 
+    : "n/a"}
+</p>
                   </div>
                 ))
               )}

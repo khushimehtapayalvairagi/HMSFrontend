@@ -41,6 +41,9 @@ const closeNurseMenu = () => setNurseAnchor(null);
 const [inventoryAnchor, setInventoryAnchor] = useState(null);
 const openInventoryMenu = (event) => setInventoryAnchor(event.currentTarget);
 const closeInventoryMenu = () => setInventoryAnchor(null);
+const [doctorAnchor, setDoctorAnchor] = useState(null);
+const openDoctorMenu = (event) => setDoctorAnchor(event.currentTarget);
+const closeDoctorMenu = () => setDoctorAnchor(null);
 
   const location = useLocation();
    const openReceptionistMenu = (event) => setReceptionistAnchor(event.currentTarget);
@@ -135,11 +138,13 @@ const closeInventoryMenu = () => setInventoryAnchor(null);
 //   setDropdownOpen: setDoctorDropdownOpen,
 //   content: (
 //     <>
-//       <Link to="doctor/home" style={dropdownLinkStyle}>🏠 Home</Link>
-     
+//       <Link to="doctor" style={dropdownLinkStyle}>🏠 Home</Link>
+//       <Link to="doctor/opd-consultation" style={dropdownLinkStyle}>📝 OPD Consultation</Link>
+//       <Link to="doctor/previous-consultations" style={dropdownLinkStyle}>📋 Previous Consultations</Link>
 //     </>
 //   )
 // },
+// ,
 
 
 
@@ -311,17 +316,15 @@ const closeInventoryMenu = () => setInventoryAnchor(null);
   <AssignmentInd />
 </IconButton>
       <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
-         <MenuItem
-    onClick={() => {
-      // Close other modules
-      modules.forEach(m => m.setDropdownOpen(false));
-      setDoctorDropdownOpen(true); // open doctor sidebar
-      setActiveModuleLabel("Doctor Dashboard");
-      closeRoleMenu();
-    }}
-  >
-    🩺 Doctor
-  </MenuItem>
+    <MenuItem
+  onClick={(e) => {
+    closeRoleMenu();
+    openDoctorMenu(e);   // open Doctor submenu
+  }}
+>
+  🩺 Doctor ▸
+</MenuItem>
+
     <MenuItem
     onClick={(e) => {
       closeRoleMenu();
@@ -453,6 +456,31 @@ const closeInventoryMenu = () => setInventoryAnchor(null);
         closeInventoryMenu();
         modules.forEach(m => m.setDropdownOpen(false));
         setInventoryDropdownOpen(false);
+        setActiveModuleLabel(item.label);
+      }}
+    >
+      {item.label}
+    </MenuItem>
+  ))}
+</Menu>
+<Menu
+  anchorEl={doctorAnchor}
+  open={Boolean(doctorAnchor)}
+  onClose={closeDoctorMenu}
+  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+  transformOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  {[
+    { to: "doctor", label: "🏠 Home" },
+    { to: "doctor/opd-consultation", label: "📝 OPD Consultation" },
+    { to: "doctor/previous-consultations", label: "📋 Previous Consultations" },
+  ].map((item, i) => (
+    <MenuItem
+      key={i}
+      component={Link}
+      to={item.to}
+      onClick={() => {
+        closeDoctorMenu();
         setActiveModuleLabel(item.label);
       }}
     >

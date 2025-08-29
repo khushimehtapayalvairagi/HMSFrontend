@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PaymentForm({ onPaymentSuccess }) {
   const [patients, setPatients] = useState([]);
@@ -12,7 +13,7 @@ export default function PaymentForm({ onPaymentSuccess }) {
 const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
-
+const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     const fetchAdmittedPatients = async () => {
       try {
@@ -91,7 +92,9 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
         amount_paid: amt,
         payment_method: form.method,
         external_reference_number: form.externalRef || undefined,
-        received_by_user_id_ref: JSON.parse(localStorage.user).id
+
+received_by_user_id_ref:  user.id
+
       };
 
       const { data } = await axios.post(`${BASE_URL}/api/billing/payments`, payload, { headers });
@@ -211,7 +214,12 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
                   <p><strong>Date:</strong> {new Date(p.payment_date).toLocaleString()}</p>
                   <p><strong>Amt:</strong> ₹{p.amount_paid}</p>
                   <p><strong>Method:</strong> {p.payment_method}</p>
-                  <p><strong>By:</strong> {p.received_by_user_id_ref.name} ({p.received_by_user_id_ref.role})</p>
+                 <p>
+  <strong>By:</strong>{" "}
+  {p.received_by_user_id_ref 
+    ? `${p.received_by_user_id_ref?.name} (${p.received_by_user_id_ref?.role})` 
+    : "n/a"}
+</p>
                 </div>
               ))
             )}
@@ -220,6 +228,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
       )}
 
       {selectedPatient && !bill && <p style={styles.info}>No pending bills for this patient.</p>}
+   <ToastContainer/>
     </div>
   );
 }

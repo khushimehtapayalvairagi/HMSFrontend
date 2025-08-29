@@ -201,7 +201,10 @@ const [dialogOpen, setDialogOpen] = useState(false);
         <Typography><strong>Gender:</strong> {selectedPatient.gender}</Typography>
         <Typography><strong>Email:</strong> {selectedPatient.email}</Typography>
         <Typography><strong>Contact Number:</strong> {selectedPatient.contactNumber}</Typography>
+       <Typography><strong>Aadhaar Number:</strong> {selectedPatient.aadhaarNumber}</Typography>
+
         <Typography><strong>Address:</strong> {selectedPatient.address}</Typography>
+      
         <Typography mt={2}><strong>Relatives:</strong></Typography>
         {selectedPatient.relatives?.length ? (
           <ul>

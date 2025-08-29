@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './PatientForm.css';
 
 const PatientForm = () => {
   const printRef = useRef();
@@ -12,6 +13,7 @@ const PatientForm = () => {
     contactNumber: '',
     email: '',
     address: '',
+      aadhaarNumber: '',
     relatives: [{ name: '', contactNumber: '', relationship: '' }]
   });
   const [errors, setErrors] = useState({});
@@ -32,12 +34,16 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   const relRow = { display: 'flex', gap: '0.5rem', marginBottom: '0.8rem', alignItems: 'center' };
 
   const validateContact = (val) => /^\d*$/.test(val) && val.length <= 10;
-
+const validateAadhaar = (val) => /^\d{0,12}$/.test(val);
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'contactNumber' && !validateContact(value)) {
       return toast.error('Contact number must be up to 10 digits');
-    } if (value.length < 10) {
+    }
+      if (name === 'aadhaarNumber' && !validateAadhaar(value)) {
+      return toast.error('Aadhaar must be numeric and max 12 digits');
+    }
+    if (value.length < 10) {
       setErrors((p) => ({ ...p, contactNumber: "Contact number must be 10 digits" }));
     } else {
       setErrors((p) => {
@@ -88,6 +94,9 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
       return toast.error("Relative contact must be exactly 10 digits");
     }
   }
+    if (form.aadhaarNumber.length !== 12) {
+      return toast.error('Aadhaar number must be exactly 12 digits');
+    }
     const token = localStorage.getItem('jwt');
     if (!token) return toast.error('Please log in first');
     try {
@@ -105,13 +114,20 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
     }
   };
 
-  const handlePrint = () => {
-    const content = printRef.current.outerHTML;
-    const w = window.open('', '', 'width=800,height=600');
-    w.document.write(`<html><head><title>Patient Details</title></head><body>${content}</body></html>`);
-    w.document.close();
-    w.print();
-  };
+const handlePrint = () => {
+  if (!printRef.current) return;
+  const content = printRef.current.innerHTML; // 👈 only the contents
+  const w = window.open('', '', 'width=800,height=600');
+  w.document.write(`
+    <html>
+      <head><title>Patient Details</title></head>
+      <body>${content}</body>
+    </html>
+  `);
+  w.document.close();
+  w.print();
+};
+
 
   return (
     <div style={cardStyle}>
@@ -128,15 +144,23 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
             style={{ flex: 1 }}
           />
     
-<input
-  type="text"
-  name="dob"
-  placeholder="DOB"
-  value={form.dob}
-  onChange={handleChange}
-  required
-  style={{ flex: 1 }}
-/>
+<div style={{ flex: 1, position: "relative" }}>
+  <input
+    type="date"
+    name="dob"
+    value={form.dob}
+    onChange={handleChange}
+    required
+    placeholder="DOB"
+    style={{
+      width: "100%",
+      padding: "8px",
+      fontFamily: "inherit"
+    }}
+  />
+</div>
+
+
 
 
         </div>
@@ -165,7 +189,17 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
             maxLength={10}
           />
         </div>
-
+          <div style={{ marginBottom: '1rem' }}>
+          <input
+            name="aadhaarNumber"
+            placeholder="🆔 Aadhaar Number"
+            value={form.aadhaarNumber}
+            onChange={handleChange}
+            required
+            maxLength={12}
+            style={{ width: '100%' }}
+          />
+        </div>
         {/* Email & Address */}
         <div style={twoCol}>
           <input
@@ -265,15 +299,26 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
       {submittedData && (
         <div style={{ marginTop: '2rem' }}>
           <button onClick={handlePrint}>Print Patient Details</button>
-          <div ref={printRef} style={{ display: 'none' }}>
+<div
+  ref={printRef}
+  style={{
+    position: "absolute",
+    left: "-9999px", // move it off screen instead of hiding
+    top: 0
+  }}
+>
+
             <h2>Patient Registration Details</h2>
             <p><strong>Patient ID:</strong> {submittedData.patientId}</p>
             <p><strong>Name:</strong> {submittedData.fullName}</p>
             <p><strong>DOB:</strong> {new Date(submittedData.dob).toLocaleDateString()}</p>
             <p><strong>Gender:</strong> {submittedData.gender}</p>
             <p><strong>Contact:</strong> {submittedData.contactNumber}</p>
+             <p><strong>Aadhaar:</strong> {submittedData.aadhaarNumber}</p>
             <p><strong>Email:</strong> {submittedData.email}</p>
-            <p><strong>Address:</strong> {submittedData.address}</p>
+           
+           <p><strong>Address:</strong> {submittedData.address}</p>
+           
             <h4>Relatives:</h4>
             <ul>
               {submittedData.relatives.map((r, idx) => (
@@ -283,7 +328,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
           </div>
         </div>
       )}
-
+ <ToastContainer />
     </div>
   );
 };

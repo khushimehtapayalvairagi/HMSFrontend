@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef} from 'react';
 import axios from 'axios';
 import { useParams,useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [transcribedByUserId, setTranscribedByUserId] = useState('');
 const navigate = useNavigate();
 
- 
+  const prescriptionRef = useRef(null); 
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -67,6 +67,20 @@ const handleSubmit = async (e) => {
     toast.error(err.response?.data?.message || 'Failed to submit consultation.');
   }
 };
+
+  const handlePrintPrescription = () => {
+    if (!prescriptionRef.current) return;
+    const content = prescriptionRef.current.innerHTML;
+    const w = window.open('', '', 'width=800,height=600');
+    w.document.write(`
+      <html>
+        <head><title>Prescription</title></head>
+        <body>${content}</body>
+      </html>
+    `);
+    w.document.close();
+    w.print();
+  };
 
   useEffect(() => {
   if (visit) {
@@ -166,37 +180,33 @@ const handleSubmit = async (e) => {
         />
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button
-          type="button"
-          onClick={() => window.print()}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#6c757d',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Print
-        </button>
-        <button
-          type="submit"
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#1976d2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Submit Consultation
-        </button>
-      </div>
+     
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <button
+            type="button"
+            onClick={handlePrintPrescription}
+           variant="outlined" color="secondary"
+          >
+            Print Prescription
+          </button>
+          <button type="submit" variant="contained" color="primary">Submit Consultation</button>
+        </div>
+      
     </form>
-
+      <div ref={prescriptionRef} style={{ display: 'none' }}>
+        <h2 style={{ textAlign: 'center' }}>🧾 Prescription</h2>
+        <p><strong>Patient ID:</strong> {visit.patientId}</p>
+        <p><strong>Patient Name:</strong> {visit.patientDbId?.fullName}</p>
+        <p><strong>DOB:</strong> {visit.patientDbId?.dob ? new Date(visit.patientDbId.dob).toLocaleDateString() : 'N/A'}</p>
+        <p><strong>Mobile:</strong> {visit.patientDbId?.contactNumber || 'N/A'}</p>
+        <p><strong>Aadhaar:</strong> {visit.patientDbId?.aadhaarNumber || 'N/A'}</p>
+        <hr />
+        <p><strong>Chief Complaint:</strong> {chiefComplaint}</p>
+        <p><strong>Diagnosis:</strong> {diagnosis}</p>
+        <p><strong>Doctor Notes:</strong> {doctorNotes}</p>
+        <p><strong>Lab Investigations:</strong> {labInvestigationsSuggested}</p>
+        <p><strong>Medicines:</strong> {medicinesPrescribedText}</p>
+      </div>
     <ToastContainer position="top-right" autoClose={3000} />
   </>
 );
