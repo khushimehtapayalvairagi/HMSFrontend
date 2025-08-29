@@ -41,6 +41,8 @@ const ViewPatient = () => {
   const [openRow, setOpenRow] = useState(null);
 const [selectedPatient, setSelectedPatient] = useState(null);
 const [dialogOpen, setDialogOpen] = useState(false);
+
+
     const BASE_URL = process.env.REACT_APP_BASE_URL;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -53,10 +55,10 @@ const [dialogOpen, setDialogOpen] = useState(false);
           `${BASE_URL}/api/receptionist/patients`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        const activePatients = res.data.patients?.filter(
-          (p) => p.status.toLowerCase() !== "discharged"
-        );
-        setPatients(activePatients || []);
+        // const activePatients = res.data.patients?.filter(
+        //   (p) => p.status.toLowerCase() !== "discharged"
+        // );
+       setPatients(res.data.patients || []); 
       } catch (err) {
         toast.error("Failed to fetch patients");
       }
@@ -64,30 +66,48 @@ const [dialogOpen, setDialogOpen] = useState(false);
 
     fetchPatients();
   }, []);
+//   const normalizeDate = (dob) => {
+//   if (!dob) return null;
+//   const parts = dob.split("/").map(Number);
+//   if (parts.length !== 3) return null;
+//   const [day, month, year] = parts;
+//   return `${year.toString().padStart(4,"0")}-${month.toString().padStart(2,"0")}-${day.toString().padStart(2,"0")}`;
+// };
+const handleSearch = () => {
+  const search = searchId.trim();
+  if (!search) {
+    setFilteredPatient(null);
+    return;
+  }
 
-  const handleSearch = async () => {
-    if (!searchId.trim()) return toast.warn("Enter patient ID to search");
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("jwt");
-      const res = await axios.get(
-        `${BASE_URL}/api/receptionist/patients/${searchId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const patient = res.data.patient;
-      if (patient.status.toLowerCase() === "discharged") {
-        setFilteredPatient(null);
-        toast.warn("Patient is discharged and not shown.");
-      } else {
-        setFilteredPatient(patient);
-      }
-    } catch (err) {
-      setFilteredPatient(null);
-      toast.error(err.response?.data?.message || "Patient not found.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const found = patients.filter((p) => {
+    // Match by Patient ID or Name
+    if (p.patientId?.toLowerCase() === search.toLowerCase()) return true;
+    if (p.fullName?.toLowerCase().includes(search.toLowerCase())) return true;
+
+    // Match by Aadhaar (ignore spaces)
+    if (p.aadhaarNumber?.replace(/\s/g, '').includes(search.replace(/\s/g, ''))) return true;
+
+  
+
+    return false;
+  });
+
+  if (found.length > 0) {
+    setFilteredPatient(found); // always an array
+  } else {
+    setFilteredPatient([]);
+    toast.error("No patient found");
+  }
+};
+
+
+
+
+
+
+
+
 
   const renderTableRow = (p, index) => (
     <React.Fragment key={p.patientId} >
@@ -134,9 +154,9 @@ const [dialogOpen, setDialogOpen] = useState(false);
     </React.Fragment>
   );
 
-  const rowsToRender = filteredPatient
-    ? [filteredPatient]
-    : [...patients].reverse();
+const rowsToRender = filteredPatient && filteredPatient.length > 0 ? filteredPatient : [...patients].reverse();
+
+
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -145,7 +165,7 @@ const [dialogOpen, setDialogOpen] = useState(false);
       </Typography>
 
       <TextField
-        label="Search by Patient ID"
+        label="Search by Patient ID, Name or Aadhaar"
         variant="outlined"
         fullWidth
         value={searchId}
@@ -174,6 +194,7 @@ const [dialogOpen, setDialogOpen] = useState(false);
   <TableRow sx={{ p: 0, border: 1 }}>
     <TableCell>Sr. No.</TableCell>
     <TableCell>Patient ID</TableCell>
+    
     <TableCell>Name</TableCell>
     {!isMobile && <TableCell>DOB</TableCell>}
     {!isMobile && <TableCell>Gender</TableCell>}

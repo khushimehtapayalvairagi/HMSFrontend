@@ -12,6 +12,7 @@ const OPDConsultationForm = () => {
    const [visit, setVisit] = useState(location.state?.visit || null);
   const [loading, setLoading] = useState(true);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+ const user = JSON.parse(localStorage.getItem('user')) || {};
   // Form states...
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
@@ -28,7 +29,7 @@ const navigate = useNavigate();
 const handleSubmit = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem('jwt');
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user')) || {};
 
   if (!chiefComplaint) {
     toast.error('Chief Complaint is required.');
@@ -171,13 +172,7 @@ const handleSubmit = async (e) => {
 </label>
 
       {transcribedFromPaperNotes && (
-        <input
-          type="text"
-          placeholder="Transcribed By User ID"
-          value={transcribedByUserId}
-          onChange={(e) => setTranscribedByUserId(e.target.value)}
-          style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-        />
+       <p>Will be transcribed by: {user.name}</p>
       )}
 
      
@@ -206,6 +201,9 @@ const handleSubmit = async (e) => {
         <p><strong>Doctor Notes:</strong> {doctorNotes}</p>
         <p><strong>Lab Investigations:</strong> {labInvestigationsSuggested}</p>
         <p><strong>Medicines:</strong> {medicinesPrescribedText}</p>
+       {transcribedFromPaperNotes && (
+    <p><strong>Transcribed By:</strong> {user.name}</p>
+  )}
       </div>
     <ToastContainer position="top-right" autoClose={3000} />
   </>
