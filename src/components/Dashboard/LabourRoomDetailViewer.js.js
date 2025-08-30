@@ -128,7 +128,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
               <p><strong>Time of Birth:</strong> {selectedDetail.timeOfBirth}</p>
               <p><strong>Weight:</strong> {selectedDetail.weight || 'N/A'}</p>
               <p><strong>Delivery Type:</strong> {selectedDetail.deliveryType}</p>
-              {/* <p><strong>Captured By:</strong> {selectedDetail.capturedByUserId?.name} ({selectedDetail.capturedByUserId?.role})</p> */}
+              <p><strong>Captured By:</strong> {selectedDetail.capturedByUserId?.name} ({selectedDetail.capturedByUserId?.role})</p>
             </>
           )}
         </DialogContent>

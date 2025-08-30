@@ -93,7 +93,7 @@ const user = JSON.parse(localStorage.getItem("user"));
         payment_method: form.method,
         external_reference_number: form.externalRef || undefined,
 
-received_by_user_id_ref:  user.id
+received_by_user_id_ref: user.userId
 
       };
 
