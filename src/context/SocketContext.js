@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import { useAdmissionAdvice } from '../context/AdmissionAdviceContext';
 
-const socket = io('http://localhost:8000', { withCredentials: true });
+const socket = io(process.env.REACT_APP_BASE_URL ,{ withCredentials: true });
 
 const SocketContext = () => {
   const { setAdviceData } = useAdmissionAdvice();

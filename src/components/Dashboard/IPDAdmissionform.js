@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAdmissionAdvice } from '../../context/AdmissionAdviceContext';
-const socket = io('http://localhost:8000', {
-  withCredentials: true,
-});
+
 
 const IPDAdmissionForm = () => {
   const navigate = useNavigate();
@@ -60,36 +57,36 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   fetchRoomCategories();
 
   
-  socket.emit('joinReceptionistRoom');
- console.log('Joined receptionist room:');
-  socket.on('newIPDAdmissionAdvice', (data) => {
-    toast.info(`Doctor advised admission for Patient ID: ${data.patientName}`);
+//   socket.emit('joinReceptionistRoom');
+//  console.log('Joined receptionist room:');
+//   socket.on('newIPDAdmissionAdvice', (data) => {
+//     toast.info(`Doctor advised admission for Patient ID: ${data.patientName}`);
 
-  // setPatientId(data.patientDisplayId || ''); // for UI
-setPatientDbId(data.patientDbId || '');    // actual ObjectId for API
+//   // setPatientId(data.patientDisplayId || ''); // for UI
+// setPatientDbId(data.patientDbId || '');    // actual ObjectId for API
  
-    setVisitId(data.visitId || '');
+//     setVisitId(data.visitId || '');
   
-setAdmittingDoctorId(
-  data.admittingDoctorId 
-  || data.doctorId 
-  || visit?.assignedDoctorId 
-  || adviceData?.admittingDoctorId 
-  || ''
-);
-console.log("🔥 DoctorId from advice/socket:", data.admittingDoctorId, data.doctorId);
-    setPatientName(data.patientName || '');
-setDoctorName(data.doctorName || '');
+// setAdmittingDoctorId(
+//   data.admittingDoctorId 
+//   || data.doctorId 
+//   || visit?.assignedDoctorId 
+//   || adviceData?.admittingDoctorId 
+//   || ''
+// );
+// console.log("🔥 DoctorId from advice/socket:", data.admittingDoctorId, data.doctorId);
+//     setPatientName(data.patientName || '');
+// setDoctorName(data.doctorName || '');
 
 
     
-  });
+//   });
 
   
 
-  return () => {
-    socket.off('newIPDAdmissionAdvice');
-  };
+//   return () => {
+//     socket.off('newIPDAdmissionAdvice');
+//   };
 }, []);
 
 

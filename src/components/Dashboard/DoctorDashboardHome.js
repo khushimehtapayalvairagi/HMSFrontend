@@ -17,9 +17,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const socket = io('http://localhost:8000', {
-  withCredentials: true,
-});
+// const socket = io(process.env.REACT_APP_BASE_URL, {
+//   withCredentials: true,
+// });
 
 const DoctorDashboardHome = () => {
   const [assignedVisits, setAssignedVisits] = useState([]);
@@ -73,7 +73,9 @@ const fetchVisits = async () => {
 
   useEffect(() => {
     if (!doctor) return;
-
+const socket = io(process.env.REACT_APP_BASE_URL, {
+  withCredentials: true,
+});
   const doctorId = doctor.id;
   console.log(doctorId);
   doctorRef.current = doctor;
@@ -173,7 +175,7 @@ const fetchVisits = async () => {
           );
         })
       )}
-
+ <ToastContainer position="top-right" autoClose={3000} />
     </Container>
   );
 };
