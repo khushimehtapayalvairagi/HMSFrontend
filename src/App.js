@@ -1,6 +1,5 @@
 // App.js
 import React from 'react';
-import SocketContext from './context/SocketContext.js';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminDashboard from './Admin/components/AdminDashboard';
 import AddUser from './Admin/components/Add_user';
@@ -144,7 +143,6 @@ const App = () => {
 
       </Route>
       </Route>
-          <Route element={<><SocketContext/> <ProtectedRoute role="STAFF" /> </>}>
  <Route
   path="/receptionist-dashboard"element={<ReceptionistDashboard />}
 >
@@ -170,7 +168,7 @@ const App = () => {
 <Route path ="PaymentForm" element={<PaymentForm/>}/>
 <Route path ="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 </Route>
-      </Route>
+     
  <Route  element={<ProtectedRoute role="DOCTOR" />} >
     <Route path="/doctor-dashboard"  element={<DoctorDashboard />}>
  <Route index element={<DoctorDashboardHome />} />
