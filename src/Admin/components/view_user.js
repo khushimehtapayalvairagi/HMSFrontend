@@ -205,6 +205,7 @@ const deleteUser = async (id) => {
       {/* Dropdown menu (only one option: Inactive) */}
       <Menu
   anchorEl={anchorEl}
+  
   open={Boolean(anchorEl)}
   onClose={handleMenuClose}
 >

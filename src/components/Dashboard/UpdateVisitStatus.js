@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const socket = io('http://localhost:8000', { withCredentials: true });
+const socket = io(process.env.REACT_APP_BASE_URL, { withCredentials: true });
 
 const UpdateVisitStatusPage = () => {
   const [activeTab, setActiveTab] = useState('Registered');
