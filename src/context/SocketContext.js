@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import io from 'socket.io-client';
 import { useAdmissionAdvice } from '../context/AdmissionAdviceContext';
-
-const socket = io(process.env.REACT_APP_BASE_URL ,{ withCredentials: true });
+import socket from "../context/socket";
 
 const SocketContext = () => {
   const { setAdviceData } = useAdmissionAdvice();

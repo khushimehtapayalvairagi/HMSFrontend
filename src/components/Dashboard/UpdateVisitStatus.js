@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import io from 'socket.io-client';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const socket = io(process.env.REACT_APP_BASE_URL, { withCredentials: true });
+import socket from "../../context/socket";
+ 
 
 const UpdateVisitStatusPage = () => {
   const [activeTab, setActiveTab] = useState('Registered');

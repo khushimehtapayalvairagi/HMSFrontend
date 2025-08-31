@@ -90,6 +90,7 @@ const App = () => {
 
   return (
     <>
+  
     <Routes>
     <Route element={<ProtectedRoute role="ADMIN" />}>
     <Route
@@ -143,6 +144,8 @@ const App = () => {
 
       </Route>
       </Route>
+      <Route>
+       
  <Route
   path="/receptionist-dashboard"element={<ReceptionistDashboard />}
 >
@@ -168,7 +171,7 @@ const App = () => {
 <Route path ="PaymentForm" element={<PaymentForm/>}/>
 <Route path ="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 </Route>
-     
+     </Route>
  <Route  element={<ProtectedRoute role="DOCTOR" />} >
     <Route path="/doctor-dashboard"  element={<DoctorDashboard />}>
  <Route index element={<DoctorDashboardHome />} />

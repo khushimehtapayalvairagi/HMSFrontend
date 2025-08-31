@@ -16,11 +16,6 @@ const { adviceData, setAdviceData } = useAdmissionAdvice();
 const patient = location.state?.patient || null;
 const visit = location.state?.visit || null;
 
-const initialPatientId =
-  adviceData?.patientDbId || // <-- Ensure this holds the ObjectId from Mongo
-  patient?._id ||             // If coming from patient object
-  visit?.patientId ||         // If coming from visit object
-  '';
 
 const initialVisitId = adviceData?.visitId || visit?._id || '';
 const initialAdmittingDoctorId = adviceData?.admittingDoctorId || visit?.assignedDoctorId || '';
@@ -57,36 +52,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
   fetchRoomCategories();
 
   
-//   socket.emit('joinReceptionistRoom');
-//  console.log('Joined receptionist room:');
-//   socket.on('newIPDAdmissionAdvice', (data) => {
-//     toast.info(`Doctor advised admission for Patient ID: ${data.patientName}`);
 
-//   // setPatientId(data.patientDisplayId || ''); // for UI
-// setPatientDbId(data.patientDbId || '');    // actual ObjectId for API
- 
-//     setVisitId(data.visitId || '');
-  
-// setAdmittingDoctorId(
-//   data.admittingDoctorId 
-//   || data.doctorId 
-//   || visit?.assignedDoctorId 
-//   || adviceData?.admittingDoctorId 
-//   || ''
-// );
-// console.log("🔥 DoctorId from advice/socket:", data.admittingDoctorId, data.doctorId);
-//     setPatientName(data.patientName || '');
-// setDoctorName(data.doctorName || '');
-
-
-    
-//   });
-
-  
-
-//   return () => {
-//     socket.off('newIPDAdmissionAdvice');
-//   };
 }, []);
 
 
