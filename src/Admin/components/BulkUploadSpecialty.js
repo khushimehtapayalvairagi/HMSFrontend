@@ -24,10 +24,13 @@ const BulkUploadSpecialty = ({ onUploadSuccess }) => {
 
     try {
       setUploading(true);
+       const token = localStorage.getItem("jwt");
       const res = await axios.post(
         `${BASE_URL}/api/admin/speciality`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "multipart/form-data",
+           Authorization: `Bearer ${token}`,
+         } }
       );
       toast.success(res.data.message || "Bulk upload successful!");
       onUploadSuccess(); // Refresh list in parent
