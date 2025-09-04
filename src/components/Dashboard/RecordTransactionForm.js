@@ -45,10 +45,12 @@ const RecordTransactionForm = ({ userId: propUserId, onSuccess }) => {
       setItemCode(storedItem.itemCode);
     }
 
-    if (!propUserId) {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user?.id) setUserId(user.id);
-    }
+   if (!propUserId) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user?.userId) setUserId(user.userId); // 👈 fix here
+}
+
+
   }, []);
 
   useEffect(() => {

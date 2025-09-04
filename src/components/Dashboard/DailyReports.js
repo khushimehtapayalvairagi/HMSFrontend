@@ -30,7 +30,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
         `${BASE_URL}/api/ipd/reports`,
         {
           ipdAdmissionId,
-         recordedByUserId: user.userId || user.id,
+         recordedByUserId:  user.id,
 
           vitals,
           nurseNotes,
