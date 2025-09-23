@@ -21,29 +21,21 @@ export default function BillPaymentHistory() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 const isMobile = useMediaQuery('(max-width:600px)');
 
-  useEffect(() => {
-    const fetchAdmittedPatients = async () => {
-      try {
-        const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, { headers });
-        const allPatients = patientRes.data.patients;
-        const admittedPatients = [];
+ useEffect(() => {
+  const fetchAllPatients = async () => {
+    try {
+      const patientRes = await axios.get(`${BASE_URL}/api/receptionist/patients`, { headers });
+      setPatients(patientRes.data.patients || []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to load patients');
+    }
+  };
 
-        for (const patient of allPatients) {
-          const res = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, { headers });
-          const admissions = res.data.admissions || [];
-          if (admissions.some(adm => adm.status === 'Admitted')) {
-            admittedPatients.push(patient);
-          }
-        }
+  fetchAllPatients();
+}, []);
 
-        setPatients(admittedPatients);
-      } catch {
-        toast.error('Failed to load admitted patients');
-      }
-    };
 
-    fetchAdmittedPatients();
-  }, []);
 
   useEffect(() => {
     if (!selectedPatient) return setBills([]);

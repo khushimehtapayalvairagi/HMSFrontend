@@ -145,32 +145,32 @@ const App = () => {
       </Route>
       </Route>
       <Route>
-       
- <Route
-  path="/receptionist-dashboard"element={<ReceptionistDashboard />}
->
+<Route path="/receptionist-dashboard" element={<ReceptionistDashboard />}>
   <Route path="patient-form" element={<PatientForm/>} />
-   <Route path="viewPatient" element={<ViewPatient/>} />
-      <Route path="visit-form" element={<VisitForm/>} />
-       <Route path="patient-visits-viewer" element={<PatientVisitsViewer/>} />
-<Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage/>} />
-<Route path="IPDAdmissionForm" element={<IPDAdmissionForm/>} />
-<Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
+  <Route path="viewPatient" element={<ViewPatient/>} />
+  <Route path="visit-form" element={<VisitForm/>} />
+  <Route path="patient-visits-viewer" element={<PatientVisitsViewer/>} />
+  <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage/>} />
+  <Route path="IPDAdmissionForm" element={<IPDAdmissionForm/>} />
+  <Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
+  <Route path="ProcedureForm" element={<ProcedureForm/>} />
+  <Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
+  <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
+  <Route path="LabourRoom" element={<LabourRoom />} />
+  <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
+  <Route path="DischargePatient" element={<DischargePatient/>} />
+  <Route path="Billing" element={<CreateBillForm/>} />
+  <Route path="ViewBill" element={<ViewBill/>}/>
+  <Route path="PaymentForm" element={<PaymentForm/>}/>
+  <Route path="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 
-<Route path="ProcedureForm" element={<ProcedureForm/>} />
-<Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
- 
-<Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
-
- <Route path="LabourRoom" element={<LabourRoom />} />
-
-<Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
-<Route path="DischargePatient" element={<DischargePatient/>} />
-<Route path="Billing" element={<CreateBillForm/>} />
-<Route path='ViewBill' element={<ViewBill/>}/>
-<Route path ="PaymentForm" element={<PaymentForm/>}/>
-<Route path ="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
+  {/* 🚀 Nurse modules merged into Receptionist */}
+  <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
+  <Route path="DailyReports" element={<DailyReports />} />
+  <Route path="ViewDailyReports" element={<ViewDailyReports />} />
+  <Route path="NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
 </Route>
+
      </Route>
  <Route  element={<ProtectedRoute role="DOCTOR" />} >
     <Route path="/doctor-dashboard"  element={<DoctorDashboard />}>

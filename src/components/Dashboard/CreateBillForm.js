@@ -173,8 +173,13 @@ console.log("Calling reports API for", ipdAdmissionId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+     console.log("🔎 Validation before creating bill:");
+  console.log("patientId:", patientId || "❌ MISSING");
+  console.log("visitId:", visitId || "❌ MISSING");
+  console.log("ipdAdmissionId:", ipdAdmissionId || "❌ MISSING");
+  console.log("userId:", userId || "❌ MISSING");
 
-    if (!patientId || !visitId || !ipdAdmissionId || !userId) {
+    if (!patientId || !ipdAdmissionId || !userId) {
       toast.error('Required patient/admission/visit/user info missing');
       return;
     }
@@ -189,7 +194,7 @@ console.log("Calling reports API for", ipdAdmissionId);
 
     const payload = {
       patient_id_ref: patientId,
-      visit_id_ref: visitId,
+      // visit_id_ref: visitId,
       ipd_admission_id_ref: ipdAdmissionId,
       generated_by_user_id: userId,
       items: cleanedItems
@@ -224,7 +229,10 @@ if (errorMessage === 'This procedure has already been billed.') {
           <select value={patientId} onChange={e => setPatientId(e.target.value)} required style={{ width: '100%', padding: '8px' }}>
             <option value="">-- Select Patient --</option>
             {patients.map(p => (
-              <option key={p._id} value={p._id}>{p.fullName}</option>
+            <option value={p._id}>
+  {p.patientId} – {p.fullName}
+</option>
+
             ))}
           </select>
         </div>

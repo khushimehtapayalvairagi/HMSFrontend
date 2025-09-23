@@ -69,7 +69,7 @@ const AddUser = () => {
     doctorType: '',
     specialty: '',
     medicalLicenseNumber: '',
-    schedule: [],
+    // schedule: [],
     contactNumber: '',
     designation: '',
     department: '',
@@ -134,28 +134,28 @@ const AddUser = () => {
     }
   };
 
-  const handleScheduleChange = (index, field, value) => {
-    const updated = [...form.schedule];
-    updated[index][field] = value;
-    setForm({ ...form, schedule: updated });
-  };
+  // const handleScheduleChange = (index, field, value) => {
+  //   const updated = [...form.schedule];
+  //   updated[index][field] = value;
+  //   setForm({ ...form, schedule: updated });
+  // };
 
-  const addScheduleRow = () => {
-    if (form.schedule.length >= 7) {
-      toast.error('You can only add up to 7 schedule entries (one per day).');
-      return;
-    }
-    setForm({
-      ...form,
-      schedule: [...form.schedule, { dayOfWeek: '', startTime: '', endTime: '', isAvailable: true }],
-    });
-  };
+  // const addScheduleRow = () => {
+  //   if (form.schedule.length >= 7) {
+  //     toast.error('You can only add up to 7 schedule entries (one per day).');
+  //     return;
+  //   }
+  //   setForm({
+  //     ...form,
+  //     schedule: [...form.schedule, { dayOfWeek: '', startTime: '', endTime: '', isAvailable: true }],
+  //   });
+  // };
 
-  const removeScheduleRow = (index) => {
-    const updated = [...form.schedule];
-    updated.splice(index, 1);
-    setForm({ ...form, schedule: updated });
-  };
+  // const removeScheduleRow = (index) => {
+  //   const updated = [...form.schedule];
+  //   updated.splice(index, 1);
+  //   setForm({ ...form, schedule: updated });
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -187,7 +187,7 @@ const AddUser = () => {
         doctorType: '',
         specialty: '',
         medicalLicenseNumber: '',
-        schedule: [],
+        // schedule: [],
         contactNumber: '',
         designation: '',
         department: '',
@@ -268,8 +268,8 @@ const AddUser = () => {
                   required
                 />
 
-                <h4>Schedule</h4>
-                {form.schedule.map((entry, index) => (
+                {/* <h4>Schedule</h4> */}
+                {/* {form.schedule.map((entry, index) => (
                   <div key={index} className="schedule-row">
                     <select
                       value={entry.dayOfWeek}
@@ -288,8 +288,8 @@ const AddUser = () => {
                     <input type="checkbox" checked={entry.isAvailable} onChange={(e) => handleScheduleChange(index, 'isAvailable', e.target.checked)} />
                     <button type="button" onClick={() => removeScheduleRow(index)}>Remove</button>
                   </div>
-                ))}
-                <button type="button" onClick={addScheduleRow}>+ Add Schedule</button>
+                ))} */}
+                {/* <button type="button" onClick={addScheduleRow}>+ Add Schedule</button> */}
               </>
             )}
 

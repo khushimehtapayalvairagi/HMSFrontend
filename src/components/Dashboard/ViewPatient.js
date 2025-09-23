@@ -115,6 +115,7 @@ const handleSearch = () => {
           <TableCell>{index + 1}</TableCell>
         <TableCell >{p.patientId}</TableCell>
         <TableCell>{p.fullName}</TableCell>
+          {!isMobile && <TableCell>{p.age}</TableCell>} 
         {!isMobile && <TableCell >{new Date(p.dob).toLocaleDateString()}</TableCell>}
         {!isMobile && <TableCell >{p.gender}</TableCell>}
         {!isMobile && <TableCell >{p.contactNumber}</TableCell>}
@@ -196,6 +197,7 @@ const rowsToRender = filteredPatient && filteredPatient.length > 0 ? filteredPat
     <TableCell>Patient ID</TableCell>
     
     <TableCell>Name</TableCell>
+        {!isMobile && <TableCell>Age</TableCell>}
     {!isMobile && <TableCell>DOB</TableCell>}
     {!isMobile && <TableCell>Gender</TableCell>}
     {!isMobile && <TableCell>Contact</TableCell>}
@@ -218,6 +220,7 @@ const rowsToRender = filteredPatient && filteredPatient.length > 0 ? filteredPat
     {selectedPatient && (
       <>
         <Typography><strong>Full Name:</strong> {selectedPatient.fullName}</Typography>
+        <Typography><strong>Age:</strong> {selectedPatient.age}</Typography>   {/* 👈 ADD HERE */}
         <Typography><strong>DOB:</strong> {new Date(selectedPatient.dob).toLocaleDateString()}</Typography>
         <Typography><strong>Gender:</strong> {selectedPatient.gender}</Typography>
         <Typography><strong>Email:</strong> {selectedPatient.email}</Typography>
