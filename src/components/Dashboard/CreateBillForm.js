@@ -7,10 +7,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const CreateBillForm = () => {
   const location = useLocation();
+  
   const { patientId: passedPatientId, ipdAdmissionId: passedAdmissionId } = location.state || {};
 const [anesthesiaRecords, setAnesthesiaRecords] = useState([]);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-
+ const [billData, setBillData] = useState(null);
 const [dailyReports, setDailyReports] = useState([]);
   const [patients, setPatients] = useState([]);
   const [admissions, setAdmissions] = useState([]);
@@ -61,17 +62,17 @@ const [dailyReports, setDailyReports] = useState([]);
   fetchAnesthesiaRecords();
 }, [patientId]);
 
-useEffect(() => {
-  if (!ipdAdmissionId) return;
-  const token = localStorage.getItem('jwt');
-console.log("Calling reports API for", ipdAdmissionId);
+// useEffect(() => {
+//   if (!ipdAdmissionId) return;
+//   const token = localStorage.getItem('jwt');
+// console.log("Calling reports API for", ipdAdmissionId);
 
-  axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-  .then(res => setDailyReports(res.data.reports || []))
-  .catch(() => toast.error('Failed to load daily reports'));
-}, [ipdAdmissionId]);
+//   axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
+//     headers: { Authorization: `Bearer ${token}` }
+//   })
+//   .then(res => setDailyReports(res.data.reports || []))
+//   .catch(() => toast.error('Failed to load daily reports'));
+// }, [ipdAdmissionId]);
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     const user = JSON.parse(localStorage.getItem('user'));
@@ -79,22 +80,33 @@ console.log("Calling reports API for", ipdAdmissionId);
 
     axios.get(`${BASE_URL}/api/billing/manual-charge-items`, {
       headers: { Authorization: `Bearer ${token}` }
-    }).then(res => setManualItems(res.data.items))
+    }).then(res => {
+  console.log("🔎 Manual Items API response:", res.data);
+  setManualItems(res.data.items || res.data || []);
+})
+
       .catch(() => toast.error('Failed to load manual charge items'));
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (!patientId) return;
+useEffect(() => {
+  const token = localStorage.getItem('jwt');
+  if (!patientId) return;
 
-    axios.get(`${BASE_URL}/api/procedures/schedules/${patientId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(res => {
-      const filtered = (res.data.procedures || []).filter(p => p.status === 'Completed' && !p.isBilled);
-      setSchedules(filtered);
-      
-    }).catch(() => toast.error('Failed to load procedures'));
-  }, [patientId]);
+  axios
+    .get(`${BASE_URL}/api/procedures/schedules/${patientId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then(res => {
+  // Include Scheduled + Completed procedures that are not already billed
+  const billableProcedures = (res.data.procedures || []).filter(
+    p => !p.isBilled && (p.status === 'Scheduled' || p.status === 'Completed')
+  );
+  setSchedules(billableProcedures);
+})
+
+    .catch(() => toast.error('Failed to load procedures'));
+}, [patientId]);
+
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
@@ -202,10 +214,11 @@ console.log("Calling reports API for", ipdAdmissionId);
 
    try {
   const token = localStorage.getItem('jwt');
-  await axios.post(`${BASE_URL}/api/billing/bills`, payload, {
+  const res = await axios.post(`${BASE_URL}/api/billing/bills`, payload, {
     headers: { Authorization: `Bearer ${token}` }
   });
   toast.success('Bill created successfully!');
+    setBillData(res.data.bill || payload);
 } catch (err) {
  const errorMessage = err.response?.data?.message;
 if (errorMessage === 'This procedure has already been billed.') {
@@ -217,6 +230,82 @@ if (errorMessage === 'This procedure has already been billed.') {
 }
 }
 
+  };
+  const selectedPatient = patients.find(p => p._id === patientId);
+const selectedAdmission = admissions.find(a => a._id === ipdAdmissionId);
+   const handlePrint = () => {
+    if (!billData) {
+      toast.error('No bill to print');
+      return;
+    }
+
+    const WinPrint = window.open('', '', 'width=900,height=650');
+    WinPrint.document.write('<html><head><title>Patient Bill</title>');
+    WinPrint.document.write('<style>');
+    WinPrint.document.write('body { font-family: Arial, sans-serif; padding: 20px; }');
+    WinPrint.document.write('h2, h3, h4, h6 { text-align: center; margin: 4px 0; }');
+    WinPrint.document.write('table { width: 100%; border-collapse: collapse; margin-top: 20px; }');
+    WinPrint.document.write('th, td { border: 1px solid #444; padding: 6px; text-align: left; }');
+    WinPrint.document.write('</style></head><body>');
+
+    // ✅ Hospital Heading (added)
+    WinPrint.document.write(`
+      <div style="text-align:center;">
+        <h3>Anjuman-I-Islam's</h3>
+        <h4>Dr. M.I. Jamkhanawala Tibbia Unani Medical College & Hospital</h4>
+        <h4>Haji Abdul Razzak Kalsekar Tibbia Hospital</h4>
+        <h6>Anjuman-I-Islam Complex, Yari Road, Versova, Andheri(W), Mumbai 400 061.</h6>
+      </div>
+      <hr/>
+      <h2>Patient Bill</h2>
+    `);
+
+    // ✅ Patient Info
+    WinPrint.document.write(`
+    <p><strong>Patient Name:</strong> ${selectedPatient?.fullName || 'N/A'}</p>
+<p><strong>Patient ID:</strong> ${selectedPatient?.patientId || 'N/A'}</p>
+<p><strong>Doctor:</strong> ${selectedAdmission?.admittingDoctorId?.userId?.name || 'N/A'}</p>
+<p><strong>Room:</strong> ${selectedAdmission?.roomCategoryId?.name || 'N/A'}</p>
+
+    `);
+
+    // ✅ Bill Items
+    WinPrint.document.write(`
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${billData.items
+            .map(
+              (it) => `
+              <tr>
+                <td>${it.description}</td>
+                <td>${it.quantity}</td>
+                <td>${it.unit_price}</td>
+                <td>${(it.quantity * it.unit_price).toFixed(2)}</td>
+              </tr>
+            `
+            )
+            .join('')}
+        </tbody>
+      </table>
+    `);
+
+    // ✅ Grand Total
+    const grandTotal = billData.items.reduce((sum, it) => sum + (it.quantity * it.unit_price), 0);
+    WinPrint.document.write(`<h3 style="text-align:right;">Grand Total: ₹${grandTotal.toFixed(2)}</h3>`);
+
+    WinPrint.document.write('</body></html>');
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
   };
 
  return (
@@ -273,7 +362,7 @@ if (errorMessage === 'This procedure has already been billed.') {
         )}
 
         {/* Daily Reports */}
-        {dailyReports.length > 0 && (
+        {/* {dailyReports.length > 0 && (
           <div style={{ background: '#e0f7fa', padding: '10px 15px', borderRadius: '6px', marginBottom: '1rem' }}>
             <h4 style={{ marginBottom: '10px' }}>Latest Progress Report</h4>
             <p><strong>Date:</strong> {new Date(dailyReports[0].reportDateTime).toLocaleString()}</p>
@@ -284,13 +373,13 @@ if (errorMessage === 'This procedure has already been billed.') {
               <li>Respiratory Rate: {dailyReports[0].vitals?.respiratoryRate || 'N/A'}</li>
             </ul>
           </div>
-        )}
-
+        )} */}
+{/* 
         {ipdAdmissionId && dailyReports.length === 0 && (
           <div style={{ background: '#fff3cd', padding: '10px 15px', borderRadius: '6px', marginBottom: '1rem' }}>
             No progress reports found for this admission.
           </div>
-        )}
+        )} */}
 
         {/* Anesthesia Records */}
         {anesthesiaRecords.length > 0 && (
@@ -391,6 +480,15 @@ if (errorMessage === 'This procedure has already been billed.') {
           Create Bill
         </button>
       </form>
+         {billData && (
+        <button
+          type="button"
+          onClick={handlePrint}
+          style={{ marginTop: '20px', padding: '10px 15px', background: '#6c757d', color: '#fff', border: 'none', borderRadius: '6px' }}
+        >
+          Print Bill
+        </button>
+      )}
        <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );

@@ -308,7 +308,7 @@ const AddUser = () => {
                 <select name="designation" value={form.designation} onChange={handleChange} required>
                   <option value="">Select Designation</option>
                   <option value="Head Nurse">Head Nurse</option>
-                  <option value="Assistant Doctor">Assistant Doctor</option>
+                  <option value="Lab Technician">Lab Technician</option>
                   <option value="Receptionist">Receptionist</option>
                   <option value="Inventory Manager">Inventory Manager</option>
                   <option value="Other">Other</option>

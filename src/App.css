@@ -6,6 +6,43 @@
   height: 40vmin;
   pointer-events: none;
 }
+/* ✅ Hide navbar & sidebar during print globally */
+/* ✅ Hide navbar and sidebar during print */
+/* ✅ Hide navbar, sidebar, and elements with class 'no-print' during printing */
+/* ✅ Hide Navbar and Sidebar when printing */
+/* ✅ Hide Navbar, Sidebar, and elements marked 'no-print' during printing */
+/* ✅ Global print rule */
+@media print {
+  .navbar,
+  .navbar-container,
+  .sidebar,
+  .no-print,
+  header,
+  footer {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 10mm !important;
+  }
+
+  #printable-report {
+    position: relative !important;
+    visibility: visible !important;
+    width: 100% !important;
+  }
+
+  #printable-report * {
+    visibility: visible !important;
+  }
+}
+
+
+
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

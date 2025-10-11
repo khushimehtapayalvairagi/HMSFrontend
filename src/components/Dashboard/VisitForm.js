@@ -37,6 +37,37 @@ const [departmentId, setDepartmentId] = useState('');
 
   // ref for react-to-print
   const slipRef = useRef();
+//   const [consultationNotes, setConsultationNotes] = useState('');
+// const [prescription, setPrescription] = useState([
+//   { medicineName: '', dosage: '', frequency: '', duration: '', remarks: '' },
+// ]);
+
+// const updateMed = (index, field, value) => {
+//   const newPres = [...prescription];
+//   newPres[index][field] = value;
+//   setPrescription(newPres);
+// };
+// const addMedicineRow = () =>
+//   setPrescription([...prescription, { medicineName: '', dosage: '', frequency: '', duration: '', remarks: '' }]);
+// const removeMed = (i) => setPrescription(prescription.filter((_, idx) => idx !== i));
+
+// const handleSavePrescription = async () => {
+//   try {
+//     const res = await axios.put(
+//       `${BASE_URL}/api/receptionist/visits/${resData._id}/prescription`,
+//       { consultationNotes, prescription },
+//       { headers: { Authorization: `Bearer ${token}` } }
+//     );
+
+//     toast.success('Prescription saved successfully');
+//     console.log('Updated visit:', res.data.visit);
+//   } catch (err) {
+//     console.error('Prescription save error:', err.response?.data || err);
+//     toast.error('Error saving prescription');
+//   }
+// };
+
+
   const handlePrintSlip = useReactToPrint({
     content: () => slipRef.current,
   });
@@ -422,7 +453,64 @@ useEffect(() => {
           <button onClick={handlePrintBill} style={{ padding: '0.5rem 1rem', background: '#28a745', color: '#fff', border: 'none' }}>
             🧾 Print OPD Bill
           </button>
-       
+       {/* {resData && (
+  <div style={{ marginTop: '1rem' }}>
+    <h3>Doctor Prescription / Notes</h3>
+    <textarea
+      placeholder="Enter doctor's consultation notes..."
+      rows="4"
+      style={{ width: '100%', padding: '0.5rem' }}
+      value={consultationNotes}
+      onChange={(e) => setConsultationNotes(e.target.value)}
+    />
+
+    <h4>Medicines</h4>
+    {prescription.map((med, index) => (
+      <div key={index} style={{ display: 'flex', gap: '5px', marginBottom: '8px' }}>
+        <input
+          type="text"
+          placeholder="Medicine Name"
+          value={med.medicineName}
+          onChange={(e) => updateMed(index, 'medicineName', e.target.value)}
+          style={{ flex: 2, padding: '0.5rem' }}
+        />
+        <input
+          type="text"
+          placeholder="Dosage"
+          value={med.dosage}
+          onChange={(e) => updateMed(index, 'dosage', e.target.value)}
+          style={{ flex: 1, padding: '0.5rem' }}
+        />
+        <input
+          type="text"
+          placeholder="Frequency"
+          value={med.frequency}
+          onChange={(e) => updateMed(index, 'frequency', e.target.value)}
+          style={{ flex: 1, padding: '0.5rem' }}
+        />
+        <input
+          type="text"
+          placeholder="Duration"
+          value={med.duration}
+          onChange={(e) => updateMed(index, 'duration', e.target.value)}
+          style={{ flex: 1, padding: '0.5rem' }}
+        />
+        <button type="button" onClick={() => removeMed(index)}>❌</button>
+      </div>
+    ))}
+    <button type="button" onClick={addMedicineRow}>+ Add Medicine</button>
+
+    <br />
+    <button
+      type="button"
+      style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#007bff', color: '#fff' }}
+      onClick={handleSavePrescription}
+    >
+      💊 Save Prescription
+    </button>
+  </div>
+)} */}
+
         </div>
       )}
 

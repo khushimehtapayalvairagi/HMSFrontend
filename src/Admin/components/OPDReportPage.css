@@ -143,3 +143,63 @@
   }
 }
 
+@media print {
+  .navbar-container,
+  .sidebar,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    margin: 10mm;
+    background: white;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    padding: 6px !important;
+    text-align: center;
+  }
+
+  th {
+    background-color: #2c3e50 !important;
+    color: white !important;
+  }
+}
+/* OPDReportPage.module.css */
+@media print {
+  #printable-report {
+    overflow: visible !important;
+    zoom: 85%; /* Shrinks slightly to fit page width */
+  }
+
+  table {
+    page-break-inside: auto !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 11px !important;
+  }
+
+  th, td {
+    border: 1px solid #000 !important;
+    padding: 4px 6px !important;
+    text-align: center !important;
+    word-wrap: break-word !important;
+  }
+
+  thead {
+    display: table-header-group !important; /* ensures header repeats on each page */
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+}
+
+

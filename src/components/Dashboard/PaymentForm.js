@@ -10,10 +10,11 @@ export default function PaymentForm({ onPaymentSuccess }) {
   const [form, setForm] = useState({ amount: '', method: 'Cash', externalRef: '' });
   const [payments, setPayments] = useState([]);
   const [error, setError] = useState('');
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem('jwt');
   const headers = { Authorization: `Bearer ${token}` };
-const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
     const fetchAdmittedPatients = async () => {
       try {
@@ -92,16 +93,14 @@ const user = JSON.parse(localStorage.getItem("user"));
         amount_paid: amt,
         payment_method: form.method,
         external_reference_number: form.externalRef || undefined,
-
-received_by_user_id_ref: user.userId
-
+        received_by_user_id_ref: user.userId
       };
 
       const { data } = await axios.post(`${BASE_URL}/api/billing/payments`, payload, { headers });
       setBill(data.updatedBill);
       onPaymentSuccess?.(data.updatedBill, data.payment);
       fetchPayments();
-          toast.success('Payment recorded successfully ✅');
+      toast.success('Payment recorded successfully ✅');
 
     } catch (err) {
       setError(err.response?.data?.message || 'Payment error');
@@ -126,42 +125,42 @@ received_by_user_id_ref: user.userId
         <div style={styles.section}>
 
           <h4 style={{ marginTop: '1.5rem' }}>Charges Summary</h4>
-        <div style={styles.tableWrapper}>
-  <table style={styles.table}>
-    <thead>
-      <tr>
-        <th style={styles.th}>#</th>
-        <th style={styles.th}>Description</th>
-        <th style={styles.th}>Type</th>
-        <th style={styles.th}>Qty</th>
-        <th style={styles.th}>Unit Price</th>
-        <th style={styles.th}>Subtotal</th>
-      </tr>
-    </thead>
-    <tbody>
-      {bill.items?.map((item, idx) => (
-        <tr key={idx}>
-          <td style={styles.td}>{idx + 1}</td>
-          <td style={styles.td}>{item.description || '—'}</td>
-          <td style={styles.td}>{item.item_type || '—'}</td>
-          <td style={styles.td}>{item.quantity}</td>
-          <td style={styles.td}>₹{item.unit_price}</td>
-          <td style={styles.td}>₹{(item.quantity * item.unit_price).toFixed(2)}</td>
-        </tr>
-      ))}
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colSpan="5" style={{ ...styles.td, textAlign: 'right', fontWeight: 'bold' }}>Total:</td>
-        <td style={{ ...styles.td, fontWeight: 'bold' }}>
-          ₹{bill.items?.reduce((sum, i) => sum + i.quantity * i.unit_price, 0).toFixed(2)}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
+          <div style={styles.tableWrapper}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>#</th>
+                  <th style={styles.th}>Description</th>
+                  <th style={styles.th}>Type</th>
+                  <th style={styles.th}>Qty</th>
+                  <th style={styles.th}>Unit Price</th>
+                  <th style={styles.th}>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bill.items?.map((item, idx) => (
+                  <tr key={idx}>
+                    <td style={styles.td}>{idx + 1}</td>
+                    <td style={styles.td}>{item.description || '—'}</td>
+                    <td style={styles.td}>{item.item_type || '—'}</td>
+                    <td style={styles.td}>{item.quantity}</td>
+                    <td style={styles.td}>₹{item.unit_price}</td>
+                    <td style={styles.td}>₹{(item.quantity * item.unit_price).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="5" style={{ ...styles.td, textAlign: 'right', fontWeight: 'bold' }}>Total:</td>
+                  <td style={{ ...styles.td, fontWeight: 'bold' }}>
+                    ₹{bill.items?.reduce((sum, i) => sum + i.quantity * i.unit_price, 0).toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
 
-   <p><strong>Balance Due:</strong> ₹{bill.balance_due}</p>
+          <p><strong>Balance Due:</strong> ₹{bill.balance_due}</p>
           <form onSubmit={submitPayment} style={styles.form}>
             <h3>Record Payment</h3>
 
@@ -214,12 +213,12 @@ received_by_user_id_ref: user.userId
                   <p><strong>Date:</strong> {new Date(p.payment_date).toLocaleString()}</p>
                   <p><strong>Amt:</strong> ₹{p.amount_paid}</p>
                   <p><strong>Method:</strong> {p.payment_method}</p>
-                 <p>
-  <strong>By:</strong>{" "}
-  {p.received_by_user_id_ref 
-    ? `${p.received_by_user_id_ref?.name} (${p.received_by_user_id_ref?.role})` 
-    : "n/a"}
-</p>
+                  <p>
+                    <strong>By:</strong>{" "}
+                    {p.received_by_user_id_ref 
+                      ? `${p.received_by_user_id_ref?.name} (${p.received_by_user_id_ref?.role})` 
+                      : "n/a"}
+                  </p>
                 </div>
               ))
             )}
@@ -228,7 +227,92 @@ received_by_user_id_ref: user.userId
       )}
 
       {selectedPatient && !bill && <p style={styles.info}>No pending bills for this patient.</p>}
-   <ToastContainer/>
+
+      {/* Print Bill Button */}
+      {bill && (
+        <button
+          style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '1rem' }}
+          onClick={() => {
+            const WinPrint = window.open('', '', 'width=900,height=650');
+            WinPrint.document.write('<html><head><title>Patient Bill</title>');
+            WinPrint.document.write('<style>');
+            WinPrint.document.write('body { font-family: Arial, sans-serif; padding: 20px; }');
+            WinPrint.document.write('h2, h3, h4, h6 { text-align: center; margin: 4px 0; }');
+            WinPrint.document.write('table { width: 100%; border-collapse: collapse; margin-top: 20px; }');
+            WinPrint.document.write('th, td { border: 1px solid #444; padding: 6px; text-align: left; }');
+            WinPrint.document.write('.payment { margin-top: 20px; border: 1px solid #444; padding: 8px; border-radius: 4px; }');
+            WinPrint.document.write('</style></head><body>');
+
+            // Hospital Heading
+            WinPrint.document.write(`
+              <div style="text-align:center;">
+                <h3>Anjuman-I-Islam's</h3>
+                <h4>Dr. M.I. Jamkhanawala Tibbia Unani Medical College & Hospital</h4>
+                <h4>Haji Abdul Razzak Kalsekar Tibbia Hospital</h4>
+                <h6>Anjuman-I-Islam Complex, Yari Road, Versova, Andheri(W), Mumbai 400 061.</h6>
+              </div>
+              <hr/>
+              <h2>Patient Bill</h2>
+            `);
+
+            // Patient & Bill Info
+            const patientObj = patients.find(p => p._id === selectedPatient);
+            WinPrint.document.write(`
+              <p><strong>Patient Name:</strong> ${patientObj?.fullName || 'N/A'}</p>
+              <p><strong>Patient ID:</strong> ${patientObj?.patientId || 'N/A'}</p>
+              <p><strong>Balance Due:</strong> ₹${bill.balance_due}</p>
+            `);
+
+            // Bill Items Table
+            WinPrint.document.write('<table><thead><tr><th>#</th><th>Description</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead><tbody>');
+            bill.items?.forEach((item, idx) => {
+              WinPrint.document.write(`<tr>
+                <td>${idx + 1}</td>
+                <td>${item.description || '—'}</td>
+                <td>${item.item_type || '—'}</td>
+                <td>${item.quantity}</td>
+                <td>₹${item.unit_price}</td>
+                <td>₹${(item.quantity * item.unit_price).toFixed(2)}</td>
+              </tr>`);
+            });
+            const total = bill.items?.reduce((sum, i) => sum + i.quantity * i.unit_price, 0);
+            WinPrint.document.write(`<tr>
+              <td colspan="5" style="text-align:right;font-weight:bold;">Total:</td>
+              <td style="font-weight:bold;">₹${total.toFixed(2)}</td>
+            </tr>`);
+            WinPrint.document.write('</tbody></table>');
+
+            // Payment History
+            WinPrint.document.write('<h3>Payment History</h3>');
+            if (payments.length === 0) {
+              WinPrint.document.write('<p>No payments yet</p>');
+            } else {
+              payments.forEach(p => {
+                WinPrint.document.write(`
+                  <div class="payment">
+                    <p><strong>Date:</strong> ${new Date(p.payment_date).toLocaleString()}</p>
+                    <p><strong>Amount Paid:</strong> ₹${p.amount_paid}</p>
+                    <p><strong>Method:</strong> ${p.payment_method}</p>
+                    <p><strong>Received By:</strong> ${p.received_by_user_id_ref 
+                      ? `${p.received_by_user_id_ref?.name} (${p.received_by_user_id_ref?.role})` 
+                      : 'n/a'}</p>
+                  </div>
+                `);
+              });
+            }
+
+            WinPrint.document.write('</body></html>');
+            WinPrint.document.close();
+            WinPrint.focus();
+            WinPrint.print();
+            WinPrint.close();
+          }}
+        >
+          Print Bill
+        </button>
+      )}
+
+      <ToastContainer/>
     </div>
   );
 }
@@ -250,40 +334,35 @@ const styles = {
   section: {
     marginTop: '1.5rem'
   },
- tableWrapper: {
-  overflowX: 'auto',
-  marginTop: '1rem',
-  borderRadius: '8px',
-  border: '1px solid #dee2e6',
-  backgroundColor: '#fff',
-},
-
-table: {
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '0.95rem',
-},
-
-th: {
-  padding: '12px 10px',
-  backgroundColor: '#f1f3f5',
-  borderBottom: '1px solid #dee2e6',
-  textAlign: 'left',
-  fontWeight: '600',
-  color: '#333',
-},
-
-td: {
-  padding: '10px',
-  borderBottom: '1px solid #dee2e6',
-  color: '#444',
-},
-
-tfoot: {
-  backgroundColor: '#f8f9fa',
-  fontWeight: 'bold'
-},
-
+  tableWrapper: {
+    overflowX: 'auto',
+    marginTop: '1rem',
+    borderRadius: '8px',
+    border: '1px solid #dee2e6',
+    backgroundColor: '#fff',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '0.95rem',
+  },
+  th: {
+    padding: '12px 10px',
+    backgroundColor: '#f1f3f5',
+    borderBottom: '1px solid #dee2e6',
+    textAlign: 'left',
+    fontWeight: '600',
+    color: '#333',
+  },
+  td: {
+    padding: '10px',
+    borderBottom: '1px solid #dee2e6',
+    color: '#444',
+  },
+  tfoot: {
+    backgroundColor: '#f8f9fa',
+    fontWeight: 'bold'
+  },
   field: {
     marginBottom: '1rem',
     display: 'flex',

@@ -40,6 +40,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
     // Save token and user in localStorage
     localStorage.setItem("jwt", token);
+    console.log("Token saved:", localStorage.getItem("jwt"));
+
     localStorage.setItem("user", JSON.stringify(user));
 
     // Navigate based on role/designation
@@ -48,6 +50,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
     // else if (user.role === "DOCTOR") navigate("/doctor-dashboard");
     else if (user.designation === "Head Nurse") navigate("/nurse-dashboard");
     else if (user.designation === "Inventory Manager") navigate("/inventoryManager-dashboard");
+      else if (user.designation === "Lab Technician") navigate("/labTechnician-dashboard");
     else toast.error("Unknown role, cannot navigate", { position: "top-center", autoClose: 4000 });
 
   } catch (err) {

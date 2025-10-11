@@ -506,14 +506,18 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
       </div>
 
       {/* Sidebar */}
-      <div
+      <div className="sidebar no-print"
         style={{
           ...styles.sidebar,
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         }}
       >
         <div>
-          <nav style={styles.nav}>
+          <nav className="navbar no-print" style={styles.nav}>
+            {/* ✅ Fixed Navbar */}
+{/* <div className="navbar no-print" style={styles.navbar}> */}
+
+            {/* <div className="no-print" style={styles.nav}></div> */}
             <Link
               to=""
               onClick={() => setActiveModuleLabel('')}

@@ -72,9 +72,9 @@ const ReceptionistDashboard = () => {
             { label: "Labour Room", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
             { label: "View Labour Room", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },
  // 🚀 Nurse Modules for Receptionist
-  { label: "Nurse IPD Admissions", path: "/receptionist-dashboard/NurseIPDAdmissionList", icon: <IpdIcon /> },
-  { label: "Nurse Daily Reports", path: "/receptionist-dashboard/ViewDailyReports", icon: <EventNoteIcon /> },
-  { label: "Nurse Scheduled Procedures", path: "/receptionist-dashboard/NurseScheduledProcedures", icon: <ProcedureIcon /> },
+  { label: "Record Prescription", path: "/receptionist-dashboard/record-prescription", icon: <IpdIcon /> },
+  { label: "Daily Reports", path: "/receptionist-dashboard/DailyReports", icon: <EventNoteIcon /> },
+  { label: "prescription-record", path: "/receptionist-dashboard/patient-record-prescription", icon: <HistoryIcon />},
             { label: "Billing", path: "/receptionist-dashboard/Billing", icon: <BillingIcon /> },
             { label: "View Bill", path: "/receptionist-dashboard/ViewBill", icon: <ViewBillIcon /> },
             { label: "Payment Form", path: "/receptionist-dashboard/PaymentForm", icon: <PaymentIcon /> },

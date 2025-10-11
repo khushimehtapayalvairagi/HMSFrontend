@@ -25,26 +25,27 @@ import AddOperationTheatre from './Admin/components/AddOperationTheatre';
 import ViewOperationTheatre from './Admin/components/ViewoperationTheatre';
 import ViewSpecialty from './Admin/components/ViewSpecialty';
 import ViewDepartment from './Admin/components/ViewDepartment';
+
 import ReceptionistDashboard from './components/Dashboard/ReceptionistDashboard';
 import PatientForm from './components/Dashboard/patient';
 import ViewPatient from './components/Dashboard/ViewPatient';
-
 import VisitForm from './components/Dashboard/VisitForm';
 import DoctorDashboard from './components/Dashboard/DoctorDashboard';
-// import OPDConsultationForm from './components/Dashboard/OPDConsulationForm';
 import PatientVisitsViewer from './components/Dashboard/PatientVisitsViewer';
 import DoctorDashboardHome from './components/Dashboard/DoctorDashboardHome';
 import OPDConsultationForm from './components/Dashboard/OPDConsultationForm';
 import PreviousConsultations from './components/Dashboard/PreviousConsultantPatient';
 import UpdateVisitStatusPage from './components/Dashboard/UpdateVisitStatus';
-import IPDAdmissionForm from './components/Dashboard/IPDAdmissionform'
+import IPDAdmissionForm from './components/Dashboard/IPDAdmissionform';
 import IPDAdmissionList from './components/Dashboard/IPDAdmissionList';
 import ProcedureForm from './components/Dashboard/ProcedureForm';
 import AnesthesiaForm from './components/Dashboard/AnesthesiaForm';
 import ViewAnesthesiaRecord from './components/Dashboard/ViewAnthesiaRecord';
 import LabourRoom from './components/Dashboard/LabourRoom';
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import NurseDashboard from './components/Dashboard/NurseDashboard';
 import LabourRoomDetailViewer from './components/Dashboard/LabourRoomDetailViewer.js';
 import DailyReports from './components/Dashboard/DailyReports.js';
@@ -52,6 +53,7 @@ import NurseIPDAdmissionList from './components/Dashboard/NurseIPDAdmissionList.
 import ViewDailyReports from './components/Dashboard/ViewDailyReports.js';
 import NurseScheduledProcedures from './components/Dashboard/NurseScheduledProcedures.js';
 import DischargePatient from './components/Dashboard/DischargePatient.js';
+
 import InventoryManagerDashboard from './components/Dashboard/InventoryManagerDashboard.js';
 import InventoryForm from './components/Dashboard/InventoryForm.js';
 import InventoryList from './components/Dashboard/InventoryList.js';
@@ -62,153 +64,139 @@ import CreateBillForm from './components/Dashboard/CreateBillForm.js';
 import ViewBill from './components/Dashboard/ViewBill.js';
 import PaymentForm from './components/Dashboard/PaymentForm.js';
 import BillPaymentHistory from './components/Dashboard/BillPaymentHistory.js';
+
 import IPDReportPage from './Admin/components/IPDReportPage.js';
 import OPDReportPage from './Admin/components/OPDReportPage.js';
+import LabTechnicianDashboard from './components/Dashboard/LabTechnicianDashboard.js';
+import PatientsPage from './components/Dashboard/PatientsPage.js';
+import LabDashboard from './components/Dashboard/LabDashboard.js';
+import AddTestPage from './components/Dashboard/AddTestPage.js';
+import Appointments from './components/Dashboard/AppointmentsPage.js';
+import UploadReport from './components/Dashboard/UploadReportPage.js';
+import RecordPrescription from './components/Dashboard/RecordPrescription.js';
+import PatientPrescriptionRecord from './components/Dashboard/PatientPrescriptionRecord.js';
 
 const App = () => {
-  const ReceptionistRoutes = () => (
-  <Routes>
-    <Route path="patient-form" element={<PatientForm />} />
-    <Route path="viewPatient" element={<ViewPatient />} />
-    <Route path="visit-form" element={<VisitForm />} />
-    <Route path="patient-visits-viewer" element={<PatientVisitsViewer />} />
-    <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} />
-    <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
-    <Route path="ProcedureForm" element={<ProcedureForm />} />
-    <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
-    <Route path="LabourRoom" element={<LabourRoom />} />
-    <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
-    <Route path="Billing" element={<CreateBillForm />} />
-    <Route path="ViewBill" element={<ViewBill />} />
-    <Route path="PaymentForm" element={<PaymentForm />} />
-    <Route path="DischargePatient" element={<DischargePatient />} />
-    <Route path="BillPaymentHistory" element={<BillPaymentHistory />} />
-  </Routes>
-);
-
-
-
   return (
     <>
-  
-    <Routes>
-    <Route element={<ProtectedRoute role="ADMIN" />}>
-    <Route
-        path="/admin-dashboard"
-         element={<AdminDashboard />} 
-      >
-       <Route path="reports">
-    <Route path="opd-register" element={<OPDReportPage />} />
-    <Route path="ipd-register" element={<IPDReportPage />} />
-  </Route>   
-  <Route index element={<AdminHome />} /> {/* Default dashboard home */}
-        <Route path="add-user" element={<AddUser />} />
-        <Route path="view-user/:type" element={<ViewUsers />} />
-         <Route path="specialty" element={<AddSpeciality />} />
-          <Route path="ViewSpecialty" element={<ViewSpecialty />} />
-                   <Route path="department" element={<AddDepartment />} />
-                    <Route path="ViewDepartment" element={<ViewDepartment />} />
-                   <Route path="labourRoom" element={<AddLabour />} />
-                     <Route path="visit-room" element={<VisitRoom />} />
-                         <Route path="Room-Category" element={<RoomCategory />} />
-                     <Route path="visitRoom" element={<VisitRoomCategory />} />
-                      <Route path="Ward" element={<AddWard />} />
-                     <Route path="visitWard" element={<VisitWard />} />
-                    <Route path="procedure" element={<Procedure />} />
-                     <Route path="view-procedure" element={<ViewProcedure />} /> 
-                     <Route path="manualCharge" element={<AddManualCharge />} />
-                     <Route path="view-manualCharge" element={<ViewManualCharge/>} />  
-                      <Route path="partner" element={<AddRefferalPartner />} />
-                     <Route path="view-partners" element={<ViewRefferalPartner/>} />  
-                       <Route path="operation-theatre" element={<AddOperationTheatre />} />
-                     <Route path="view-operation-theatre" element={<ViewOperationTheatre/>} />          
-                    <Route path="receptionist/*" element={<ReceptionistRoutes />} />
-              <Route path="nurse/*">
-  <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
-  <Route path="DailyReports" element={<DailyReports />} />
-  <Route path="ViewDailyReports" element={<ViewDailyReports />} />
-  <Route path="NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
-</Route>
-  <Route path="inventory/InventoryForm" element={<InventoryForm />} />
-  <Route path="inventory/InventoryList" element={<InventoryList />} />
-  <Route path="inventory/RecordTransactionForm" element={<RecordTransactionForm />} />
-  <Route path="inventory/TransactionHistoryForm" element={<TransactionHistoryForm />} />
-      
-      <Route path="doctor/*">
-      
-  <Route index element={<DoctorDashboardHome />} />
-  <Route path="home" element={<DoctorDashboardHome />} />
-  <Route path="ConsultationForm/:visitId" element={<OPDConsultationForm />} />
-  <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />
+      <Routes>
+        {/* ------------------- ADMIN ROUTES ------------------- */}
+        <Route element={<ProtectedRoute role="ADMIN" />}>
+          <Route path="/admin-dashboard" element={<AdminDashboard />}>
+            <Route path="reports">
+              <Route path="opd-register" element={<OPDReportPage standalone />} />
+              <Route path="ipd-register" element={<IPDReportPage />} />
+            </Route>
+            <Route index element={<AdminHome />} />
+            <Route path="add-user" element={<AddUser />} />
+            <Route path="view-user/:type" element={<ViewUsers />} />
+            <Route path="specialty" element={<AddSpeciality />} />
+            <Route path="ViewSpecialty" element={<ViewSpecialty />} />
+            <Route path="department" element={<AddDepartment />} />
+            <Route path="ViewDepartment" element={<ViewDepartment />} />
+            <Route path="labourRoom" element={<AddLabour />} />
+            <Route path="visit-room" element={<VisitRoom />} />
+            <Route path="Room-Category" element={<RoomCategory />} />
+            <Route path="visitRoom" element={<VisitRoomCategory />} />
+            <Route path="Ward" element={<AddWard />} />
+            <Route path="visitWard" element={<VisitWard />} />
+            <Route path="procedure" element={<Procedure />} />
+            <Route path="view-procedure" element={<ViewProcedure />} />
+            <Route path="manualCharge" element={<AddManualCharge />} />
+            <Route path="view-manualCharge" element={<ViewManualCharge />} />
+            <Route path="partner" element={<AddRefferalPartner />} />
+            <Route path="view-partners" element={<ViewRefferalPartner />} />
+            <Route path="operation-theatre" element={<AddOperationTheatre />} />
+            <Route path="view-operation-theatre" element={<ViewOperationTheatre />} />
+          </Route>
+        </Route>
+
+        {/* ------------------- RECEPTIONIST ROUTES ------------------- */}
+        <Route element={<ProtectedRoute role="STAFF" />}>
+          <Route path="/receptionist-dashboard" element={<ReceptionistDashboard />}>
+            <Route path="patient-form" element={<PatientForm />} />
+            <Route path="viewPatient" element={<ViewPatient />} />
+            <Route path="visit-form" element={<VisitForm />} />
+              <Route path="record-prescription" element={<RecordPrescription/>} />
+               <Route path="patient-record-prescription" element={<PatientPrescriptionRecord/>} />
+            <Route path="patient-visits-viewer" element={<PatientVisitsViewer />} />
+            <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} />
+            <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
+            <Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
+            <Route path="ProcedureForm" element={<ProcedureForm />} />
+            <Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
+            <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
+            <Route path="LabourRoom" element={<LabourRoom />} />
+            <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
+            <Route path="DischargePatient" element={<DischargePatient />} />
+            <Route path="Billing" element={<CreateBillForm />} />
+            <Route path="ViewBill" element={<ViewBill />} />
+            <Route path="PaymentForm" element={<PaymentForm />} />
+            <Route path="BillPaymentHistory" element={<BillPaymentHistory />} />
+            <Route path="DailyReports" element={<DailyReports />} />
+          </Route>
+        </Route>
+
+        {/* ------------------- DOCTOR ROUTES ------------------- */}
+        <Route element={<ProtectedRoute role="DOCTOR" />}>
+          <Route path="/doctor-dashboard" element={<DoctorDashboard />}>
+            <Route index element={<DoctorDashboardHome />} />
+            <Route path="home" element={<DoctorDashboardHome />} />
+            <Route path="ConsultationForm/:visitId" element={<OPDConsultationForm />} />
+            <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />
+          </Route>
+        </Route>
+
+        {/* ------------------- NURSE ROUTES ------------------- */}
+        <Route element={<ProtectedRoute role="STAFF" />}>
+          <Route path="/nurse-dashboard" element={<NurseDashboard />}>
+            <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
+            <Route path="DailyReports" element={<DailyReports />} />
+            <Route path="ViewDailyReports" element={<ViewDailyReports />} />
+            <Route path="NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
+          </Route>
+        </Route>
+
+        {/* ------------------- INVENTORY MANAGER ROUTES ------------------- */}
+        <Route element={<ProtectedRoute role="STAFF" />}>
+          <Route path="/inventoryManager-dashboard" element={<InventoryManagerDashboard />}>
+            <Route path="InventoryForm" element={<InventoryForm />} />
+            <Route path="InventoryList" element={<InventoryList />} />
+            <Route path="inventory/edit/:id" element={<EditInventoryForm />} />
+            <Route path="RecordTransactionForm" element={<RecordTransactionForm />} />
+            <Route path="TransactionHistoryForm" element={<TransactionHistoryForm />} />
+          </Route>
+        </Route>
+
+        {/* ------------------- LAB TECHNICIAN ROUTES ------------------- */}
+      {/* <Route element={<ProtectedRoute role="STAFF" />}>
+  <Route path="/labTechnician-dashboard" element={<LabTechnicianDashboard />}>
+    <Route path="dashboard" element={<h2>Welcome Lab Technician</h2>} />
+    <Route path="patients" element={<PatientsPage/>} />
+    {/* <Route path="add-test" element={<AddTestPage />} />
+    <Route path="appointments" element={<AppointmentsPage />} />
+    <Route path="pending" element={<PendingTestsPage />} />
+    <Route path="completed" element={<CompletedTestsPage />} />
+    <Route path="upload-report" element={<UploadReportPage />} /> */}
+  {/* </Route> */}
+<Route path="/labTechnician-dashboard" element={<LabTechnicianDashboard />}>
+  <Route path="dashboard" element={<LabDashboard/>} />
+  <Route path="patients" element={<PatientsPage/>} />
+    <Route path="add-test" element={<AddTestPage/>} />
+     <Route path="appointments" element={<Appointments/>} />
+      {/* <Route path="pending" element={<PendingTestsPage />} />
+      <Route path="completed" element={<CompletedTestsPage />} /> */}
+       <Route path="upload-report" element={<UploadReport />} />
 </Route>
 
-      </Route>
-      </Route>
-      <Route>
-<Route path="/receptionist-dashboard" element={<ReceptionistDashboard />}>
-  <Route path="patient-form" element={<PatientForm/>} />
-  <Route path="viewPatient" element={<ViewPatient/>} />
-  <Route path="visit-form" element={<VisitForm/>} />
-  <Route path="patient-visits-viewer" element={<PatientVisitsViewer/>} />
-  <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage/>} />
-  <Route path="IPDAdmissionForm" element={<IPDAdmissionForm/>} />
-  <Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
-  <Route path="ProcedureForm" element={<ProcedureForm/>} />
-  <Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
-  <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
-  <Route path="LabourRoom" element={<LabourRoom />} />
-  <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer/>} />
-  <Route path="DischargePatient" element={<DischargePatient/>} />
-  <Route path="Billing" element={<CreateBillForm/>} />
-  <Route path="ViewBill" element={<ViewBill/>}/>
-  <Route path="PaymentForm" element={<PaymentForm/>}/>
-  <Route path="BillPaymentHistory" element ={<BillPaymentHistory/>}/>
 
-  {/* 🚀 Nurse modules merged into Receptionist */}
-  <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
-  <Route path="DailyReports" element={<DailyReports />} />
-  <Route path="ViewDailyReports" element={<ViewDailyReports />} />
-  <Route path="NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
-</Route>
+        {/* ------------------- LOGIN & FALLBACK ------------------- */}
+        <Route path="/" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
 
-     </Route>
- <Route  element={<ProtectedRoute role="DOCTOR" />} >
-    <Route path="/doctor-dashboard"  element={<DoctorDashboard />}>
- <Route index element={<DoctorDashboardHome />} />
-<Route path="home" element={<DoctorDashboardHome />} />
-   <Route index element={<OPDConsultationForm />} />
-   
-   <Route path="ConsultationForm/:visitId" element={<OPDConsultationForm />} />
-    <Route path="PreviousConsultantPatient/:patientId" element={<PreviousConsultations />} />  
-
-</Route>
-  </Route>
-
-<Route  element={<ProtectedRoute role="STAFF" />} >
-<Route path="/nurse-dashboard"  element={<NurseDashboard />}>
-<Route path ="NurseIPDAdmissionList" element ={<NurseIPDAdmissionList/>}/>
-<Route path ="DailyReports" element ={<DailyReports/>}/>
-<Route path="ViewDailyReports" element={<ViewDailyReports />} />
-<Route path ="NurseScheduledProcedures" element={<NurseScheduledProcedures/>}/>
-</Route>
-</Route>
-<Route element={<ProtectedRoute role="STAFF" />}>
-<Route path="/inventoryManager-dashboard"  element={<InventoryManagerDashboard />} >
-<Route path ="InventoryForm" element ={<InventoryForm/>}/>
-<Route path ="InventoryList" element ={<InventoryList/>}/>
-<Route path="inventory/edit/:id" element={<EditInventoryForm />} />
-<Route path ="RecordTransactionForm" element={<RecordTransactionForm/>}/>
-<Route path ="TransactionHistoryForm" element={<TransactionHistoryForm/>}/>
-</Route>
-
-</Route>
-
-      <Route path="/" element={<Login />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
-    
-        <ToastContainer position="top-right" autoClose={3000} />
-</>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 };
 
