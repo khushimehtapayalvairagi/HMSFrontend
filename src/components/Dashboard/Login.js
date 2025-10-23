@@ -31,10 +31,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
  const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post(`${BASE_URL}/api/auth/login`, {
-      email,
-      password,
-    });
+    const response = await axios.post(`${BASE_URL}/api/auth/login`, { email, password }, { withCredentials: true })
+
 
     const { token, user } = response.data;
 

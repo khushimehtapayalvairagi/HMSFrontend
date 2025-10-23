@@ -1,19 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f3f3f3;
-}
-
+/* ✅ Container */
 .hospital-login-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f3f3f3;
 }
 
-/* ✅ Left Panel with full background and blur effect */
-.hospital-left {
+/* ✅ Left Panel */
+.hospital-login-container .hospital-left {
   flex: 1;
   background: url('/public/images/hospital.jpg') center center / cover no-repeat;
   position: relative;
@@ -21,24 +18,36 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  flex-direction: column;
 }
 
-.logo-container {
+.hospital-login-container .overlay-text {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(6px);
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+/* ✅ Logo Section */
+.hospital-login-container .logo-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   display: flex;
   align-items: center;
-  z-index: 2;
+  z-index: 3;
 }
 
-.hospital-logo {
-  height: 70px;
+.hospital-login-container .hospital-logo {
+  height: 60px;
   width: auto;
 }
 
-.logo-text {
+.hospital-login-container .logo-text {
   color: green;
   font-size: 1.2rem;
   font-weight: 700;
@@ -46,259 +55,218 @@ body {
   white-space: nowrap;
 }
 
-
-/* ✅ Full-size blurred overlay */
-.overlay-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  backdrop-filter: blur(5px); /* Blur effect */
-  background-color: rgba(158, 100, 175, 0.1); /* Dark transparent overlay */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  z-index: 1;
-  padding: 2rem;
-}
-
-
-
-/* ✅ Left heading alignment fix */
-.left-heading {
+/* ✅ Left Heading Section */
+.hospital-login-container .left-heading {
   text-align: left;
-  align-self: flex-start;
-  margin-top: 30%;
-  margin-left: 1rem;
   z-index: 2;
   color: black;
+  max-width: 400px;
+  margin-top: 100px; /* pushes text below logo */
+  padding: 1rem;
 }
 
-/* ✅ "Centers of" */
-.left-heading h1 {
-  font-size: 2.8rem;
+.hospital-login-container .left-heading h1 {
+  font-size: 2.6rem;
   font-weight: 700;
   margin: 0;
 }
 
-/* ✅ "Excellence" styling with colored X */
-.excellence-text {
-  font-size: 2.4rem;
+.hospital-login-container .excellence-text {
+  font-size: 2.2rem;
   font-family: 'Times New Roman', Times, serif;
   font-weight: 600;
   color: green;
   margin: 0;
 }
 
-.black-x {
+.hospital-login-container .black-x {
   color: black;
   font-weight: 700;
 }
-/* For the left black blob (bottom-left) */
-.hospital-right::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 70px;
-  height: 70px;
-   background: black;
-  border-top-right-radius: 100%;
-  z-index: 1;
-}
-.password-wrapper {
-  position: relative;
-}
 
-.password-wrapper input {
-  padding-right: 40px; /* Leave space for the icon */
-}
-
-.password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #555;
-}
-
-
-/* For the right black blob (top-right) */
-.hospital-right::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 70px;
-  height: 70px;
-  background:black;
-  border-bottom-left-radius: 100%;
-  z-index: 1;
-}
-
-
-
-
-
-/* ✅ Paragraph lines */
-.left-heading p {
+.hospital-login-container .left-heading p {
   font-size: 1rem;
   line-height: 1.6;
   margin-top: 1rem;
-  color:black;
-  max-width: 380px;
+  color: black;
 }
 
-
-
 /* ✅ Right Panel */
-.hospital-right {
+.hospital-login-container .hospital-right {
+  width: 40%;
   background: green;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   position: relative;
-  width: 40%;
 }
 
-.hospital-form {
-  width: 100%;
-  max-width: 420px;
-  padding: 3rem;
+.hospital-login-container .hospital-form {
   background: #fff;
   border-radius: 16px;
+  padding: 3rem 2.5rem;
+  width: 90%;
+  max-width: 420px;
   box-shadow: 0 16px 40px rgba(102, 187, 106, 0.25);
-  position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-.welcome-section {
+/* ✅ Welcome Section */
+.hospital-login-container .welcome-section {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   justify-content: center;
+  gap: 10px;
   margin-bottom: 2rem;
 }
 
-.welcome-section h2 {
+.hospital-login-container .welcome-section h2 {
   font-size: 2rem;
   font-weight: 700;
-  color:  rgb(68, 12, 68);
+  color: rgb(68, 12, 68);
 }
 
-.lock-icon {
+.hospital-login-container .lock-icon {
   color: #a8afa9;
-  font-size: 3.9rem; /* previously 1.5rem */
+  font-size: 2.8rem;
 }
 
-
-.hospital-form input {
+/* ✅ Inputs */
+.hospital-login-container input {
   width: 100%;
-  padding: 1rem;
+  padding: 14px 16px;
   margin-bottom: 1.2rem;
   border: 1px solid #c8e6c9;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
   transition: 0.3s ease;
+  box-sizing: border-box; /* ✅ ensures padding doesn’t change size */
 }
 
-.hospital-form input:focus {
-  border-color: #66bb6a;
-  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+.hospital-login-container input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.25);
 }
 
-.button {
+/* ✅ Password Toggle */
+.hospital-login-container .password-wrapper {
+  position: relative;
+  margin-bottom: 1.2rem;
+}
+
+/* Password input same width as email */
+.hospital-login-container .password-wrapper input {
+  width: 100%;
+  padding: 14px 45px 14px 16px; /* ✅ same padding + room for eye icon */
+  border: 1px solid #c8e6c9;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: 0.3s ease;
+}
+
+/* Toggle eye icon positioned cleanly */
+.hospital-login-container .password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* ✅ Button */
+.hospital-login-container .button {
   width: 100%;
   background: rgb(68, 12, 68);
   color: white;
   font-size: 1.1rem;
-  font-weight: 400;
-  height: 10%;
+  font-weight: 600;
+  padding: 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 8px 20px rgba(106, 27, 154, 0.3);
 }
 
-.button:hover {
-  transform: translateY(-2px);
+.hospital-login-container .button:hover {
   background: linear-gradient(to right, #4a148c, #388e3c);
-  box-shadow: 0 10px 25px rgba(56, 142, 60, 0.35);
+  transform: translateY(-2px);
 }
 
+/* ✅ Decorative Blobs */
+.hospital-login-container .hospital-right::before,
+.hospital-login-container .hospital-right::after {
+  content: '';
+  position: absolute;
+  background: black;
+  z-index: 1;
+}
 
-/* ✅ Responsive Design */
-@media (max-width: 500px) {
+.hospital-login-container .hospital-right::before {
+  top: 0;
+  right: 0;
+  width: 70px;
+  height: 70px;
+  border-bottom-left-radius: 100%;
+}
+
+.hospital-login-container .hospital-right::after {
+  bottom: 0;
+  left: 0;
+  width: 70px;
+  height: 70px;
+  border-top-right-radius: 100%;
+}
+
+/* ✅ Responsive Fixes */
+@media (max-width: 768px) {
   .hospital-login-container {
-    flex-direction: row;
+    flex-direction: column;
     height: auto;
   }
 
-  .hospital-left, .hospital-right {
-    width: 40%;
-    min-width: 100px;
-    height: 100vh;
+  .hospital-login-container .hospital-left,
+  .hospital-login-container .hospital-right {
+    width: 100%;
+    height: auto;
   }
 
-  .hospital-logo {
-    height: 40px;
+  .hospital-login-container .logo-container {
+    position: relative;
+    justify-content: center;
+    top: 10px;
+    left: 0;
+    margin-bottom: 0.5rem;
   }
 
-  .logo-text {
-    font-size: 0.9rem;
+  .hospital-login-container .left-heading {
+    margin-top: 1rem;
+    text-align: center;
+    padding: 1rem;
   }
 
-  .left-heading {
-    margin-top: 9rem;
-    margin-left: 1rem;
-  }
-
-  .left-heading h1 {
+  .hospital-login-container .left-heading h1 {
     font-size: 1.8rem;
   }
 
-  .excellence-text {
+  .hospital-login-container .excellence-text {
     font-size: 1.5rem;
   }
 
-  .left-heading p {
-    font-size: 0.8rem;
-    max-width: 90%;
+  .hospital-login-container .left-heading p {
+    font-size: 0.95rem;
   }
 
-  .hospital-form {
-    padding: 1rem;
-    width: 100%;
-    box-sizing: border-box;
+  .hospital-login-container .hospital-form {
+    padding: 2rem;
   }
 
-  .welcome-section h2 {
+  .hospital-login-container .button {
     font-size: 1rem;
   }
-
-  .lock-icon {
-    font-size: 2rem;
-  }
-
-  .password-wrapper input {
-    font-size: 0.9rem;
-  }
-
-  .button {
-    font-size: 1rem;
-    padding: 0.8rem;
-  }
 }
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-

@@ -1,139 +1,74 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddLabour = () => {
   const [form, setForm] = useState({ name: '', description: '' });
-  const [message, setMessage] = useState('');
-  const [showForm, setShowForm] = useState(true); // 🔄 toggle state
-const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [showForm, setShowForm] = useState(true);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("jwt");
+      const res = await axios.post(`${BASE_URL}/api/admin/labour-rooms/create`, form, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
+      });
 
-      const res = await axios.post(
-        `${BASE_URL}/api/admin/labour-rooms`,
-        form,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          withCredentials: true
-        }
-      );
-
-      setMessage(res.data.message);
+      toast.success(res.data.message || "Labour Room created successfully!");
       setForm({ name: '', description: '' });
-      setShowForm(false); // ⛔ hide form on success
-    } catch (error) {
-      console.error("Creation failed:", error.response?.data || error.message);
-      setMessage(error.response?.data?.message || "Something went wrong.");
+      setShowForm(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
     }
   };
 
-  const handleAddAnother = () => {
-    setMessage('');
-    setShowForm(true);
+  const handleBulkUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const token = localStorage.getItem("jwt");
+      const res = await axios.post(`${BASE_URL}/api/admin/labour-rooms/bulk`, formData, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+        withCredentials: true
+      });
+
+      toast.success(`${res.data.count} Labour Rooms uploaded successfully!`);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Bulk upload failed");
+    }
   };
 
   return (
-    <div style={{
-      maxWidth: '500px',
-      margin: '40px auto',
-      padding: '30px',
-      backgroundColor: '#f9f9f9',
-      borderRadius: '10px',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-      fontFamily: 'Segoe UI, sans-serif'
-    }}>
+    <div style={{ maxWidth: '600px', margin: '40px auto', padding: '30px', background: '#f9f9f9', borderRadius: '10px' }}>
       <h2 style={{ textAlign: 'center', color: '#2c3e50' }}>Add Labour Room</h2>
 
       {showForm ? (
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              placeholder="Enter room name"
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                fontSize: '14px'
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600' }}>Description:</label>
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              required
-              placeholder="Enter room description"
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1px solid #ccc',
-                fontSize: '14px',
-                resize: 'vertical'
-              }}
-            />
-          </div>
-
-          <button type="submit" style={{
-            width: '100%',
-            padding: '12px',
-            backgroundColor: '#3498db',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '6px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}>
-            Create Labour Room
-          </button>
+          <label>Name:</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required style={{ width: '100%', padding: '10px' }} />
+          <label>Description:</label>
+          <textarea name="description" value={form.description} onChange={handleChange} rows={3} style={{ width: '100%', padding: '10px' }} />
+          <button type="submit" style={{ marginTop: '10px', background: '#3498db', color: 'white', padding: '10px', border: 'none', borderRadius: '6px', width: '100%' }}>Create</button>
         </form>
       ) : (
-        <>
-          <p style={{
-            marginTop: '20px',
-            textAlign: 'center',
-            color: message.toLowerCase().includes('success') ? 'green' : 'red',
-            fontWeight: 'bold'
-          }}>
-            {message}
-          </p>
-
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <button onClick={handleAddAnother} style={{
-              padding: '10px 20px',
-              backgroundColor: '#2ecc71',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '15px',
-              cursor: 'pointer'
-            }}>
-              + Add Another
-            </button>
-          </div>
-        </>
+        <button onClick={() => setShowForm(true)} style={{ marginTop: '10px', background: '#2ecc71', color: 'white', padding: '10px', border: 'none', borderRadius: '6px', width: '100%' }}>+ Add Another</button>
       )}
+
+      <div style={{ marginTop: '30px', borderTop: '1px solid #ddd', paddingTop: '20px' }}>
+        <h3>📤 Bulk Upload Labour Rooms (Excel/CSV)</h3>
+        <input type="file" accept=".xlsx,.xls,.csv" onChange={handleBulkUpload} style={{ marginTop: '10px' }} />
+      </div>
+
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
     </div>
   );
 };

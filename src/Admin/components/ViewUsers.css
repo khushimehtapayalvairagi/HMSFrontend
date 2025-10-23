@@ -1,4 +1,4 @@
-.view-users-container {
+                .view-users-container {
   padding: 20px;
 }
 
@@ -61,5 +61,31 @@
   padding: 10px;
   color: black;          /* Make text white */
   font-weight: 600;        /* Bold text */
-  background-color: white; /* Indigo-900 for table row background */
+  background-color: white; /* Indigo-900 for table row background */           
+
 }
+/* ===== Scrollable Table Wrapper ===== */
+.table-wrapper {
+  overflow-y: auto;        /* Enables vertical scroll */
+  overflow-x: auto;        /* Enables horizontal scroll if columns are too many */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  margin-top: 15px;
+}
+
+/* Optional: Style the scrollbar (works in Chrome/Edge) */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
+

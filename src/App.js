@@ -77,6 +77,45 @@ import RecordPrescription from './components/Dashboard/RecordPrescription.js';
 import PatientPrescriptionRecord from './components/Dashboard/PatientPrescriptionRecord.js';
 
 const App = () => {
+   const ReceptionistRoutes = () => (
+  <Routes>
+    <Route path="patient-form" element={<PatientForm />} />
+    <Route path="viewPatient" element={<ViewPatient />} />
+    <Route path="visit-form" element={<VisitForm />} />
+    <Route path="patient-visits-viewer" element={<PatientVisitsViewer />} />
+    {/* <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} /> */}
+    <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
+    <Route path="ProcedureForm" element={<ProcedureForm />} />
+    <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
+    <Route path="LabourRoom" element={<LabourRoom />} />
+    <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
+    <Route path="Billing" element={<CreateBillForm />} />
+    <Route path="ViewBill" element={<ViewBill />} />
+    <Route path="PaymentForm" element={<PaymentForm />} />
+    <Route path="DischargePatient" element={<DischargePatient />} />
+    <Route path="BillPaymentHistory" element={<BillPaymentHistory />} />
+  </Routes>
+);
+const InventoryRoutes =()=>(
+  <Routes>
+<Route path="InventoryForm" element={<InventoryForm />} />
+  <Route path="InventoryList" element={<InventoryList />} />
+    <Route path="inventory/edit/:id" element={<EditInventoryForm />} />
+  <Route path="RecordTransactionForm" element={<RecordTransactionForm />} />
+  <Route path="TransactionHistoryForm" element={<TransactionHistoryForm />} /> 
+  </Routes>
+
+)
+  const LabTechnicianRoutes = () => (
+    <Routes>
+      <Route path="dashboard" element={<LabDashboard />} />
+      <Route path="patients" element={<PatientsPage />} />
+      <Route path="add-test" element={<AddTestPage />} />
+      <Route path="appointments" element={<Appointments />} />
+      <Route path="upload-report" element={<UploadReport />} />
+    </Routes>
+  );
+
   return (
     <>
       <Routes>
@@ -88,6 +127,7 @@ const App = () => {
               <Route path="ipd-register" element={<IPDReportPage />} />
             </Route>
             <Route index element={<AdminHome />} />
+            
             <Route path="add-user" element={<AddUser />} />
             <Route path="view-user/:type" element={<ViewUsers />} />
             <Route path="specialty" element={<AddSpeciality />} />
@@ -108,6 +148,9 @@ const App = () => {
             <Route path="view-partners" element={<ViewRefferalPartner />} />
             <Route path="operation-theatre" element={<AddOperationTheatre />} />
             <Route path="view-operation-theatre" element={<ViewOperationTheatre />} />
+             <Route path="receptionist/*" element={<ReceptionistRoutes />} />
+          <Route path ="inventory/*" element={<InventoryRoutes/>}/>
+           <Route path="lab-technician/*" element={<LabTechnicianRoutes />} />
           </Route>
         </Route>
 

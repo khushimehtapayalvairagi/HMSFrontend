@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState } from 'react';
 import './ViewUsers.css';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
@@ -126,6 +126,8 @@ const deleteUser = async (id) => {
       {loading ? (
         <p>Loading...</p>
       ) : filteredUsers.length > 0 ? (
+     <div className="table-wrapper">
+
         <table className="users-table">
           <thead>
             <tr>
@@ -198,6 +200,7 @@ const deleteUser = async (id) => {
             ))}
           </tbody>
         </table>
+        </div>
       ) : (
         userType && <p>No users found</p>
       )}
@@ -216,3 +219,4 @@ const deleteUser = async (id) => {
 };
 
 export default ViewUsers;
+ 

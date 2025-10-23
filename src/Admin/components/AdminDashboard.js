@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Box, IconButton, Menu, MenuItem,Button } from '@mui/material';
-import { Logout as LogoutIcon,ExpandMore, AssignmentInd } from '@mui/icons-material';
+import { Box, IconButton, Menu, MenuItem } from '@mui/material';
+import { Logout as LogoutIcon, ExpandMore, AssignmentInd } from '@mui/icons-material';
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // closed by default on mobile
+  // Sidebar + dropdown states
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [viewUserDropdownOpen, setViewUserDropdownOpen] = useState(false);
   const [labourRoomDropdownOpen, setLabourRoomDropdownOpen] = useState(false);
@@ -18,37 +20,42 @@ const AdminDashboard = () => {
   const [departmentDropdownOpen, setDepartmentDropdownOpen] = useState(false);
   const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-const [receptionistAnchor, setReceptionistAnchor] = useState(null);
   const [activeModuleLabel, setActiveModuleLabel] = useState('');
-   const [nurseDropdownOpen, setNurseDropdownOpen] = useState(false);
-const [inventoryDropdownOpen, setInventoryDropdownOpen] = useState(false);
-const [doctorDropdownOpen, setDoctorDropdownOpen] = useState(false);
-// === Receptionist dropdown state (for sidebar) ===
-const [receptionistDropdownOpen, setReceptionistDropdownOpen] = useState(false);
 
-// === Role menu (navbar) ===
-const [roleAnchor, setRoleAnchor] = useState(null);
-const openRoleMenu = (event) => setRoleAnchor(event.currentTarget);
-const closeRoleMenu = () => setRoleAnchor(null);
-
-// === Staff submenu (navbar) ===
-const [staffAnchor, setStaffAnchor] = useState(null);
-const openStaffMenu = (event) => setStaffAnchor(event.currentTarget);
-const closeStaffMenu = () => setStaffAnchor(null);
-const [nurseAnchor, setNurseAnchor] = useState(null);
-const openNurseMenu = (event) => setNurseAnchor(event.currentTarget);
-const closeNurseMenu = () => setNurseAnchor(null);
-const [inventoryAnchor, setInventoryAnchor] = useState(null);
-const openInventoryMenu = (event) => setInventoryAnchor(event.currentTarget);
-const closeInventoryMenu = () => setInventoryAnchor(null);
-const [doctorAnchor, setDoctorAnchor] = useState(null);
-const openDoctorMenu = (event) => setDoctorAnchor(event.currentTarget);
-const closeDoctorMenu = () => setDoctorAnchor(null);
+  // Navbar menu anchors
+  const [roleAnchor, setRoleAnchor] = useState(null);
+  const [staffAnchor, setStaffAnchor] = useState(null);
+  const [receptionistAnchor, setReceptionistAnchor] = useState(null);
+  const [nurseAnchor, setNurseAnchor] = useState(null);
+  const [labAnchor, setLabAnchor] = useState(null);
+  const [inventoryAnchor, setInventoryAnchor] = useState(null);
+  const [doctorAnchor, setDoctorAnchor] = useState(null);
 
   const location = useLocation();
-   const openReceptionistMenu = (event) => setReceptionistAnchor(event.currentTarget);
+
+  // Open/close handlers for nav menus
+  const openRoleMenu = (e) => setRoleAnchor(e.currentTarget);
+  const closeRoleMenu = () => setRoleAnchor(null);
+
+  const openStaffMenu = (e) => setStaffAnchor(e.currentTarget);
+  const closeStaffMenu = () => setStaffAnchor(null);
+
+  const openReceptionistMenu = (e) => setReceptionistAnchor(e.currentTarget);
   const closeReceptionistMenu = () => setReceptionistAnchor(null);
-  // ✅ Close all dropdowns when navigating
+
+  const openNurseMenu = (e) => setNurseAnchor(e.currentTarget);
+  const closeNurseMenu = () => setNurseAnchor(null);
+
+  const openLabMenu = (e) => setLabAnchor(e.currentTarget);
+  const closeLabMenu = () => setLabAnchor(null);
+
+  const openInventoryMenu = (e) => setInventoryAnchor(e.currentTarget);
+  const closeInventoryMenu = () => setInventoryAnchor(null);
+
+  const openDoctorMenu = (e) => setDoctorAnchor(e.currentTarget);
+  const closeDoctorMenu = () => setDoctorAnchor(null);
+
+  // Auto close dropdowns on navigation
   useEffect(() => {
     setUserMenuOpen(false);
     setViewUserDropdownOpen(false);
@@ -62,13 +69,10 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
     setSpecialtyDropdownOpen(false);
     setDepartmentDropdownOpen(false);
     setReportDropdownOpen(false);
-     setNurseDropdownOpen(false)
-     setReceptionistDropdownOpen(false)
-    // auto close sidebar on mobile when navigating
+
     if (window.innerWidth < 768) setSidebarOpen(false);
   }, [location.pathname]);
 
-  // ✅ Auto open Reports dropdown if inside reports section
   useEffect(() => {
     if (location.pathname.startsWith('/reports')) {
       setActiveModuleLabel('Reports');
@@ -76,78 +80,8 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
     }
   }, [location.pathname]);
 
+  // Sidebar modules
   const modules = [
-//     {
-//   label: 'Receptionist Dashboard',
-//   icon: '📋',
-//   dropdownOpen: receptionistDropdownOpen,
-//   setDropdownOpen: setReceptionistDropdownOpen,
-//   content: (
-//     <>
-//       <Link to="receptionist/patient-form" style={dropdownLinkStyle}>👤 Patient</Link>
-//       <Link to="receptionist/viewPatient" style={dropdownLinkStyle}>👀 View Patient</Link>
-//       <Link to="receptionist/visit-form" style={dropdownLinkStyle}>📝 Visit Form</Link>
-//       <Link to="receptionist/patient-visits-viewer" style={dropdownLinkStyle}>📋 Patient Visits Viewer</Link>
-//       <Link to="receptionist/UpdatePatientStatus" style={dropdownLinkStyle}>🔄 Update Patient Status</Link>
-//       <Link to="receptionist/IPDAdmissionForm" style={dropdownLinkStyle}>🏥 IPD Admission Form</Link>
-//       <Link to="receptionist/ProcedureForm" style={dropdownLinkStyle}>🧪 Procedure Form</Link>
-//       <Link to="receptionist/ViewAnesthesiaForm" style={dropdownLinkStyle}>💉 View Anesthesia Form</Link>
-//       <Link to="receptionist/LabourRoom" style={dropdownLinkStyle}>👶 Labour Room</Link>
-//       <Link to="receptionist/ViewLabourRoom" style={dropdownLinkStyle}>👀 View Labour Room</Link>
-//       <Link to="receptionist/Billing" style={dropdownLinkStyle}>💳 Billing</Link>
-//       <Link to="receptionist/ViewBill" style={dropdownLinkStyle}>🧾 View Bill</Link>
-//       <Link to="receptionist/PaymentForm" style={dropdownLinkStyle}>💰 Payment Form</Link>
-//       <Link to="receptionist/DischargePatient" style={dropdownLinkStyle}>🚪 Discharge Patient</Link>
-//       <Link to="receptionist/BillPaymentHistory" style={dropdownLinkStyle}>📜 Bill Payment History</Link>
-//     </>
-//   )
-// },
-
-// {
-//   label: 'Nurse Dashboard',
-//   icon: '🧑‍⚕️',
-//   dropdownOpen: nurseDropdownOpen,
-//   setDropdownOpen: setNurseDropdownOpen,
-//   content: (
-//     <>
-//       <Link to="nurse/NurseIPDAdmissionList" style={dropdownLinkStyle}>🏥 IPD Admissions</Link>
-//       <Link to="nurse/ViewDailyReports" style={dropdownLinkStyle}>📋 Daily Reports</Link>
-//       <Link to="nurse/NurseScheduledProcedures" style={dropdownLinkStyle}>🧪 Scheduled Procedures</Link>
-//     </>
-//   )
-// },
-
-// {
-//   label: 'Inventory Manager',
-//   icon: '📦',
-//   dropdownOpen: inventoryDropdownOpen,
-//   setDropdownOpen: setInventoryDropdownOpen,
-//   content: (
-//     <>
-//       <Link to="inventory/InventoryForm" style={dropdownLinkStyle}>➕ Inventory Form</Link>
-//       <Link to="inventory/InventoryList" style={dropdownLinkStyle}>📋 Inventory List</Link>
-//       <Link to="inventory/RecordTransactionForm" style={dropdownLinkStyle}>💰 Record Transaction</Link>
-//       <Link to="inventory/TransactionHistoryForm" style={dropdownLinkStyle}>📜 Transaction History</Link>
-//     </>
-//   )
-// },
-// {
-//   label: 'Doctor Dashboard',
-//   icon: '🩺',
-//   dropdownOpen: doctorDropdownOpen,
-//   setDropdownOpen: setDoctorDropdownOpen,
-//   content: (
-//     <>
-//       <Link to="doctor" style={dropdownLinkStyle}>🏠 Home</Link>
-//       <Link to="doctor/opd-consultation" style={dropdownLinkStyle}>📝 OPD Consultation</Link>
-//       <Link to="doctor/previous-consultations" style={dropdownLinkStyle}>📋 Previous Consultations</Link>
-//     </>
-//   )
-// },
-// ,
-
-
-
     {
       label: 'Reports',
       icon: '📊',
@@ -155,10 +89,14 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
       setDropdownOpen: setReportDropdownOpen,
       content: (
         <>
-          <Link to="reports/opd-register" style={dropdownLinkStyle}>Central OPD Register</Link>
-          <Link to="reports/ipd-register" style={dropdownLinkStyle}>Central IPD Register</Link>
+          <Link to="reports/opd-register" style={dropdownLinkStyle}>
+            Central OPD Register
+          </Link>
+          {/* <Link to="reports/ipd-register" style={dropdownLinkStyle}>
+            Central IPD Register
+          </Link> */}
         </>
-      )
+      ),
     },
     {
       label: 'User Management',
@@ -169,16 +107,16 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
         <>
           <Link to="add-user" style={dropdownLinkStyle}>➕ Add User</Link>
           <button
-            onClick={() => setViewUserDropdownOpen(prev => !prev)}
+            onClick={() => setViewUserDropdownOpen((prev) => !prev)}
             style={{
               ...dropdownLinkStyle,
               background: 'white',
               border: 'none',
+              width: '100%',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              width: '100%',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             📋 View Users <span>{viewUserDropdownOpen ? '▲' : '▼'}</span>
@@ -190,7 +128,7 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
             </div>
           )}
         </>
-      )
+      ),
     },
     {
       label: 'Specialty',
@@ -202,7 +140,7 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
           <Link to="specialty" style={dropdownLinkStyle}>➕ Add Specialty</Link>
           <Link to="viewSpecialty" style={dropdownLinkStyle}>👀 View Specialty</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Department',
@@ -214,11 +152,11 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
           <Link to="department" style={dropdownLinkStyle}>➕ Add Department</Link>
           <Link to="viewDepartment" style={dropdownLinkStyle}>👀 View Department</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Labour Room',
-      icon: '🏥',
+      icon: '👶',
       dropdownOpen: labourRoomDropdownOpen,
       setDropdownOpen: setLabourRoomDropdownOpen,
       content: (
@@ -226,11 +164,11 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
           <Link to="labourRoom" style={dropdownLinkStyle}>➕ Add Labour Room</Link>
           <Link to="visit-room" style={dropdownLinkStyle}>👀 Visit Room</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Room Category',
-      icon: '🏥',
+      icon: '🛏️',
       dropdownOpen: roomCategoryDropdownOpen,
       setDropdownOpen: setRoomCategoryDropdownOpen,
       content: (
@@ -238,23 +176,23 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
           <Link to="Room-Category" style={dropdownLinkStyle}>➕ Add Room</Link>
           <Link to="visitRoom" style={dropdownLinkStyle}>👀 Visit Room</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Ward',
-      icon: '🏥',
+      icon: '🚪',
       dropdownOpen: wardDropdownOpen,
       setDropdownOpen: setWardDropdownOpen,
       content: (
         <>
           <Link to="ward" style={dropdownLinkStyle}>➕ Add Ward</Link>
-          <Link to="visitWard" style={dropdownLinkStyle}>👀 Visit Ward</Link>
+          <Link to="visitWard" style={dropdownLinkStyle}>👀 View Ward</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Procedure',
-      icon: '🏥',
+      icon: '🧪',
       dropdownOpen: procedureDropdownOpen,
       setDropdownOpen: setProcedureDropdownOpen,
       content: (
@@ -262,348 +200,280 @@ const closeDoctorMenu = () => setDoctorAnchor(null);
           <Link to="procedure" style={dropdownLinkStyle}>➕ Add Procedure</Link>
           <Link to="view-procedure" style={dropdownLinkStyle}>👀 View Procedure</Link>
         </>
-      )
+      ),
     },
     {
-      label: 'ManualCharge',
-      icon: '🏥',
+      label: 'Manual Charge',
+      icon: '💵',
       dropdownOpen: manualChargeDropdownOpen,
       setDropdownOpen: setManualChargeDropdownOpen,
       content: (
         <>
-          <Link to="manualCharge" style={dropdownLinkStyle}>➕ Add ManualCharge</Link>
-          <Link to="view-manualCharge" style={dropdownLinkStyle}>👀 View ManualCharge</Link>
+          <Link to="manualCharge" style={dropdownLinkStyle}>➕ Add Manual Charge</Link>
+          <Link to="view-manualCharge" style={dropdownLinkStyle}>👀 View Manual Charge</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Referral Partner',
-      icon: '🏥',
+      icon: '🤝',
       dropdownOpen: referralDropdownOpen,
       setDropdownOpen: setReferralDropdownOpen,
       content: (
         <>
-          <Link to="partner" style={dropdownLinkStyle}>➕ Add ReferralPartner</Link>
-          <Link to="view-partners" style={dropdownLinkStyle}>👀 View ReferralPartner</Link>
+          <Link to="partner" style={dropdownLinkStyle}>➕ Add Referral Partner</Link>
+          <Link to="view-partners" style={dropdownLinkStyle}>👀 View Referral Partner</Link>
         </>
-      )
+      ),
     },
     {
       label: 'Operation Theatre',
-      icon: '🏥',
+      icon: '🩺',
       dropdownOpen: operationDropdownOpen,
       setDropdownOpen: setOperationDropdownOpen,
       content: (
         <>
-          <Link to="operation-theatre" style={dropdownLinkStyle}>➕ Add OperationTheatre</Link>
-          <Link to="view-operation-theatre" style={dropdownLinkStyle}>👀 View OperationTheatre</Link>
+          <Link to="operation-theatre" style={dropdownLinkStyle}>➕ Add Operation Theatre</Link>
+          <Link to="view-operation-theatre" style={dropdownLinkStyle}>👀 View Operation Theatre</Link>
         </>
-      )
+      ),
     },
   ];
 
   return (
     <div style={styles.container}>
-      {/* ✅ Fixed Navbar */}
+      {/* === Navbar === */}
       <div style={styles.navbar}>
         <button style={styles.menuButton} onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? '✖' : '☰'}
         </button>
         <h5>Hospital Management System</h5>
-       
-         <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 1 }}>
-      <IconButton color="inherit" onClick={openRoleMenu} title="Roles">
-  <AssignmentInd />
-</IconButton>
-      <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
-    <MenuItem
-  onClick={(e) => {
-    closeRoleMenu();
-    openDoctorMenu(e);   // open Doctor submenu
-  }}
->
-  🩺 Doctor ▸
-</MenuItem>
 
-    <MenuItem
-    onClick={(e) => {
-      closeRoleMenu();
-      openStaffMenu(e);
-    }}
-  >
-    👥 Staff ▸
-  </MenuItem>
-</Menu>
-<Menu anchorEl={staffAnchor} open={Boolean(staffAnchor)} onClose={closeStaffMenu}>
- <MenuItem
-    onClick={(e) => {
-      closeStaffMenu();
-      openReceptionistMenu(e);
-    }}
-  >
+        <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton color="inherit" onClick={openRoleMenu} title="Roles">
+            <AssignmentInd />
+          </IconButton>
 
-    📋 Receptionist ▸
-  </MenuItem>
+          {/* === Role Menu === */}
+          <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
+            <MenuItem
+              onClick={(e) => {
+                closeRoleMenu();
+                openStaffMenu(e);
+              }}
+            >
+              👥 Staff ▸
+            </MenuItem>
+          </Menu>
 
- <MenuItem
-  onClick={(e) => {
-    closeStaffMenu();
-    openNurseMenu(e);
-  }}
->
-  🧑‍⚕️ Nurse ▸
-</MenuItem>
+          {/* === Staff Submenu === */}
+          <Menu anchorEl={staffAnchor} open={Boolean(staffAnchor)} onClose={closeStaffMenu}>
+            <MenuItem onClick={(e) => { closeStaffMenu(); openReceptionistMenu(e); }}>
+              📋 Receptionist ▸
+            </MenuItem>
+            <MenuItem onClick={(e) => { closeStaffMenu(); openNurseMenu(e); }}>
+              🧑‍⚕️ Nurse ▸
+            </MenuItem>
+            <MenuItem onClick={(e) => { closeStaffMenu(); openLabMenu(e); }}>
+              🧪 Lab Dashboard ▸
+            </MenuItem>
+            <MenuItem onClick={(e) => { closeStaffMenu(); openInventoryMenu(e); }}>
+              📦 Inventory Manager ▸
+            </MenuItem>
+          </Menu>
 
-
- <MenuItem
-  onClick={(e) => {
-    closeStaffMenu();
-    openInventoryMenu(e);
-  }}
->
-  📦 Inventory Manager ▸
-</MenuItem>
-
-</Menu>
-    <Menu
-  anchorEl={receptionistAnchor}
-  open={Boolean(receptionistAnchor)}
-  onClose={closeReceptionistMenu}
-  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-  transformOrigin={{ vertical: "top", horizontal: "right" }}
->
-  {[
-    { to: "receptionist/patient-form", label: "👤 Patient" },
-    { to: "receptionist/viewPatient", label: "👀 View Patient" },
-    { to: "receptionist/visit-form", label: "📝 Visit Form" },
-    { to: "receptionist/patient-visits-viewer", label: "📋 Patient Visits Viewer" },
-    { to: "receptionist/UpdatePatientStatus", label: "🔄 Update Patient Status" },
-    { to: "receptionist/IPDAdmissionForm", label: "🏥 IPD Admission Form" },
-    { to: "receptionist/ProcedureForm", label: "🧪 Procedure Form" },
-    { to: "receptionist/ViewAnesthesiaForm", label: "💉 View Anesthesia Form" },
-    { to: "receptionist/LabourRoom", label: "👶 Labour Room" },
-    { to: "receptionist/ViewLabourRoom", label: "👀 View Labour Room" },
-    { to: "receptionist/Billing", label: "💳 Billing" },
-    { to: "receptionist/ViewBill", label: "🧾 View Bill" },
-    { to: "receptionist/PaymentForm", label: "💰 Payment Form" },
-    { to: "receptionist/DischargePatient", label: "🚪 Discharge Patient" },
-    { to: "receptionist/BillPaymentHistory", label: "📜 Bill Payment History" },
+          {/* === Receptionist Submenu === */}
+          <Menu anchorEl={receptionistAnchor} open={Boolean(receptionistAnchor)} onClose={closeReceptionistMenu}>
+           {[
+    { to: "/admin-dashboard/receptionist/patient-form", label: "👤 Patient" },
+    { to: "/admin-dashboard/receptionist/viewPatient", label: "👀 View Patient" },
+    { to: "/admin-dashboard/receptionist/visit-form", label: "📝 Visit Form" },
+    { to: "/admin-dashboard/receptionist/patient-visits-viewer", label: "📋 Patient Visits Viewer" },
+    { to: "/admin-dashboard/receptionist/UpdatePatientStatus", label: "🔄 Update Patient Status" },
+    { to: "/admin-dashboard/receptionist/IPDAdmissionForm", label: "🏥 IPD Admission Form" },
+    { to: "/admin-dashboard/receptionist/ProcedureForm", label: "🧪 Procedure Form" },
+    { to: "/admin-dashboard/receptionist/ViewAnesthesiaForm", label: "💉 View Anesthesia Form" },
+    { to: "/admin-dashboard/receptionist/LabourRoom", label: "👶 Labour Room" },
+    { to: "/admin-dashboard/receptionist/ViewLabourRoom", label: "👀 View Labour Room" },
+    { to: "/admin-dashboard/receptionist/Billing", label: "💳 Billing" },
+    { to: "/admin-dashboard/receptionist/ViewBill", label: "🧾 View Bill" },
+    { to: "/admin-dashboard/receptionist/PaymentForm", label: "💰 Payment Form" },
+    { to: "/admin-dashboard/receptionist/DischargePatient", label: "🚪 Discharge Patient" },
+    { to: "/admin-dashboard/receptionist/BillPaymentHistory", label: "📜 Bill Payment History" },
   ].map((item, i) => (
-    <MenuItem
-      key={i}
-      component={Link}
-      to={item.to}
-      onClick={() => {
-        // close receptionist menu
-        closeReceptionistMenu();
-        // close ALL other sidebar dropdowns too
-        modules.forEach(m => m.setDropdownOpen(false));
-        setReceptionistDropdownOpen(false);
-        setActiveModuleLabel(item.label);
-      }}
-    >
-      {item.label}
-    </MenuItem>
-  ))}
-</Menu>
-{/* === Nurse Submenu === */}
-<Menu
-  anchorEl={nurseAnchor}
-  open={Boolean(nurseAnchor)}
-  onClose={closeNurseMenu}
-  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-  transformOrigin={{ vertical: "top", horizontal: "right" }}
->
+              <MenuItem key={i} component={Link} to={item.to} onClick={closeReceptionistMenu}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          {/* === Nurse Submenu === */}
+          <Menu anchorEl={nurseAnchor} open={Boolean(nurseAnchor)} onClose={closeNurseMenu}>
+            {[
+              { to: "nurse/NurseIPDAdmissionList", label: "🏥 IPD Admissions" },
+              { to: "nurse/ViewDailyReports", label: "📋 Daily Reports" },
+              { to: "nurse/NurseScheduledProcedures", label: "🧪 Scheduled Procedures" },
+            ].map((item, i) => (
+              <MenuItem key={i} component={Link} to={item.to} onClick={closeNurseMenu}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          {/* === Lab Submenu === */}
+       <Menu anchorEl={labAnchor} open={Boolean(labAnchor)} onClose={closeLabMenu}>
   {[
-    { to: "nurse/NurseIPDAdmissionList", label: "🏥 IPD Admissions" },
-    { to: "nurse/ViewDailyReports", label: "📋 Daily Reports" },
-    { to: "nurse/NurseScheduledProcedures", label: "🧪 Scheduled Procedures" },
+    { to: "/admin-dashboard/lab-technician/dashboard", label: "🏠 Lab Dashboard" },
+    { to: "/admin-dashboard/lab-technician/patients", label: "🧍 Patients" },
+    { to: "/admin-dashboard/lab-technician/add-test", label: "🧪 Add Test" },
+    { to: "/admin-dashboard/lab-technician/appointments", label: "📅 Appointments" },
+    { to: "/admin-dashboard/lab-technician/upload-report", label: "📄 Upload Report" },
   ].map((item, i) => (
-    <MenuItem
-      key={i}
-      component={Link}
-      to={item.to}
-      onClick={() => {
-        closeNurseMenu();
-        modules.forEach(m => m.setDropdownOpen(false));
-        setNurseDropdownOpen(false);
-        setActiveModuleLabel(item.label);
-      }}
-    >
-      {item.label}
-    </MenuItem>
-  ))}
-</Menu>
-{/* === Inventory Manager Submenu === */}
-<Menu
-  anchorEl={inventoryAnchor}
-  open={Boolean(inventoryAnchor)}
-  onClose={closeInventoryMenu}
-  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-  transformOrigin={{ vertical: "top", horizontal: "right" }}
->
-  {[
-    { to: "inventory/InventoryForm", label: "➕ Inventory Form" },
-    { to: "inventory/InventoryList", label: "📋 Inventory List" },
-    { to: "inventory/RecordTransactionForm", label: "💰 Record Transaction" },
-    { to: "inventory/TransactionHistoryForm", label: "📜 Transaction History" },
-  ].map((item, i) => (
-    <MenuItem
-      key={i}
-      component={Link}
-      to={item.to}
-      onClick={() => {
-        closeInventoryMenu();
-        modules.forEach(m => m.setDropdownOpen(false));
-        setInventoryDropdownOpen(false);
-        setActiveModuleLabel(item.label);
-      }}
-    >
-      {item.label}
-    </MenuItem>
-  ))}
-</Menu>
-<Menu
-  anchorEl={doctorAnchor}
-  open={Boolean(doctorAnchor)}
-  onClose={closeDoctorMenu}
-  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-  transformOrigin={{ vertical: "top", horizontal: "right" }}
->
-  {[
-    { to: "doctor", label: "🏠 Home" },
-    { to: "doctor/opd-consultation", label: "📝 OPD Consultation" },
-    { to: "doctor/previous-consultations", label: "📋 Previous Consultations" },
-  ].map((item, i) => (
-    <MenuItem
-      key={i}
-      component={Link}
-      to={item.to}
-      onClick={() => {
-        closeDoctorMenu();
-        setActiveModuleLabel(item.label);
-      }}
-    >
+    <MenuItem key={i} component={Link} to={item.to} onClick={closeLabMenu}>
       {item.label}
     </MenuItem>
   ))}
 </Menu>
 
 
+       {/* === Inventory Submenu === */}
+<Menu anchorEl={inventoryAnchor} open={Boolean(inventoryAnchor)} onClose={closeInventoryMenu}>
+  {[
+    { to: "/admin-dashboard/inventory/InventoryForm", label: "➕ Inventory Form" },
+    { to: "/admin-dashboard/inventory/InventoryList", label: "📋 Inventory List" },
+    { to: "/admin-dashboard/inventory/RecordTransactionForm", label: "💰 Record Transaction" },
+    { to: "/admin-dashboard/inventory/TransactionHistoryForm", label: "📜 Transaction History" },
+  ].map((item, i) => (
+    <MenuItem key={i} component={Link} to={item.to} onClick={closeInventoryMenu}>
+      {item.label}
+    </MenuItem>
+  ))}
+</Menu>
 
-    <IconButton
-      color="inherit"
-      onClick={() => {
-        localStorage.removeItem("jwt");
-        window.location.href = "/";
-      }}
-      edge="end"
-      title="Logout"
-    >
-      <LogoutIcon />
-    </IconButton>
-  </Box>
+
+          {/* === Doctor Submenu === */}
+          <Menu anchorEl={doctorAnchor} open={Boolean(doctorAnchor)} onClose={closeDoctorMenu}>
+            {[
+              { to: "doctor", label: "🏠 Home" },
+              { to: "doctor/opd-consultation", label: "📝 OPD Consultation" },
+              { to: "doctor/previous-consultations", label: "📋 Previous Consultations" },
+            ].map((item, i) => (
+              <MenuItem key={i} component={Link} to={item.to} onClick={closeDoctorMenu}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              localStorage.removeItem('jwt');
+              window.location.href = '/';
+            }}
+            edge="end"
+            title="Logout"
+          >
+            <LogoutIcon />
+          </IconButton>
+        </Box>
       </div>
 
-      {/* Sidebar */}
-      <div className="sidebar no-print"
+      {/* === Sidebar === */}
+      <div
+        className="sidebar no-print"
         style={{
           ...styles.sidebar,
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         }}
       >
-        <div>
-          <nav className="navbar no-print" style={styles.nav}>
-            {/* ✅ Fixed Navbar */}
-{/* <div className="navbar no-print" style={styles.navbar}> */}
+        <nav style={styles.nav}>
+          <Link to="" onClick={() => setActiveModuleLabel('')} style={activeModuleLabel === '' ? activeLinkStyle : linkStyle}>
+            🏠 Home
+          </Link>
 
-            {/* <div className="no-print" style={styles.nav}></div> */}
-            <Link
-              to=""
-              onClick={() => setActiveModuleLabel('')}
-              style={activeModuleLabel === '' ? activeLinkStyle : linkStyle}
-            >
-              🏠 Home
-            </Link>
+          <hr style={styles.hr} />
 
-            <hr style={styles.hr} />
+          <input
+            type="text"
+            placeholder="🔍 Search modules..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+            style={{
+              width: '90%',
+              padding: '8px 10px',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              marginBottom: '10px',
+              fontSize: '14px',
+            }}
+          />
 
-            <input
-              type="text"
-              placeholder="🔍 Search modules..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-              style={{
-                width: '90%',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                marginBottom: '10px',
-                fontSize: '14px'
-              }}
-            />
+          {modules
+            .filter((mod) => mod.label.toLowerCase().includes(searchTerm))
+            .map((mod, index) => (
+              <div key={index} style={{ width: '100%' }}>
+                <button
+                  onClick={() => {
+                    const isOpening = !mod.dropdownOpen;
+                    modules.forEach((m) => m.setDropdownOpen(false));
+                    mod.setDropdownOpen(isOpening);
+                    setActiveModuleLabel(isOpening ? mod.label : '');
+                  }}
+                  style={{
+                    ...(activeModuleLabel === mod.label ? activeLinkStyle : linkStyle),
+                    background: 'none',
+                    border: 'none',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span>{mod.icon} {mod.label}</span>
+                  <span>{mod.dropdownOpen ? '▲' : '▼'}</span>
+                </button>
 
-            {modules
-              .filter(mod => mod.label.toLowerCase().includes(searchTerm))
-              .map((mod, index) => (
-                <div key={index} style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <button
-                      onClick={() => {
-                        const isOpening = !mod.dropdownOpen;
-                        modules.forEach(m => m.setDropdownOpen(false));
-                        mod.setDropdownOpen(isOpening);
-                        setActiveModuleLabel(isOpening ? mod.label : '');
-                      }}
-                      style={{
-                        ...(activeModuleLabel === mod.label ? activeLinkStyle : linkStyle),
-                        background: 'none',
-                        border: 'none',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <span>{mod.icon} {mod.label}</span>
-                      <span>{mod.dropdownOpen ? '▲' : '▼'}</span>
-                    </button>
-                  </div>
-
-                  {mod.dropdownOpen && (
-                    <div style={styles.dropdown}>
-                      {mod.content}
-                    </div>
-                  )}
-                  <hr style={styles.hr} />
-                </div>
-              ))}
-          </nav>
-        </div>
-
-      
+                {mod.dropdownOpen && <div style={styles.dropdown}>{mod.content}</div>}
+                <hr style={styles.hr} />
+              </div>
+            ))}
+        </nav>
       </div>
 
       {/* Overlay for mobile */}
       {sidebarOpen && <div style={styles.overlay} onClick={() => setSidebarOpen(false)} />}
 
-      {/* Main Content */}
-      <div style={styles.main}>
-        <Outlet />
-      </div>
+      {/* Main content */}
+    <div
+  className="main"
+  style={{
+    ...styles.main,
+    marginLeft: sidebarOpen ? '260px' : '0', // 👈 dynamic adjustment
+    transition: 'margin-left 0.3s ease-in-out',
+  }}
+>
+  <Outlet />
+</div>
+
+
+    
+
     </div>
   );
 };
 
 // === Styles ===
 const styles = {
-  container: {
-    display: 'flex',
-    height: '100vh',
-    fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-    flexDirection: 'row',
-    overflow: 'hidden'
-  },
+  
+ container: {
+  display: 'flex',
+  height: '100vh',
+  fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+  flexDirection: 'row',
+  overflow: 'hidden',
+  backgroundColor: '#f0f4f8', // 🌈 Light background for whole screen
+}
+,
    logoutIconDesktop: {
     marginLeft: "auto",
     display: "flex" , // hide on small, show on medium+
@@ -705,14 +575,16 @@ const styles = {
     transition: 'background-color 0.3s ease',
     alignSelf: 'right',
   },
-  main: {
-    flex: 1,
-    padding: '70px 15px 30px 15px',
-    background: '#f3f4f6',
-    overflowY: 'auto',
-    height: '100vh',
-    marginLeft: '0px',
-  },
+main: {
+  flex: 1,
+  marginTop: '50px',         // navbar height
+  marginLeft: '260px',       // sidebar width (for desktop)
+  padding: '20px',
+  overflowY: 'auto',         // ✅ allow vertical scroll inside main content
+  height: 'calc(100vh - 50px)',
+  backgroundColor: '#f9fafb'
+}
+
 };
 
 const linkStyle = {
@@ -749,4 +621,6 @@ const dropdownLinkStyle = {
   backgroundColor: 'transparent',
 };
 
+
 export default AdminDashboard;
+

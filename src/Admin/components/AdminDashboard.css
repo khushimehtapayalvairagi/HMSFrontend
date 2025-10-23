@@ -1,0 +1,27 @@
+/* ---------- Responsive Sidebar + Layout Fix ---------- */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 220px !important;
+    transform: translateX(-100%) !important;
+    position: fixed !important;
+    z-index: 1000 !important;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  /* Make main content take full width on mobile */
+  .main {
+    margin-left: 0 !important;
+    padding: 15px !important;
+    width: 100% !important;
+  }
+}
+
+/* Make main scrollable */
+.main {
+  overflow-y: auto;
+  height: calc(100vh - 50px);
+}
