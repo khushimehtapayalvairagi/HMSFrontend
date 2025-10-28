@@ -255,7 +255,7 @@ const AdminDashboard = () => {
           </IconButton>
 
           {/* === Role Menu === */}
-          <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
+          {/* <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
             <MenuItem
               onClick={(e) => {
                 closeRoleMenu();
@@ -264,7 +264,7 @@ const AdminDashboard = () => {
             >
               👥 Staff ▸
             </MenuItem>
-          </Menu>
+          </Menu> */}
 
           {/* === Staff Submenu === */}
           <Menu anchorEl={staffAnchor} open={Boolean(staffAnchor)} onClose={closeStaffMenu}>
