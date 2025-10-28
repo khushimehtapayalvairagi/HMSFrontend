@@ -14,7 +14,7 @@ const AddLabour = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("jwt");
-      const res = await axios.post(`${BASE_URL}/api/admin/labour-rooms/create`, form, {
+      const res = await axios.post(`${BASE_URL}/api/admin/labour-rooms`, form, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true
       });
