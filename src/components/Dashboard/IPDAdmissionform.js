@@ -30,7 +30,7 @@ const [patientName, setPatientName] = useState(adviceData?.patientName || '');
   const [allPatients, setAllPatients] = useState([]);
   const [admissionData, setAdmissionData] = useState(null);
 
-  const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+  const BASE_URL = process.env.REACT_APP_BASE_URL ;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -171,20 +171,21 @@ const [patientName, setPatientName] = useState(adviceData?.patientName || '');
 
           <div>
             <label>Doctor:</label>
-            <select
-              value={admittingDoctorId}
-              onChange={(e) => {
-                const selectedDoc = doctors.find(d => d._id === e.target.value);
-                setAdmittingDoctorId(selectedDoc?._id || '');
-                setDoctorName(selectedDoc?.userId?.name || '');
-              }}
-              required
-            >
-              <option value="">Select Doctor</option>
-              {doctors.map(d => (
-                <option key={d._id} value={d._id}>{d.userId?.name} ({d.doctorType})</option>
-              ))}
-            </select>
+         <select
+  value={admittingDoctorId}
+  onChange={(e) => {
+    const selectedDoc = doctors.find(d => d._id === e.target.value);
+    setAdmittingDoctorId(selectedDoc?._id || '');
+    setDoctorName(selectedDoc?.userId?.name || '');
+  }}
+  required
+>
+  <option value="">Select Doctor</option>
+  {doctors.map(d => (
+    <option key={d._id} value={d._id}>{d.userId?.name} ({d.doctorType})</option>
+  ))}
+</select>
+
           </div>
 
           <div>

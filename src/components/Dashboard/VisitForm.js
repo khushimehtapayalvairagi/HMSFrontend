@@ -372,25 +372,28 @@ useEffect(() => {
         </label>
         <label>
   Department:
-  <select
-    value={departmentId}
-    onChange={(e) => setDepartmentId(e.target.value)}
-    style={{ width: '100%', padding: '0.5rem' }}
-    required
-  >
-    <option value="">Select Department</option>
-    {departments.map((dept) => (
-      <option key={dept._id} value={dept._id}>{dept.name}</option>
-    ))}
-  </select>
+<select name="department" value={form.department} onChange={handleChange} required>
+  <option value="">Select Department</option>
+  {departments.map((d) => (
+    <option key={d._id} value={d._id}>
+      {d.name}
+    </option>
+  ))}
+</select>
+
 </label>
 
         <label>
           Specialty:
-          <select value={specialtyName} onChange={(e) => setSpecialtyName(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} required>
-            <option value="">Select Specialty</option>
-            {specialties.map(s => <option key={s._id} value={s.name || s._id}>{s.name}</option>)}
-          </select>
+         <select name="specialty" value={form.specialty} onChange={handleChange} required>
+  <option value="">Select Specialty</option>
+  {specialties.map((s) => (
+    <option key={s._id} value={s._id}>
+      {s.name}
+    </option>
+  ))}
+</select>
+
         </label>
 
         <button

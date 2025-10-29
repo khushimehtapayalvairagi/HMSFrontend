@@ -158,45 +158,35 @@ const AddUser = () => {
   //   setForm({ ...form, schedule: updated });
   // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('jwt');
-    const payload = { ...form };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem('jwt');
+  const payload = { ...form }; // keep ObjectIds intact
 
-    if (form.role !== 'DOCTOR') {
-      const selectedDept = departments.find((d) => d._id === form.department);
-      if (selectedDept) {
-        payload.department = selectedDept.name;
-      } else {
-        toast.error('Invalid department selected for staff.');
-        return;
-      }
-    }
+  try {
+    const res = await axios.post(`${BASE_URL}/api/admin/users`, payload, {
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
+    toast.success(res.data.message || 'User registered successfully!');
+    setFormVisible(false);
+    setForm({
+      name: '',
+      email: '',
+      password: '',
+      role: '',
+      doctorType: '',
+      specialty: '',
+      medicalLicenseNumber: '',
+      contactNumber: '',
+      designation: '',
+      department: '',
+    });
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Something went wrong.');
+  }
+};
 
-    try {
-      const res = await axios.post(`${BASE_URL}/api/admin/users`, payload, {
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-      toast.success(res.data.message || 'User registered successfully!');
-      setFormVisible(false);
-      setForm({
-        name: '',
-        email: '',
-        password: '',
-        role: '',
-        doctorType: '',
-        specialty: '',
-        medicalLicenseNumber: '',
-        // schedule: [],
-        contactNumber: '',
-        designation: '',
-        department: '',
-      });
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Something went wrong.');
-    }
-  };
 
   return (
     <div>
