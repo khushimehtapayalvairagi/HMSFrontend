@@ -180,7 +180,6 @@ useEffect(() => {
          patientDbId: patientDetails?._id, 
         visitType,
         assignedDoctorId,
-         departmentId,
       };
 
       if (visitType === 'OPD') {
@@ -359,7 +358,7 @@ useEffect(() => {
             <option value="IPD_Admission">IPD Admission</option>
           </select>
         </label>
-<label>
+{/* <label>
   Department:
   <select
     value={departmentId}
@@ -373,7 +372,7 @@ useEffect(() => {
       </option>
     ))}
   </select>
-</label>
+</label> */}
 
 <label>
   Specialty:
