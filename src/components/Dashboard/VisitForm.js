@@ -198,18 +198,7 @@ useEffect(() => {
       const visitData = res.data.visit;
       setResData(visitData);
 
-      // prepare slipData (used for react-to-print slip)
-      // setSlipData({
-      //   visitId: visitData?._id,
-      //   patientId,
-      //   patientName: visitData?.patientName || patientDetails?.fullName || '',
-      //   doctorName: visitData?.doctorName || '',
-      //   visitType,
-      //   amount: visitData?.payment?.amount || (visitType === 'OPD' ? amount : ''),
-      //   isPaid: visitData?.payment?.isPaid ?? isPaid,
-      //   referredBy: visitData?.referredBy || referredBy || '',
-      //   visitDate: visitData?.visitDate || visitData?.createdAt || new Date().toISOString(),
-      // });
+    
 
       toast.success(`${visitType} visit created successfully!`);
 
@@ -415,10 +404,10 @@ useEffect(() => {
           Assigned Doctor:
           <select value={assignedDoctorId} onChange={(e) => setAssignedDoctorId(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} required>
             <option value="">Select Assigned Doctor</option>
-            {doctors.map(doc => (
-              <option key={doc._id} value={doc._id}>
-                {doc.userId?.name} {doc.doctorType ? `(${doc.doctorType})` : ''}
-              </option>
+             {doctors.map((doc) => (
+    <option key={doc.doctorId} value={doc.doctorId}>
+      {doc.name}
+    </option>
             ))}
           </select>
         </label>
