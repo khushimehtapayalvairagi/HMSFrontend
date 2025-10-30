@@ -138,7 +138,7 @@ useEffect(() => {
     }
     try {
       setLoadingDoctors(true);
-      const res = await axios.post(`${BASE_URL}/api/receptionist/available-doctors`, { specialtyName }, {
+      const res = await axios.post(`${BASE_URL}/api/admin/doctors`, { specialtyName }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Doctors availability response:', res.data);
