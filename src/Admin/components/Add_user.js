@@ -158,16 +158,23 @@ const AddUser = () => {
   //   setForm({ ...form, schedule: updated });
   // };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem('jwt');
-  const payload = { ...form }; // keep ObjectIds intact
+
+  // ✅ Ensure department & specialty are sent correctly
+  const payload = {
+    ...form,
+    department: typeof form.department === 'object' ? form.department._id : form.department,
+    specialty: typeof form.specialty === 'object' ? form.specialty._id : form.specialty,
+  };
 
   try {
     const res = await axios.post(`${BASE_URL}/api/admin/users`, payload, {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
+
     toast.success(res.data.message || 'User registered successfully!');
     setFormVisible(false);
     setForm({
