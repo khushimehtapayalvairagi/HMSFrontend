@@ -86,9 +86,10 @@ useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 useEffect(() => {
-  const doctor = doctors.find(d => d._id === assignedDoctorId);
-  setDoctorName(doctor?.userId?.name || '');
+  const doctor = doctors.find(d => d.doctorId === assignedDoctorId);
+  setDoctorName(doctor?.name || '');
 }, [assignedDoctorId, doctors]);
+
 
   // fetch patient details whenever patientId changes (so you get patient name/age in UI & prints)
   useEffect(() => {
@@ -113,28 +114,33 @@ useEffect(() => {
   }, [patientId]);
 
   // Function: Check available doctors for selected specialty (POST /api/receptionist/doctors with { specialtyName })
-  const checkAvailableDoctors = async () => {
-    if (!specialtyName) {
-      toast.error('Please select specialty first');
-      return;
+const checkAvailableDoctors = async () => {
+  if (!specialtyName) {
+    toast.error('Please select specialty first');
+    return;
+  }
+  try {
+    setLoadingDoctors(true);
+    const res = await axios.post(`${BASE_URL}/api/receptionist/doctors`, { specialtyName }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log('Doctors availability response:', res.data);
+
+    const doctorsList = res.data.doctors || [];
+    setDoctors(doctorsList);
+
+    if (doctorsList.length === 0) {
+      toast.info('No doctors found for this specialty');
     }
-    try {
-      setLoadingDoctors(true);
-      const res = await axios.post(`${BASE_URL}/api/receptionist/doctors`, { specialtyName }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log('Doctors availability response:', res.data);
-      // filter on isAvailable if backend returns that
-      const doctorsList = (res.data.doctors || []).filter(d => d.isAvailable !== false);
-      setDoctors(doctorsList);
-      if (doctorsList.length === 0) toast.info('No available doctors at the moment for this specialty');
-    } catch (err) {
-      console.error('Doctor availability fetch error:', err);
-      toast.error(err.response?.data?.message || 'Failed to fetch available doctors.');
-    } finally {
-      setLoadingDoctors(false);
-    }
-  };
+  } catch (err) {
+    console.error('Doctor availability fetch error:', err);
+    toast.error(err.response?.data?.message || 'Failed to fetch doctors.');
+  } finally {
+    setLoadingDoctors(false);
+  }
+};
+
 
   // handle submit (create visit) — kept all original validations & flows
   const handleSubmit = async (e) => {
