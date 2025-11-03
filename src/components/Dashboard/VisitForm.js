@@ -1,4 +1,5 @@
 // VisitForm.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
@@ -46,25 +47,6 @@ const [departmentId, setDepartmentId] = useState('');
 //   const newPres = [...prescription];
 //   newPres[index][field] = value;
 //   setPrescription(newPres);
-// };
-// const addMedicineRow = () =>
-//   setPrescription([...prescription, { medicineName: '', dosage: '', frequency: '', duration: '', remarks: '' }]);
-// const removeMed = (i) => setPrescription(prescription.filter((_, idx) => idx !== i));
-
-// const handleSavePrescription = async () => {
-//   try {
-//     const res = await axios.put(
-//       `${BASE_URL}/api/receptionist/visits/${resData._id}/prescription`,
-//       { consultationNotes, prescription },
-//       { headers: { Authorization: `Bearer ${token}` } }
-//     );
-
-//     toast.success('Prescription saved successfully');
-//     console.log('Updated visit:', res.data.visit);
-//   } catch (err) {
-//     console.error('Prescription save error:', err.response?.data || err);
-//     toast.error('Error saving prescription');
-//   }
 // };
 
 
@@ -205,22 +187,7 @@ useEffect(() => {
       localStorage.setItem('currentVisitId', visitData?._id || '');
       localStorage.setItem('currentPatientId', patientId);
 
-      // If IPD flows, redirect to IPDAdmissionForm (keeps your original navigation behavior)
-      // if (visitType === 'IPD_Admission' || visitType === 'IPD_Referral') {
-      //   const doctorName = visitData?.doctorName || '';
-      //   const patientName = visitData?.patientName || patientDetails?.fullName || '';
-      //   const patientDbId = visitData?.patientDbId || patientId;
-
-      //   const commonState = {
-      //     visit: visitData,
-      //     patient: {
-      //       id: patientDbId,
-      //       name: patientName,
-      //       doctorName,
-      //     },
-      //   };
-
-      // }
+ 
     } catch (err) {
       console.error('Visit creation error:', err?.response?.data || err.message);
       toast.error(err.response?.data?.message || `Failed to create ${visitType} visit`);
