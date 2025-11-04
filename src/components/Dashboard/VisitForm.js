@@ -114,6 +114,19 @@ useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientId]);
 
+
+
+
+  // Auto-fetch doctors when specialty changes
+useEffect(() => {
+  if (specialtyId) {
+    checkAvailableDoctors(); // automatically call when a specialty is selected
+  } else {
+    setDoctors([]); // clear doctors when no specialty selected
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [specialtyId]);
+
   // Function: Check available doctors for selected specialty (POST /api/receptionist/doctors with { specialtyName })
 const checkAvailableDoctors = async () => {
   if (!specialtyId) {
@@ -378,14 +391,14 @@ const checkAvailableDoctors = async () => {
 </label>
 
 
-        <button
+        {/* <button
           type="button"
           disabled={loadingDoctors}
           onClick={checkAvailableDoctors}
           style={{ padding: '0.5rem', background: '#28a745', color: '#fff', border: 'none', borderRadius: 4 }}
         >
           {loadingDoctors ? 'Checking...' : 'Check Available Doctors'}
-        </button>
+        </button> */}
 
         <label>
           Assigned Doctor:
