@@ -18,7 +18,8 @@ const VisitForm = () => {
   const [patientDetails, setPatientDetails] = useState(null); // full patient object from API
 
   const [visitType, setVisitType] = useState('');
-  const [specialtyName, setSpecialtyName] = useState('');
+  const [specialtyId, setSpecialtyId] = useState('');
+
   const [assignedDoctorId, setAssignedDoctorId] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [amount, setAmount] = useState('');
@@ -115,7 +116,7 @@ useEffect(() => {
 
   // Function: Check available doctors for selected specialty (POST /api/receptionist/doctors with { specialtyName })
 const checkAvailableDoctors = async () => {
-  if (!specialtyName) {
+  if (!specialtyId) {
     toast.error('Please select a specialty first');
     return;
   }
@@ -124,7 +125,7 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(true);
     const res = await axios.post(
       `${BASE_URL}/api/receptionist/doctors`,
-      { specialtyId: specialtyName },
+      { specialtyId }, // ✅ send correct field
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -144,6 +145,7 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(false);
   }
 };
+
 
 
 
@@ -355,18 +357,19 @@ const checkAvailableDoctors = async () => {
 
 <label>
   Specialty:
-  <select
-    value={specialtyName}
-    onChange={(e) => setSpecialtyName(e.target.value)}
-    required
-  >
-    <option value="">Select Specialty</option>
-    {specialties.map((s) => (
-      <option key={s._id} value={s._id}>
-        {s.name}
-      </option>
-    ))}
-  </select>
+ <select
+  value={specialtyId}
+  onChange={(e) => setSpecialtyId(e.target.value)}
+  required
+>
+  <option value="">Select Specialty</option>
+  {specialties.map((s) => (
+    <option key={s._id} value={s._id}>
+      {s.name}
+    </option>
+  ))}
+</select>
+
 </label>
 
 
