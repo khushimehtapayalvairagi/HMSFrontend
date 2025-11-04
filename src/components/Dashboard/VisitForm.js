@@ -269,7 +269,11 @@ const checkAvailableDoctors = async () => {
           <tr><td><b>Patient:</b> ${name}</td><td><b>Receipt No:</b> ${resData.receiptNumber || '-'}</td>
 </tr>
           <tr><td><b> Done by Doctor:</b> ${doctorName || ''}</td><td><b>Date:</b> ${visitDate.toLocaleDateString()}</td></tr>
-          <tr><td><b>Visit Type:</b> ${resData.visitType || ''}</td><td><b>Specialty:</b> ${specialtyName || '-'}</td></tr>
+         <tr>
+  <td><b>Visit Type:</b> ${resData.visitType || ''}</td>
+  <td><b>Specialty:</b> ${(specialties.find(s => s._id === specialtyId)?.name) || '-'}</td>
+</tr>
+
         </table>
         <hr/>
         <table style="width:100%; border-collapse: collapse; margin-top:10px;">
