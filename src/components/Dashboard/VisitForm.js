@@ -116,17 +116,21 @@ useEffect(() => {
   // Function: Check available doctors for selected specialty (POST /api/receptionist/doctors with { specialtyName })
 const checkAvailableDoctors = async () => {
   if (!specialtyName) {
-    toast.error('Please select specialty first');
+    toast.error('Please select a specialty first');
     return;
   }
+
   try {
     setLoadingDoctors(true);
-    const res = await axios.post(`${BASE_URL}/api/receptionist/doctors`, { specialtyName }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.post(
+      `${BASE_URL}/api/receptionist/doctors`,
+      { specialtyId: specialtyName },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     console.log('Doctors availability response:', res.data);
-
     const doctorsList = res.data.doctors || [];
     setDoctors(doctorsList);
 
@@ -140,6 +144,7 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(false);
   }
 };
+
 
 
   // handle submit (create visit) — kept all original validations & flows
@@ -356,12 +361,13 @@ const checkAvailableDoctors = async () => {
   >
     <option value="">Select Specialty</option>
     {specialties.map((s) => (
-      <option key={s._id} value={s.name}>
+      <option key={s._id} value={s._id}>
         {s.name}
       </option>
     ))}
   </select>
 </label>
+
 
         <button
           type="button"
