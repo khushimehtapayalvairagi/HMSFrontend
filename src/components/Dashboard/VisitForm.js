@@ -123,9 +123,11 @@ const checkAvailableDoctors = async () => {
 
   try {
     setLoadingDoctors(true);
+
+    const selectedSpec = specialties.find(s => s._id === specialtyId);
     const res = await axios.post(
       `${BASE_URL}/api/receptionist/doctors`,
-      { specialtyId }, // ✅ correct
+      { specialtyId, specialtyName: selectedSpec?.name }, // ✅ send both
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -142,6 +144,7 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(false);
   }
 };
+
 
 
 
