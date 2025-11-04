@@ -125,17 +125,14 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(true);
     const res = await axios.post(
       `${BASE_URL}/api/receptionist/doctors`,
-      { specialtyId }, // ✅ send correct field
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      { specialtyId }, // ✅ correct
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     console.log('Doctors availability response:', res.data);
-    const doctorsList = res.data.doctors || [];
-    setDoctors(doctorsList);
+    setDoctors(res.data.doctors || []);
 
-    if (doctorsList.length === 0) {
+    if (res.data.doctors?.length === 0) {
       toast.info('No doctors found for this specialty');
     }
   } catch (err) {
@@ -145,6 +142,7 @@ const checkAvailableDoctors = async () => {
     setLoadingDoctors(false);
   }
 };
+
 
 
 
