@@ -147,6 +147,7 @@ const checkAvailableDoctors = async () => {
 
 
 
+
   // handle submit (create visit) — kept all original validations & flows
   const handleSubmit = async (e) => {
     e.preventDefault();
