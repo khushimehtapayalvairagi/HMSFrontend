@@ -38,31 +38,21 @@ const VisitForm = () => {
   });
 
   // ✅ NEW: Fetch all doctors (with specialty names)
- useEffect(() => {
-  if (!specialtyId) {
-    setDoctors([]);
-    return;
-  }
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/receptionist/doctors`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setDoctors(res.data.doctors || []);
+      } catch (err) {
+        console.error("Failed to fetch doctors:", err);
+        toast.error("Could not load doctors list");
+      }
+    };
 
-  const fetchDoctorsBySpecialty = async () => {
-    setLoadingDoctors(true);
-    try {
-      const res = await axios.get(`${BASE_URL}/api/receptionist/doctors`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { specialtyId }, // send specialtyId as query param
-      });
-      setDoctors(res.data.doctors || []);
-    } catch (err) {
-      console.error("Failed to fetch doctors:", err);
-      toast.error("Could not load doctors for selected specialty");
-    } finally {
-      setLoadingDoctors(false);
-    }
-  };
-
-  fetchDoctorsBySpecialty();
-}, [specialtyId, token, BASE_URL]);
-
+    fetchDoctors();
+  }, [token, BASE_URL]);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -296,20 +286,19 @@ const VisitForm = () => {
 
         <label>
           Assigned Doctor:
-        <select
-  value={assignedDoctorId}
-  onChange={(e) => setAssignedDoctorId(e.target.value)}
-  style={{ width: '100%', padding: '0.5rem' }}
-  required
->
-  <option value="">{loadingDoctors ? 'Loading...' : 'Select Assigned Doctor'}</option>
-  {doctors.map((doc) => (
-    <option key={doc._id} value={doc._id}>
-      {doc.userId?.name} — {doc.specialty?.name || "No Specialty"}
-    </option>
-  ))}
-</select>
-
+          <select
+            value={assignedDoctorId}
+            onChange={(e) => setAssignedDoctorId(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem' }}
+            required
+          >
+            <option value="">Select Assigned Doctor</option>
+            {doctors.map((doc) => (
+              <option key={doc._id} value={doc._id}>
+                {doc.userId?.name} — {doc.specialty?.name || "No Specialty"}
+              </option>
+            ))}
+          </select>
         </label>
 
         {showReferralField && (
