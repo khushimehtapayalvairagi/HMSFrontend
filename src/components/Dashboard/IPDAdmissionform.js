@@ -38,7 +38,7 @@ const [patientName, setPatientName] = useState(adviceData?.patientName || '');
         const [wardsRes, roomRes, docRes, patientRes] = await Promise.all([
           axios.get(`${BASE_URL}/api/receptionist/wards`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${BASE_URL}/api/receptionist/room-categories`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${BASE_URL}/api/receptionist/doctors-available`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${BASE_URL}/api/receptionist/patients`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
