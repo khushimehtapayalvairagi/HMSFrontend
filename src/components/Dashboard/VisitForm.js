@@ -37,7 +37,7 @@ const VisitForm = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/receptionist/doctors`, {
+        const res = await axios.get(`${BASE_URL}/api/admin/doctors`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setDoctors(res.data.doctors || []);
