@@ -379,11 +379,13 @@ const AdminDashboard = () => {
       </div>
 
       {/* === Sidebar === */}
-    <div
-  className={`sidebar no-print ${sidebarOpen ? 'open' : ''}`}
-  style={styles.sidebar}
->
-
+      <div
+        className="sidebar no-print"
+        style={{
+          ...styles.sidebar,
+          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+        }}
+      >
         <nav style={styles.nav}>
           <Link to="" onClick={() => setActiveModuleLabel('')} style={activeModuleLabel === '' ? activeLinkStyle : linkStyle}>
             🏠 Home
