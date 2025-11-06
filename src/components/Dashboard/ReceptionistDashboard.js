@@ -204,13 +204,11 @@ const ReceptionistDashboard = () => {
     p: 3,
     transition: 'margin 0.3s ease',
     marginLeft: { xs: 0, md: sidebarOpen ? `${drawerWidth}px` : 0 },
-    width: '100%', // ✅ always full width, no shrinking
-    display: 'flex',
-    justifyContent: 'center',
+    width: '100%',
     backgroundColor: '#f4f6f8',
   }}
 >
-  <Box sx={{ width: '100%', maxWidth: '1200px' }}> {/* ✅ centers the inner content */}
+  <Box sx={{ maxWidth: '1200px', mx: 'auto' }}> {/* ✅ centers content properly */}
     <Toolbar />
     <Typography variant="body1" sx={{ mb: 2, textAlign: 'center' }}>
       Hospital Management System
@@ -221,6 +219,7 @@ const ReceptionistDashboard = () => {
     <ToastContainer position="top-right" autoClose={3000} />
   </Box>
 </Box>
+
 
 
     </Box>

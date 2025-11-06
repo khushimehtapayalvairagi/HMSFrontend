@@ -1,4 +1,12 @@
-/* ---------- Responsive Sidebar + Layout Fix ---------- */
+/* ---------- Responsive Sidebar Fix ---------- */
+
+/* 🖥️ Desktop */
+.sidebar {
+  transform: translateX(0) !important; /* always visible */
+  transition: transform 0.3s ease;
+}
+
+/* 📱 Mobile (below 768px) */
 @media (max-width: 768px) {
   .sidebar {
     width: 220px !important;
@@ -6,12 +14,11 @@
     left: 0;
     top: 50px; /* below navbar */
     z-index: 1000 !important;
-    transform: translateX(-100%) !important;
-    transition: transform 0.3s ease;
+    transform: translateX(-100%) !important; /* hidden by default */
   }
 
   .sidebar.open {
-    transform: translateX(0) !important;
+    transform: translateX(0) !important; /* slide in when open */
   }
 
   .main {
