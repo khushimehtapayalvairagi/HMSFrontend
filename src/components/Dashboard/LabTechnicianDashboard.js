@@ -42,10 +42,10 @@ const LabTechnicianDashboard = () => {
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Divider sx={{ my: 2 }} />
       <List>
-        <ListItem button sx={{ px: 3 }} onClick={() => handleNav("/labTechnician-dashboard/dashboard")}>
+        {/* <ListItem button sx={{ px: 3 }} onClick={() => handleNav("/labTechnician-dashboard/dashboard")}>
           <ListItemIcon><DashboardIcon /></ListItemIcon>
           <ListItemText primary="Dashboard" />
-        </ListItem>
+        </ListItem> */}
 
         <ListItem button sx={{ px: 3 }} onClick={() => handleNav("/labTechnician-dashboard/patients")}>
           <ListItemIcon><PatientsIcon /></ListItemIcon>
