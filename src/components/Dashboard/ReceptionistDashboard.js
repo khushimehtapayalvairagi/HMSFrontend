@@ -114,45 +114,42 @@ const ReceptionistDashboard = () => {
       <CssBaseline />
 
       {/* Top AppBar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: 1201,
-          backgroundColor: 'purple',
-          transition: 'width 0.3s ease, margin 0.3s ease',
-          width: {
-            md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
-          },
-          ml: {
-            md: sidebarOpen ? `${drawerWidth}px` : 0,
-          },
-        }}
-      >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <IconButton
-            color="inherit"
-            onClick={() => {
-              if (isMobile) setMobileOpen(prev => !prev);
-              else setSidebarOpen(prev => !prev);
-            }}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
+   {/* Top AppBar */}
+<AppBar
+  position="fixed"
+  sx={{
+    zIndex: 1201,
+    backgroundColor: 'purple',
+    // remove width and ml adjustments
+    transition: 'all 0.3s ease',
+  }}
+>
+  <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <IconButton
+      color="inherit"
+      onClick={() => {
+        if (isMobile) setMobileOpen(prev => !prev);
+        else setSidebarOpen(prev => !prev);
+      }}
+      edge="start"
+    >
+      <MenuIcon />
+    </IconButton>
 
-          <IconButton
-            color="inherit"
-            onClick={() => {
-              localStorage.removeItem("jwt");
-              window.location.href = "/";
-            }}
-            edge="end"
-            title="Logout"
-          >
-            <LogoutIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <IconButton
+      color="inherit"
+      onClick={() => {
+        localStorage.removeItem("jwt");
+        window.location.href = "/";
+      }}
+      edge="end"
+      title="Logout"
+    >
+      <LogoutIcon />
+    </IconButton>
+  </Toolbar>
+</AppBar>
+
 
       {/* Sidebar Drawer */}
       <Box component="nav" sx={{ width: { md: sidebarOpen ? drawerWidth : 0 }, flexShrink: { md: 0 } }}>
@@ -199,32 +196,30 @@ const ReceptionistDashboard = () => {
       </Box>
 
       {/* Main Content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          transition: 'margin 0.3s ease, width 0.3s ease',
-          marginLeft: {
-            xs: 0,
-            md: sidebarOpen ? `${drawerWidth}px` : 0,
-          },
-          width: {
-            xs: '100%',
-            md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
-          },
-        }}
-      >
-        <Toolbar />
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          Hospital Management System
-        </Typography>
+    <Box
+  component="main"
+  sx={{
+    flexGrow: 1,
+    p: 3,
+    transition: 'margin 0.3s ease, width 0.3s ease',
+    marginLeft: { xs: 0, md: sidebarOpen ? `${drawerWidth}px` : 0 },
+    width: { xs: '100%', md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%' },
+    display: 'flex',
+    justifyContent: 'center',
+  }}
+>
+  <Box sx={{ width: '100%', maxWidth: '1200px' }}>
+    <Toolbar />
+    <Typography variant="body1" sx={{ mb: 2 }}>
+      Hospital Management System
+    </Typography>
 
-        {/* Socket + Routes */}
-        <SocketContext />
-        <Outlet />
-        <ToastContainer position="top-right" autoClose={3000} />
-      </Box>
+    <SocketContext />
+    <Outlet />
+    <ToastContainer position="top-right" autoClose={3000} />
+  </Box>
+</Box>
+
     </Box>
   );
 };

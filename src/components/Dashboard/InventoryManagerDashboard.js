@@ -173,42 +173,42 @@ const InventoryManagerDashboard = () => {
       <CssBaseline />
 
       {/* Top AppBar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: 1201,
-          backgroundColor: "purple",
-          ml: { md: `${drawerWidth}px` },
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                onClick={() => setMobileOpen((prev) => !prev)}
-                edge="start"
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
+   {/* Top AppBar */}
+<AppBar
+  position="fixed"
+  sx={{
+    zIndex: 1201,
+    backgroundColor: 'purple',
+    // remove width and ml adjustments
+    transition: 'all 0.3s ease',
+  }}
+>
+  <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <IconButton
+      color="inherit"
+      onClick={() => {
+        if (isMobile) setMobileOpen(prev => !prev);
+        else setSidebarOpen(prev => !prev);
+      }}
+      edge="start"
+    >
+      <MenuIcon />
+    </IconButton>
 
-            {!isMobile && (
-              <>
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png"
-                  alt="Hospital Logo"
-                  style={{ width: 40, height: 40 }}
-                />
-                <Typography variant="h6" noWrap>
-                  Hospital Management System
-                </Typography>
-              </>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
+    <IconButton
+      color="inherit"
+      onClick={() => {
+        localStorage.removeItem("jwt");
+        window.location.href = "/";
+      }}
+      edge="end"
+      title="Logout"
+    >
+      <LogoutIcon />
+    </IconButton>
+  </Toolbar>
+</AppBar>
+
 
       {/* Sidebar Drawer */}
       <Box
