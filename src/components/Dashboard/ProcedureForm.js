@@ -40,7 +40,7 @@ const fetchInitialData = async () => {
     ] = await Promise.all([
       axios.get(`${BASE_URL}/api/receptionist/patients`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/procedures`, { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/doctors-available`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/operation-theaters`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/labour-rooms`, { headers: { Authorization: `Bearer ${token}` } }),
     ]);
