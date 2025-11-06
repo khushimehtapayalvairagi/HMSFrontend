@@ -196,21 +196,23 @@ const ReceptionistDashboard = () => {
       </Box>
 
       {/* Main Content */}
-    <Box
+  {/* Main Content */}
+<Box
   component="main"
   sx={{
     flexGrow: 1,
     p: 3,
-    transition: 'margin 0.3s ease, width 0.3s ease',
+    transition: 'margin 0.3s ease',
     marginLeft: { xs: 0, md: sidebarOpen ? `${drawerWidth}px` : 0 },
-    width: { xs: '100%', md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%' },
+    width: '100%', // ✅ always full width, no shrinking
     display: 'flex',
     justifyContent: 'center',
+    backgroundColor: '#f4f6f8',
   }}
 >
-  <Box sx={{ width: '100%', maxWidth: '1200px' }}>
+  <Box sx={{ width: '100%', maxWidth: '1200px' }}> {/* ✅ centers the inner content */}
     <Toolbar />
-    <Typography variant="body1" sx={{ mb: 2 }}>
+    <Typography variant="body1" sx={{ mb: 2, textAlign: 'center' }}>
       Hospital Management System
     </Typography>
 
@@ -219,6 +221,7 @@ const ReceptionistDashboard = () => {
     <ToastContainer position="top-right" autoClose={3000} />
   </Box>
 </Box>
+
 
     </Box>
   );
