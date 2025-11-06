@@ -18,7 +18,7 @@ import {
   Inventory as ProcedureIcon,
   Assignment as AnesthesiaIcon,
   ChildCare as LabourRoomIcon,
-    EventNote as EventNoteIcon, 
+  EventNote as EventNoteIcon,
   Payment as PaymentIcon,
   History as HistoryIcon,
   Receipt as ViewBillIcon,
@@ -36,6 +36,7 @@ const drawerWidth = 260;
 
 const ReceptionistDashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // for desktop
   const [activeMenu, setActiveMenu] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -62,27 +63,19 @@ const ReceptionistDashboard = () => {
             { label: "View Patient", path: "/receptionist-dashboard/viewPatient", icon: <PersonIcon /> },
             { label: "Visit Form", path: "/receptionist-dashboard/visit-form", icon: <VisitIcon /> },
             { label: "Patient Visits Viewer", path: "/receptionist-dashboard/patient-visits-viewer", icon: <PharmacyIcon /> },
-
-            // ✅ Added IPD Admission module
             { label: "IPD Admission Form", path: "/receptionist-dashboard/IPDAdmissionForm", icon: <AdmissionIcon /> },
-            // { label: "IPD Admission List", path: `/receptionist-dashboard/IPDAdmissionList/${patientId || ''}`, icon: <ListIcon /> },
-
             { label: "Procedure Form", path: "/receptionist-dashboard/ProcedureForm", icon: <ProcedureIcon /> },
             { label: "View Anesthesia Form", path: "/receptionist-dashboard/ViewAnesthesiaForm", icon: <AnesthesiaIcon /> },
             { label: "Labour Room", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
             { label: "View Labour Room", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },
- // 🚀 Nurse Modules for Receptionist
-  { label: "Record Prescription", path: "/receptionist-dashboard/record-prescription", icon: <IpdIcon /> },
-  { label: "Daily Reports", path: "/receptionist-dashboard/DailyReports", icon: <EventNoteIcon /> },
-  { label: "prescription-record", path: "/receptionist-dashboard/patient-record-prescription", icon: <HistoryIcon />},
+            { label: "Record Prescription", path: "/receptionist-dashboard/record-prescription", icon: <IpdIcon /> },
+            { label: "Daily Reports", path: "/receptionist-dashboard/DailyReports", icon: <EventNoteIcon /> },
+            { label: "prescription-record", path: "/receptionist-dashboard/patient-record-prescription", icon: <HistoryIcon /> },
             { label: "Billing", path: "/receptionist-dashboard/Billing", icon: <BillingIcon /> },
             { label: "View Bill", path: "/receptionist-dashboard/ViewBill", icon: <ViewBillIcon /> },
             { label: "Payment Form", path: "/receptionist-dashboard/PaymentForm", icon: <PaymentIcon /> },
             { label: "Discharge Patient", path: "/receptionist-dashboard/DischargePatient", icon: <LabIcon /> },
             { label: "Bill Payment History", path: "/receptionist-dashboard/BillPaymentHistory", icon: <HistoryIcon /> },
-         
-         
-         
           ].map(({ label, path, icon }) => (
             <ListItem
               key={label}
@@ -117,13 +110,36 @@ const ReceptionistDashboard = () => {
   );
 
   return (
-    <Box>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+
       {/* Top AppBar */}
-      <AppBar position="fixed" sx={{ zIndex: 1201, backgroundColor: 'purple' }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          zIndex: 1201,
+          backgroundColor: 'purple',
+          transition: 'width 0.3s ease, margin 0.3s ease',
+          width: {
+            md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
+          },
+          ml: {
+            md: sidebarOpen ? `${drawerWidth}px` : 0,
+          },
+        }}
+      >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <IconButton color="inherit" onClick={() => setMobileOpen(prev => !prev)} edge="start">
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              if (isMobile) setMobileOpen(prev => !prev);
+              else setSidebarOpen(prev => !prev);
+            }}
+            edge="start"
+          >
             <MenuIcon />
           </IconButton>
+
           <IconButton
             color="inherit"
             onClick={() => {
@@ -139,13 +155,15 @@ const ReceptionistDashboard = () => {
       </AppBar>
 
       {/* Sidebar Drawer */}
-      <Box component="nav">
+      <Box component="nav" sx={{ width: { md: sidebarOpen ? drawerWidth : 0 }, flexShrink: { md: 0 } }}>
+        {/* Mobile Drawer */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           ModalProps={{ keepMounted: true }}
           sx={{
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
@@ -159,16 +177,50 @@ const ReceptionistDashboard = () => {
         >
           {drawerContent}
         </Drawer>
+
+        {/* Desktop Drawer */}
+        <Drawer
+          variant="persistent"
+          open={sidebarOpen}
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(10px)',
+              borderRight: '1px solid #e0e0e0',
+              paddingTop: '64px',
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
       </Box>
 
       {/* Main Content */}
-      <Box component="main" sx={{ p: 3, width: "100%" }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          transition: 'margin 0.3s ease, width 0.3s ease',
+          marginLeft: {
+            xs: 0,
+            md: sidebarOpen ? `${drawerWidth}px` : 0,
+          },
+          width: {
+            xs: '100%',
+            md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
+          },
+        }}
+      >
         <Toolbar />
         <Typography variant="body1" sx={{ mb: 2 }}>
           Hospital Management System
         </Typography>
 
-        {/* 🔌 Socket + Routes */}
+        {/* Socket + Routes */}
         <SocketContext />
         <Outlet />
         <ToastContainer position="top-right" autoClose={3000} />
