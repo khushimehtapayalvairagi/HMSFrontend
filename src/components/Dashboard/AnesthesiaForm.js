@@ -25,7 +25,7 @@ const AnesthesiaForm = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
-    axios.get(`${BASE_URL}/api/receptionist/doctors`, {
+    axios.get(`${BASE_URL}/api/receptionist/doctors-available`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       setDoctors(res.data.doctors || []);
