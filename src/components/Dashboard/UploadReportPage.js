@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 export default function UploadReport() {
   const [tests, setTests] = useState([]);
   const [selectedTest, setSelectedTest] = useState("");
-  const [file, setFile] = useState(null);
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("Pending");
@@ -15,13 +14,11 @@ export default function UploadReport() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const reportRef = useRef();
 
-  // ✅ React-to-Print Hook
   const handlePrint = useReactToPrint({
     content: () => reportRef.current,
     documentTitle: "Lab Report",
   });
 
-  // ✅ Fetch pending tests
   useEffect(() => {
     const fetchTests = async () => {
       try {
@@ -37,30 +34,32 @@ export default function UploadReport() {
     fetchTests();
   }, [BASE_URL]);
 
-  // ✅ Handle upload & payment
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedTest  || !amount || !paymentStatus) {
-      return toast.warning("⚠️ Please fill all fields and select a file");
+    if (!selectedTest || !amount || !paymentStatus) {
+      return toast.warning("⚠️ Please fill all fields");
     }
 
     const formData = new FormData();
     formData.append("testId", selectedTest);
-   
     formData.append("amount", amount);
     formData.append("paymentStatus", paymentStatus);
     formData.append("notes", notes);
 
     try {
       const token = localStorage.getItem("jwt");
-      const res = await axios.post(`${BASE_URL}/api/lab/upload-report`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        `${BASE_URL}/api/lab/upload-report`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      toast.success("✅ Report uploaded & payment created successfully!");
+      toast.success("✅ Report updated & payment created successfully!");
 
       const testData = res.data.test;
       const patient = testData.patientId;
@@ -79,23 +78,21 @@ export default function UploadReport() {
         labName: patient.labName || "",
         amount,
         paymentStatus,
-        file,
       });
 
-      // Reset form
       setSelectedTest("");
-      setFile(null);
       setAmount("");
       setPaymentStatus("Pending");
+      setNotes("");
     } catch (err) {
       console.error("Upload error:", err);
-      toast.error("Error uploading report");
+      toast.error("❌ Error updating report");
     }
   };
 
   return (
     <div style={{ padding: "1.5rem" }}>
-      <h2>Upload Lab Report & Create Payment</h2>
+      <h2>Update Lab Report & Create Payment</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Select Test:</label>
@@ -136,16 +133,6 @@ export default function UploadReport() {
           </select>
         </div>
 
-        {/* <div>
-          <label>Choose Report File:</label>
-          <input
-            type="file"
-            accept=".pdf,.jpg,.png"
-            onChange={(e) => setFile(e.target.files[0])}
-            required
-          />
-        </div> */}
-
         <div>
           <label>Notes:</label>
           <textarea
@@ -157,10 +144,9 @@ export default function UploadReport() {
           />
         </div>
 
-        <button type="submit">Upload & Create Payment</button>
+        <button type="submit">Update Report & Create Payment</button>
       </form>
 
-      {/* ✅ Print Preview Section */}
       {uploadedReport && (
         <div style={{ marginTop: "2rem" }}>
           <h3>Report Preview</h3>
@@ -188,39 +174,20 @@ export default function UploadReport() {
             {uploadedReport.result}<br /><br />
             Notes:<br />
             {uploadedReport.notes.length > 0
-              ? uploadedReport.notes.map((n, i) => <span key={i}>- {n}<br /></span>)
+              ? uploadedReport.notes.map((n, i) => (
+                  <span key={i}>- {n}<br /></span>
+                ))
               : "- No notes<br />"}
             <br />
             =============================<br />
             Lab Technician: {uploadedReport.technician}<br />
             Lab Name      : {uploadedReport.labName}<br />
-            =============================<br />
-            <br />
+            =============================<br /><br />
             Amount        : ₹{uploadedReport.amount}<br />
             Payment Status: {uploadedReport.paymentStatus}<br />
             <br />
-            {/* Render uploaded file */}
-            {uploadedReport.file &&
-              uploadedReport.file.type.startsWith("image/") && (
-                <img
-                  src={URL.createObjectURL(uploadedReport.file)}
-                  alt="Report"
-                  style={{ width: "100%", marginTop: "1rem" }}
-                />
-              )}
-            {uploadedReport.file &&
-              uploadedReport.file.type === "application/pdf" && (
-                <embed
-                  src={URL.createObjectURL(uploadedReport.file)}
-                  type="application/pdf"
-                  width="100%"
-                  height="600px"
-                  style={{ marginTop: "1rem" }}
-                />
-              )}
           </div>
 
-          {/* ✅ Print Button */}
           <button
             onClick={handlePrint}
             style={{
