@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function UploadReport() {
+export default function UploadReportPage() {
   const [tests, setTests] = useState([]);
   const [selectedTest, setSelectedTest] = useState("");
   const [amount, setAmount] = useState("");
@@ -14,6 +14,7 @@ export default function UploadReport() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const reportRef = useRef();
 
+  // react-to-print setup
   const handlePrint = useReactToPrint({
     content: () => reportRef.current,
     documentTitle: "Lab Report",
@@ -44,6 +45,7 @@ export default function UploadReport() {
     }
   };
 
+  // Fetch pending lab tests
   useEffect(() => {
     const fetchTests = async () => {
       try {
@@ -54,11 +56,13 @@ export default function UploadReport() {
         setTests(res.data.tests.filter((t) => t.status === "Pending"));
       } catch (err) {
         console.error(err);
+        toast.error("Failed to fetch tests");
       }
     };
     fetchTests();
   }, [BASE_URL]);
 
+  // Handle report upload
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedTest || !amount || !paymentStatus) {
@@ -114,7 +118,8 @@ export default function UploadReport() {
   return (
     <div style={{ padding: "1.5rem" }}>
       <h2>Update Lab Report & Create Payment</h2>
-      <form onSubmit={handleSubmit}>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
         <div>
           <label>Select Test:</label>
           <select
@@ -168,19 +173,20 @@ export default function UploadReport() {
         <button type="submit">Update Report & Create Payment</button>
       </form>
 
-      {uploadedReport && (
-        <div style={{ marginTop: "2rem" }}>
-          <h3>Report Preview</h3>
-          <div
-            ref={reportRef}
-            className="print-container"
-            style={{
-              padding: "1rem",
-              border: "1px solid black",
-              fontFamily: "monospace",
-              whiteSpace: "pre-line",
-            }}
-          >
+      {/* Print-ready report */}
+      <div
+        ref={reportRef}
+        className="print-container"
+        style={{
+          display: uploadedReport ? "block" : "none",
+          padding: "1rem",
+          border: "1px solid black",
+          fontFamily: "monospace",
+          whiteSpace: "pre-line",
+        }}
+      >
+        {uploadedReport && (
+          <>
             <div>=============================</div>
             <div style={{ textAlign: "center", fontWeight: "bold" }}>LAB TEST REPORT</div>
             <div>=============================</div>
@@ -215,22 +221,25 @@ export default function UploadReport() {
 
             <div>Amount        : ₹{uploadedReport.amount}</div>
             <div>Payment Status: {uploadedReport.paymentStatus}</div>
-          </div>
+          </>
+        )}
+      </div>
 
-          <button
-            onClick={handlePrintSafe}
-            style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              backgroundColor: "#4caf50",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            🖨️ Print Report
-          </button>
-        </div>
+      {/* Print button */}
+      {uploadedReport && (
+        <button
+          onClick={handlePrintSafe}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#4caf50",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          🖨️ Print Report
+        </button>
       )}
 
       <ToastContainer position="top-right" autoClose={3000} />
