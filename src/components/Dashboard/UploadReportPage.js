@@ -83,36 +83,22 @@ export default function UploadReportPage() {
     }
   };
 
-  // Print report using window.print()
+  // Print using window.print()
   const handlePrint = () => {
     if (!uploadedReport) {
       toast.warning("Report not ready to print yet");
       return;
     }
 
-    const printWindow = window.open("", "_blank", "width=800,height=600");
-    if (!printWindow) return toast.error("Failed to open print window");
-
-    const htmlContent = `
+    const html = `
       <html>
         <head>
           <title>Lab Report</title>
           <style>
-            body {
-              font-family: monospace;
-              padding: 1rem;
-            }
-            .print-container {
-              border: 1px solid black;
-              padding: 1rem;
-            }
-            h3 {
-              text-align: center;
-            }
-            .section-divider {
-              margin: 0.5rem 0;
-              border-bottom: 1px dashed #000;
-            }
+            body { font-family: monospace; padding: 1rem; }
+            .print-container { border: 1px solid black; padding: 1rem; }
+            h3 { text-align: center; }
+            .section-divider { margin: 0.5rem 0; border-bottom: 1px dashed #000; }
           </style>
         </head>
         <body>
@@ -151,8 +137,9 @@ export default function UploadReportPage() {
       </html>
     `;
 
+    const printWindow = window.open("", "_blank");
     printWindow.document.open();
-    printWindow.document.write(htmlContent);
+    printWindow.document.write(html);
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
