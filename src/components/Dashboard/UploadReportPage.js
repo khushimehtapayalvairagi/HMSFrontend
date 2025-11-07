@@ -72,7 +72,7 @@ export default function UploadReport() {
         address: patient.address || "",
         testType: testData.testType,
         testDate: new Date(testData.date).toLocaleDateString(),
-        result: testData.result || "-",
+        results: testData.results && testData.results.length > 0 ? testData.results : ["-"],
         notes: notes ? [notes] : [],
         technician: res.data.technicianName || "",
         labName: patient.labName || "",
