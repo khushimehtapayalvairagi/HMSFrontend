@@ -40,13 +40,13 @@ export default function UploadReport() {
   // ✅ Handle upload & payment
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedTest || !file || !amount || !paymentStatus) {
+    if (!selectedTest  || !amount || !paymentStatus) {
       return toast.warning("⚠️ Please fill all fields and select a file");
     }
 
     const formData = new FormData();
     formData.append("testId", selectedTest);
-    formData.append("reportFile", file);
+   
     formData.append("amount", amount);
     formData.append("paymentStatus", paymentStatus);
     formData.append("notes", notes);
