@@ -170,15 +170,21 @@ export default function UploadReport() {
             Test Type    : {uploadedReport.testType}<br />
             Test Date    : {uploadedReport.testDate}<br />
             Status       : Completed<br /><br />
-       Results:<br />
-{uploadedReport.results.map((r, i) => <span key={i}>• {r}<br /></span>)}<br/><br/>
 
-            Notes:<br />
-            {uploadedReport.notes.length > 0
-              ? uploadedReport.notes.map((n, i) => (
-                  <span key={i}>- {n}<br /></span>
-                ))
-              : "- No notes<br />"}
+            <div>
+              Results:
+              {uploadedReport.results.map((r, i) => (
+                <div key={i}>• {r}</div>
+              ))}
+            </div>
+
+            <div>
+              Notes:
+              {uploadedReport.notes.length > 0
+                ? uploadedReport.notes.map((n, i) => <div key={i}>- {n}</div>)
+                : <div>- No notes</div>}
+            </div>
+
             <br />
             =============================<br />
             Lab Technician: {uploadedReport.technician}<br />
