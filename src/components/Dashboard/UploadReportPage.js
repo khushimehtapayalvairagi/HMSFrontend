@@ -37,9 +37,8 @@ export default function UploadReportPage() {
     `,
   });
 
-  // Safe print wrapper
   const handlePrintSafe = () => {
-    if (uploadedReport && reportRef.current) {
+    if (reportRef.current) {
       handlePrint();
     } else {
       toast.warning("Report not ready to print yet");
@@ -174,22 +173,19 @@ export default function UploadReportPage() {
         <button type="submit">Update Report & Create Payment</button>
       </form>
 
-      {/* Print-ready report (off-screen) */}
-      <div
-        ref={reportRef}
-        className="print-container"
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          top: 0,
-          padding: "1rem",
-          border: "1px solid black",
-          fontFamily: "monospace",
-          whiteSpace: "pre-line",
-        }}
-      >
-        {uploadedReport && (
-          <>
+      {/* Print-ready report */}
+      {uploadedReport && (
+        <>
+          <div
+            ref={reportRef}
+            className="print-container"
+            style={{
+              padding: "1rem",
+              border: "1px solid black",
+              fontFamily: "monospace",
+              whiteSpace: "pre-line",
+            }}
+          >
             <div>=============================</div>
             <div style={{ textAlign: "center", fontWeight: "bold" }}>LAB TEST REPORT</div>
             <div>=============================</div>
@@ -224,25 +220,22 @@ export default function UploadReportPage() {
 
             <div>Amount        : ₹{uploadedReport.amount}</div>
             <div>Payment Status: {uploadedReport.paymentStatus}</div>
-          </>
-        )}
-      </div>
+          </div>
 
-      {/* Print button */}
-      {uploadedReport && (
-        <button
-          onClick={handlePrintSafe}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#4caf50",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          🖨️ Print Report
-        </button>
+          <button
+            onClick={handlePrintSafe}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#4caf50",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            🖨️ Print Report
+          </button>
+        </>
       )}
 
       <ToastContainer position="top-right" autoClose={3000} />
