@@ -14,10 +14,20 @@ export default function UploadReport() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const reportRef = useRef();
 
+  // react-to-print setup
   const handlePrint = useReactToPrint({
     content: () => reportRef.current,
     documentTitle: "Lab Report",
   });
+
+  // Safe wrapper to ensure element exists before printing
+  const handlePrintSafe = () => {
+    if (reportRef.current) {
+      handlePrint();
+    } else {
+      toast.warning("Report not ready to print yet");
+    }
+  };
 
   useEffect(() => {
     const fetchTests = async () => {
@@ -159,17 +169,18 @@ export default function UploadReport() {
               whiteSpace: "pre-line",
             }}
           >
-            =============================<br />
-            LAB TEST REPORT<br />
-            =============================<br /><br />
-            Patient Name : {uploadedReport.patientName}<br />
-            Patient ID   : {uploadedReport.patientId}<br />
-            Age          : {uploadedReport.age}<br />
-            Gender       : {uploadedReport.gender}<br /><br />
-            Address      : {uploadedReport.address}<br /><br />
-            Test Type    : {uploadedReport.testType}<br />
-            Test Date    : {uploadedReport.testDate}<br />
-            Status       : Completed<br /><br />
+            <div>=============================</div>
+            <div>LAB TEST REPORT</div>
+            <div>=============================</div>
+
+            <div>Patient Name : {uploadedReport.patientName}</div>
+            <div>Patient ID   : {uploadedReport.patientId}</div>
+            <div>Age          : {uploadedReport.age}</div>
+            <div>Gender       : {uploadedReport.gender}</div>
+            <div>Address      : {uploadedReport.address}</div>
+            <div>Test Type    : {uploadedReport.testType}</div>
+            <div>Test Date    : {uploadedReport.testDate}</div>
+            <div>Status       : Completed</div>
 
             <div>
               Results:
@@ -185,18 +196,17 @@ export default function UploadReport() {
                 : <div>- No notes</div>}
             </div>
 
-            <br />
-            =============================<br />
-            Lab Technician: {uploadedReport.technician}<br />
-            Lab Name      : {uploadedReport.labName}<br />
-            =============================<br /><br />
-            Amount        : ₹{uploadedReport.amount}<br />
-            Payment Status: {uploadedReport.paymentStatus}<br />
-            <br />
+            <div>=============================</div>
+            <div>Lab Technician: {uploadedReport.technician}</div>
+            <div>Lab Name      : {uploadedReport.labName}</div>
+            <div>=============================</div>
+
+            <div>Amount        : ₹{uploadedReport.amount}</div>
+            <div>Payment Status: {uploadedReport.paymentStatus}</div>
           </div>
 
           <button
-            onClick={handlePrint}
+            onClick={handlePrintSafe}
             style={{
               marginTop: "1rem",
               padding: "0.5rem 1rem",
