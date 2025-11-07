@@ -25,7 +25,7 @@ export default function UploadReportPage() {
           font-family: monospace;
           margin: 1rem;
         }
-        div.print-container {
+        .print-container {
           border: 1px solid black;
           padding: 1rem;
           page-break-after: always;
@@ -37,8 +37,9 @@ export default function UploadReportPage() {
     `,
   });
 
+  // Safe print wrapper
   const handlePrintSafe = () => {
-    if (reportRef.current) {
+    if (uploadedReport && reportRef.current) {
       handlePrint();
     } else {
       toast.warning("Report not ready to print yet");
@@ -173,12 +174,14 @@ export default function UploadReportPage() {
         <button type="submit">Update Report & Create Payment</button>
       </form>
 
-      {/* Print-ready report */}
+      {/* Print-ready report (off-screen) */}
       <div
         ref={reportRef}
         className="print-container"
         style={{
-          display: uploadedReport ? "block" : "none",
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
           padding: "1rem",
           border: "1px solid black",
           fontFamily: "monospace",
