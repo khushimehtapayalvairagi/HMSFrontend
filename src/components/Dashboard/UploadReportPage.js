@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useReactToPrint } from "react-to-print";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,40 +10,8 @@ export default function UploadReportPage() {
   const [notes, setNotes] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [uploadedReport, setUploadedReport] = useState(null);
+
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const reportRef = useRef();
-
-  // react-to-print setup
-  const handlePrint = useReactToPrint({
-    content: () => reportRef.current,
-    documentTitle: "Lab Report",
-    pageStyle: `
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-          font-family: monospace;
-          margin: 1rem;
-        }
-        .print-container {
-          border: 1px solid black;
-          padding: 1rem;
-          page-break-after: always;
-        }
-        h3 {
-          text-align: center;
-        }
-      }
-    `,
-  });
-
-  // Safe print wrapper
-  const handlePrintSafe = () => {
-    if (reportRef.current && uploadedReport) {
-      handlePrint();
-    } else {
-      toast.warning("Report not ready to print yet");
-    }
-  };
 
   // Fetch pending lab tests
   useEffect(() => {
@@ -116,6 +83,82 @@ export default function UploadReportPage() {
     }
   };
 
+  // Print report using window.print()
+  const handlePrint = () => {
+    if (!uploadedReport) {
+      toast.warning("Report not ready to print yet");
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "width=800,height=600");
+    if (!printWindow) return toast.error("Failed to open print window");
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Lab Report</title>
+          <style>
+            body {
+              font-family: monospace;
+              padding: 1rem;
+            }
+            .print-container {
+              border: 1px solid black;
+              padding: 1rem;
+            }
+            h3 {
+              text-align: center;
+            }
+            .section-divider {
+              margin: 0.5rem 0;
+              border-bottom: 1px dashed #000;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-container">
+            <div class="section-divider"></div>
+            <h3>LAB TEST REPORT</h3>
+            <div class="section-divider"></div>
+
+            <div>Patient Name : ${uploadedReport.patientName}</div>
+            <div>Patient ID   : ${uploadedReport.patientId}</div>
+            <div>Age          : ${uploadedReport.age}</div>
+            <div>Gender       : ${uploadedReport.gender}</div>
+            <div>Address      : ${uploadedReport.address}</div>
+            <div>Test Type    : ${uploadedReport.testType}</div>
+            <div>Test Date    : ${uploadedReport.testDate}</div>
+            <div>Status       : Completed</div>
+
+            <div>Results:
+              ${uploadedReport.results.map(r => `<div>• ${r}</div>`).join("")}
+            </div>
+
+            <div>Notes:
+              ${uploadedReport.notes.length > 0
+                ? uploadedReport.notes.map(n => `<div>- ${n}</div>`).join("")
+                : "<div>- No notes</div>"}
+            </div>
+
+            <div class="section-divider"></div>
+            <div>Lab Technician: ${uploadedReport.technician}</div>
+            <div>Lab Name      : ${uploadedReport.labName}</div>
+            <div class="section-divider"></div>
+            <div>Amount        : ₹${uploadedReport.amount}</div>
+            <div>Payment Status: ${uploadedReport.paymentStatus}</div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
   return (
     <div style={{ padding: "1.5rem" }}>
       <h2>Update Lab Report & Create Payment</h2>
@@ -174,74 +217,21 @@ export default function UploadReportPage() {
         <button type="submit">Update Report & Create Payment</button>
       </form>
 
-      {/* Print-ready report hidden but always in DOM */}
-      <div
-        ref={reportRef}
-        className="print-container"
-        style={{
-          position: "absolute",
-          left: "-9999px", // completely off-screen
-          top: 0,
-          padding: "1rem",
-          border: "1px solid black",
-          fontFamily: "monospace",
-          whiteSpace: "pre-line",
-        }}
-      >
-        {uploadedReport && (
-          <>
-            <div>=============================</div>
-            <div style={{ textAlign: "center", fontWeight: "bold" }}>LAB TEST REPORT</div>
-            <div>=============================</div>
-
-            <div>Patient Name : {uploadedReport.patientName}</div>
-            <div>Patient ID   : {uploadedReport.patientId}</div>
-            <div>Age          : {uploadedReport.age}</div>
-            <div>Gender       : {uploadedReport.gender}</div>
-            <div>Address      : {uploadedReport.address}</div>
-            <div>Test Type    : {uploadedReport.testType}</div>
-            <div>Test Date    : {uploadedReport.testDate}</div>
-            <div>Status       : Completed</div>
-
-            <div>
-              Results:
-              {uploadedReport.results.map((r, i) => (
-                <div key={i}>• {r}</div>
-              ))}
-            </div>
-
-            <div>
-              Notes:
-              {uploadedReport.notes.length > 0
-                ? uploadedReport.notes.map((n, i) => <div key={i}>- {n}</div>)
-                : <div>- No notes</div>}
-            </div>
-
-            <div>=============================</div>
-            <div>Lab Technician: {uploadedReport.technician}</div>
-            <div>Lab Name      : {uploadedReport.labName}</div>
-            <div>=============================</div>
-
-            <div>Amount        : ₹{uploadedReport.amount}</div>
-            <div>Payment Status: {uploadedReport.paymentStatus}</div>
-          </>
-        )}
-      </div>
-
-      {/* Print button */}
-      <button
-        onClick={handlePrintSafe}
-        style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: "#4caf50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        🖨️ Print Report
-      </button>
+      {uploadedReport && (
+        <button
+          onClick={handlePrint}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#4caf50",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          🖨️ Print Report
+        </button>
+      )}
 
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
