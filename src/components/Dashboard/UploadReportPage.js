@@ -14,13 +14,28 @@ export default function UploadReport() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const reportRef = useRef();
 
-  // react-to-print setup
   const handlePrint = useReactToPrint({
     content: () => reportRef.current,
     documentTitle: "Lab Report",
+    pageStyle: `
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          font-family: monospace;
+          margin: 1rem;
+        }
+        div.print-container {
+          border: 1px solid black;
+          padding: 1rem;
+          page-break-after: always;
+        }
+        h3 {
+          text-align: center;
+        }
+      }
+    `,
   });
 
-  // Safe wrapper to ensure element exists before printing
   const handlePrintSafe = () => {
     if (reportRef.current) {
       handlePrint();
@@ -58,16 +73,12 @@ export default function UploadReport() {
 
     try {
       const token = localStorage.getItem("jwt");
-      const res = await axios.post(
-        `${BASE_URL}/api/lab/upload-report`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await axios.post(`${BASE_URL}/api/lab/upload-report`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.success("✅ Report updated & payment created successfully!");
 
@@ -162,6 +173,7 @@ export default function UploadReport() {
           <h3>Report Preview</h3>
           <div
             ref={reportRef}
+            className="print-container"
             style={{
               padding: "1rem",
               border: "1px solid black",
@@ -170,7 +182,7 @@ export default function UploadReport() {
             }}
           >
             <div>=============================</div>
-            <div>LAB TEST REPORT</div>
+            <div style={{ textAlign: "center", fontWeight: "bold" }}>LAB TEST REPORT</div>
             <div>=============================</div>
 
             <div>Patient Name : {uploadedReport.patientName}</div>
