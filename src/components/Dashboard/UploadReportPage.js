@@ -170,12 +170,8 @@ export default function UploadReport() {
             Test Type    : {uploadedReport.testType}<br />
             Test Date    : {uploadedReport.testDate}<br />
             Status       : Completed<br /><br />
-          Results:<br />
-{Array.isArray(uploadedReport.result)
-  ? uploadedReport.result.map((r, i) => (
-      <span key={i}>• {r}<br /></span>
-    ))
-  : uploadedReport.result || "-"}<br /><br />
+       Results:<br />
+{uploadedReport.results.map((r, i) => <span key={i}>• {r}<br /></span>)}<br/><br/>
 
             Notes:<br />
             {uploadedReport.notes.length > 0

@@ -88,12 +88,11 @@ export default function PatientsPage() {
                 <td>{test.patientId?.gender}</td>
                 <td>{test.testType}</td>
                 <td>{test.status}</td>
-                <td>
-  {Array.isArray(test.results)
-    ? test.results.join(", ")
-    : test.result || "-"}
-</td>
-
+   <td>
+                  {Array.isArray(test.results) && test.results.length > 0
+                    ? test.results.join(", ")
+                    : "-"}
+                </td>
 
               </tr>
             ))
