@@ -1,26 +1,4 @@
-/* ---------- Responsive Sidebar Fix ---------- */
 
-/* 🖥️ Desktop */
-/* .sidebar {
-  width: 260px;
-  color: #111827;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
-  padding: 20px 15px;
-  background-color: #ffffff;
-
-
-
-  /* overflow-y: auto;            /* scroll when items exceed height 
-  margin-top: 50px;
-  position: fixed;
-  left: 0;
-  top: 50px;                   /* align correctly under navbar 
-  z-index: 1000;
-  transform: translateX(0);
-  transition: transform 0.3s ease-in-out;
-} */ */
 
 /* Sidebar open state */
 .sidebar.open {
