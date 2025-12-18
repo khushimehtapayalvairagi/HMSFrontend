@@ -157,7 +157,7 @@ const AdminHome = () => {
         totalSpecialties: specialtiesRes.data.specialties?.length || 0,
         totalDepartments: departmentsRes.data.departments?.length || 0,
         totalWards: wardsRes.data.wards?.length || 0,
-        totalOTs: otsRes.data.operationTheaters?.length || 0,
+        totalOTs: otsRes.data.theaters?.length || 0,
         opdCount: opdRes.data.total || 0,
         ipdCount: ipdRes.data.total || 0,
         billingTotal: billRes.data.totalAmount || 0,
