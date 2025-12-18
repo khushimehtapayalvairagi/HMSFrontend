@@ -18,19 +18,20 @@ export default function PaymentForm({ onPaymentSuccess }) {
   useEffect(() => {
     const fetchAdmittedPatients = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/receptionist/patients`, { headers });
-        const allPatients = res.data.patients;
-        const admittedPatients = [];
+       const res = await axios.get(`${BASE_URL}/api/billing/pending-patients`, { headers });
+setPatients(res.data.patients || []);
 
-        for (const patient of allPatients) {
-          const ipd = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, { headers });
-          const admissions = ipd.data.admissions || [];
-          if (admissions.some(adm => adm.status === 'Admitted')) {
-            admittedPatients.push(patient);
-          }
-        }
+        // const admittedPatients = [];
 
-        setPatients(admittedPatients);
+        // for (const patient of allPatients) {
+        //   const ipd = await axios.get(`${BASE_URL}/api/ipd/admissions/${patient._id}`, { headers });
+        //   const admissions = ipd.data.admissions || [];
+        //   if (admissions.some(adm => adm.status === 'Admitted')) {
+        //     admittedPatients.push(patient);
+        //   }
+        // }
+
+        // setPatients(admittedPatients);
       } catch {
         toast.error('Failed to load admitted patients');
       }

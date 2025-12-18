@@ -37,7 +37,7 @@ const VisitForm = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/receptionist/doctors-available`, {
+        const res = await axios.get(`${BASE_URL}/api/receptionist/doctors`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setDoctors(res.data.doctors || []);
@@ -53,17 +53,17 @@ const VisitForm = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [specRes, refRes, depRes] = await Promise.all([
+        const [specRes, refRes] = await Promise.all([
           axios.get(`${BASE_URL}/api/receptionist/specialties`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${BASE_URL}/api/receptionist/referral-partners`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${BASE_URL}/api/receptionist/departments`, { headers: { Authorization: `Bearer ${token}` } }),
+       
         ]);
         setSpecialties(specRes.data.specialties || []);
         setReferralPartners(refRes.data.partners || []);
-        setDepartments(depRes.data.departments || []);
+        // setDepartments(depRes.data.departments || []);
       } catch (err) {
         console.error('Initial fetch failed:', err);
-        toast.error('Failed to load specialties/referrals/departments');
+        toast.error('Failed to load specialties/referrals');
       }
     };
     fetchInitialData();
@@ -94,41 +94,65 @@ const VisitForm = () => {
   }, [patientId, BASE_URL, token]);
 
   // Handle visit submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const missing = [];
-    if (!patientId) missing.push('Patient ID');
-    if (!visitType) missing.push('Visit Type');
-    if (!assignedDoctorId) missing.push('Assigned Doctor');
-    if (visitType === 'OPD') {
-      if (!amount || isNaN(amount) || Number(amount) <= 0) missing.push('Valid Amount');
-      if (!isPaid) missing.push('Payment Done');
-    }
-    if (missing.length > 0) {
-      return toast.error('Please fill required fields: ' + missing.join(', '));
-    }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const missing = [];
+  if (!patientId) missing.push('Patient ID');
+  if (!visitType) missing.push('Visit Type');
+  if (!assignedDoctorId) missing.push('Assigned Doctor');
 
-    try {
-      const payload = {
-        patientId,
-        patientDbId: patientDetails?._id,
-        visitType,
-        assignedDoctorId,
-        payment: visitType === 'OPD' ? { amount: Number(amount), isPaid } : undefined,
-        referredBy: referredBy || undefined,
-      };
+  if (visitType === 'OPD') {
+    if (!amount || isNaN(amount) || Number(amount) <= 0) missing.push('Valid Amount');
+    if (!isPaid) missing.push('Payment Done');
+  }
 
-      const res = await axios.post(`${BASE_URL}/api/receptionist/visits`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  if (missing.length > 0) {
+    return toast.error('Please fill required fields: ' + missing.join(', '));
+  }
 
-      setResData(res.data.visit);
-      toast.success(`${visitType} visit created successfully!`);
-    } catch (err) {
-      console.error('Visit creation error:', err?.response?.data || err.message);
-      toast.error(err.response?.data?.message || 'Visit creation failed');
+  try {
+    const payload = {
+      patientId,
+      patientDbId: patientDetails?._id,
+      visitType,
+      assignedDoctorId,
+      payment: visitType === 'OPD' ? { amount: Number(amount), isPaid } : undefined,
+      referredBy: referredBy || undefined,
+    };
+
+    const res = await axios.post(`${BASE_URL}/api/receptionist/visits`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    localStorage.setItem("currentPatientId", patientId);
+    setResData(res.data.visit);
+    toast.success(`${visitType} visit created successfully!`);
+
+    // ✅ Navigate only after successful submit
+  if (visitType === "IPD_Admission" || visitType === "IPD_Referral") {
+  const selectedDoc = doctors.find(d => d._id === assignedDoctorId);
+
+  navigate("/receptionist-dashboard/IPDAdmissionForm", {
+    state: {
+      patient: {
+        _id: patientDetails?._id,
+        fullName: patientDetails?.fullName
+      },
+      visit: {
+        ...res.data.visit,
+        doctorName: selectedDoc?.userId?.name || ''
+      }
     }
-  };
+  });
+}
+
+
+  } catch (err) {
+    console.error('Visit creation error:', err?.response?.data || err.message);
+    toast.error(err.response?.data?.message || 'Visit creation failed');
+  }
+};
+
 
   // Print OPD case paper
   const handlePrintCasePaper = () => {
@@ -151,6 +175,7 @@ const VisitForm = () => {
           <tr><td><b>Doctor:</b> ${doctorName || ''}</td><td><b>Department:</b> ${departments.find(d => d._id === departmentId)?.name || '-'}</td></tr>
           <tr><td colspan="2"><b>Address:</b> ${patientDetails?.address || ''}</td></tr>
         </table>
+        
       </body>
       </html>
     `;
@@ -180,7 +205,8 @@ const VisitForm = () => {
         </div>
         <hr/>
         <table style="width:100%; font-size:14px;">
-          <tr><td><b>Patient:</b> ${patientDetails?.fullName || ''}</td><td><b>Receipt No:</b> ${resData.receiptNumber || '-'}</td></tr>
+          <tr><td><b>Patient:</b> ${patientDetails?.fullName || ''}</td>
+          </tr>
           <tr><td><b>Doctor:</b> ${doctorName || ''}</td><td><b>Date:</b> ${visitDate.toLocaleDateString()}</td></tr>
           <tr><td><b>Visit Type:</b> ${resData.visitType || ''}</td><td><b>Specialty:</b> ${specialties.find(s => s._id === specialtyId)?.name || '-'}</td></tr>
         </table>

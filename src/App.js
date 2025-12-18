@@ -83,9 +83,10 @@ const App = () => {
     <Route path="viewPatient" element={<ViewPatient />} />
     <Route path="visit-form" element={<VisitForm />} />
     <Route path="patient-visits-viewer" element={<PatientVisitsViewer />} />
-    {/* <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} /> */}
+     <Route path="UpdatePatientStatus" element={<UpdateVisitStatusPage />} /> 
     <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
     <Route path="ProcedureForm" element={<ProcedureForm />} />
+        <Route path="AnesthesiaForm" element={<AnesthesiaForm/>} />
     <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
     <Route path="LabourRoom" element={<LabourRoom />} />
     <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
@@ -167,7 +168,7 @@ const InventoryRoutes =()=>(
             <Route path="IPDAdmissionForm" element={<IPDAdmissionForm />} />
             <Route path="IPDAdmissionList/:patientId" element={<IPDAdmissionList />} />
             <Route path="ProcedureForm" element={<ProcedureForm />} />
-            <Route path="AnesthesiaForm/:procedureScheduleId" element={<AnesthesiaForm />} />
+            <Route path="AnesthesiaForm" element={<AnesthesiaForm />} />
             <Route path="ViewAnesthesiaForm" element={<ViewAnesthesiaRecord />} />
             <Route path="LabourRoom" element={<LabourRoom />} />
             <Route path="ViewLabourRoom" element={<LabourRoomDetailViewer />} />
@@ -222,15 +223,17 @@ const InventoryRoutes =()=>(
     <Route path="completed" element={<CompletedTestsPage />} />
     <Route path="upload-report" element={<UploadReportPage />} /> */}
   {/* </Route> */}
-<Route path="/labTechnician-dashboard" element={<LabTechnicianDashboard />}>
-  <Route path="dashboard" element={<LabDashboard/>} />
-  <Route path="patients" element={<PatientsPage/>} />
-    <Route path="add-test" element={<AddTestPage/>} />
-     <Route path="appointments" element={<Appointments/>} />
-      {/* <Route path="pending" element={<PendingTestsPage />} />
-      <Route path="completed" element={<CompletedTestsPage />} /> */}
-       <Route path="upload-report" element={<UploadReport />} />
+<Route element={<ProtectedRoute role="STAFF" />}>
+  <Route path="/labTechnician-dashboard" element={<LabTechnicianDashboard />}>
+    <Route path="dashboard" element={<LabDashboard />} />
+    <Route path="patients" element={<PatientsPage />} />
+    <Route path="add-test" element={<AddTestPage />} />
+    <Route path="appointments" element={<Appointments />} />
+    <Route path="upload-report" element={<UploadReport />} />
+  </Route>
 </Route>
+
+
 
 
         {/* ------------------- LOGIN & FALLBACK ------------------- */}

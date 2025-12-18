@@ -1,12 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const styles = {
+  container: {
+    maxWidth: '900px',
+    margin: '2rem auto',
+    padding: '1rem',
+    fontFamily: 'Segoe UI, sans-serif'
+  },
+  heading: {
+    textAlign: 'center',
+    marginBottom: '1rem',
+    color: '#003366'
+  },
+  searchInput: {
+    width: '100%',
+    padding: '10px',
+    fontSize: '15px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    marginBottom: '1.5rem'
+  },
+  centerText: {
+    textAlign: 'center',
+    marginTop: '2rem',
+    fontSize: '16px',
+    color: '#555'
+  }
+};
 
 const ViewAnesthesiaRecord = () => {
   const [records, setRecords] = useState([]);
@@ -15,63 +54,58 @@ const ViewAnesthesiaRecord = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-    const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const fetchAllAnesthesiaRecords = async () => {
-    const token = localStorage.getItem('jwt');
+
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const token = localStorage.getItem('jwt');
+
+  const fetchAllData = async () => {
     try {
-      const patientRes = await axios.get(
+      // Fetch all patients
+      const patientsRes = await axios.get(
         `${BASE_URL}/api/receptionist/patients`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      const allPatients = patientsRes.data.patients || [];
 
-      const patients = patientRes.data.patients;
-
-      const allProcedurePromises = patients.map(p =>
-        axios
-          .get(`${BASE_URL}/api/procedures/schedules/${p._id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(res => res.data.procedures.map(proc => ({ ...proc, patient: p })))
-          .catch(() => [])
+      // Fetch anesthesia records
+      const anesthRes = await axios.get(
+        `${BASE_URL}/api/procedures/anesthesia-records`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+      const allAnesthesia = anesthRes.data.records || [];
 
-      const allProcedures = (await Promise.all(allProcedurePromises)).flat();
-      const filteredProcedures = allProcedures.filter(p => p.status === 'Scheduled');
+      // Match anesthesia to patient info if a link exists
+      const enrichedRecords = allAnesthesia.map(rec => {
+        // rec.patientId must exist in records for this match to work
+        const matchedPatient = allPatients.find(
+          pat => pat._id === rec.patientId
+        );
+        return {
+          ...rec,
+          patient: {
+            fullName: matchedPatient?.fullName || 'Unknown'
+          }
+        };
+      });
 
-      const anesthesiaRecords = await Promise.all(
-        filteredProcedures.map(p =>
-          axios
-            .get(`${BASE_URL}/api/procedures/anesthesia-records/${p._id}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            })
-            .then(res => ({
-              ...res.data.record,
-              procedureName: p.procedureId?.name || '',
-              patient: p.patient
-            }))
-            .catch(() => null)
-        )
-      );
-
-      const validRecords = anesthesiaRecords.filter(r => r !== null);
-      setRecords(validRecords);
-      setFilteredRecords(validRecords);
-    } catch (error) {
-      console.error('Error fetching anesthesia records:', error);
-      toast.error('Failed to fetch records');
+      setRecords(enrichedRecords);
+      setFilteredRecords(enrichedRecords);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch data.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAllAnesthesiaRecords();
+    fetchAllData();
   }, []);
 
   useEffect(() => {
     const lower = searchTerm.toLowerCase();
     const filtered = records.filter(record =>
-      record?.patient?.fullName?.toLowerCase().includes(lower)
+      record.patient?.fullName?.toLowerCase().includes(lower)
     );
     setFilteredRecords(filtered);
   }, [searchTerm, records]);
@@ -112,9 +146,9 @@ const ViewAnesthesiaRecord = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRecords.map((record, index) => (
-                <TableRow key={record._id || index}>
-                  <TableCell>{record.patient?.fullName || 'Unknown'}</TableCell>
+              {filteredRecords.map((record) => (
+                <TableRow key={record._id}>
+                  <TableCell>{record.patientId?.fullName}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleOpenDialog(record)}>
                       <ExpandMoreIcon />
@@ -127,29 +161,29 @@ const ViewAnesthesiaRecord = () => {
         </TableContainer>
       )}
 
-      {/* Dialog */}
-    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-  <DialogTitle>📝 Anesthesia Record Details</DialogTitle>
-  <DialogContent dividers>
-    {selectedRecord && (
-      <>
-        <p><strong>👤 Patient:</strong> {selectedRecord.patient?.fullName || 'Unknown'}</p>
-        <p><strong>🩺 Procedure:</strong> {selectedRecord.procedureName || 'N/A'}</p>
-        <p><strong>👨‍⚕️ Anesthetist:</strong> {selectedRecord.anestheticId?.userId?.name || 'N/A'}</p>
-        <p><strong>💉 Anesthesia:</strong> {selectedRecord.anesthesiaName} ({selectedRecord.anesthesiaType})</p>
-        <p><strong>⏱️ Induce Time:</strong> {selectedRecord.induceTime ? new Date(selectedRecord.induceTime).toLocaleString() : 'N/A'}</p>
-        <p><strong>✅ End Time:</strong> {selectedRecord.endTime ? new Date(selectedRecord.endTime).toLocaleString() : 'N/A'}</p>
-        <p><strong>💊 Medicines Used:</strong> {selectedRecord.medicinesUsedText || 'N/A'}</p>
-      </>
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseDialog} color="primary" variant="contained">
-      Close
-    </Button>
-  </DialogActions>
-</Dialog>
+      {/* Detail Dialog */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>📝 Anesthesia Record Details</DialogTitle>
+        <DialogContent dividers>
+          {selectedRecord && (
+            <>
+              <p><strong>👤 Patient:</strong> {selectedRecord.patientId?.fullName}</p>
+              <p><strong>👨‍⚕️ Anesthetist:</strong> {selectedRecord.anestheticId?.userId?.name || 'N/A'}</p>
+              <p><strong>💉 Anesthesia:</strong> {selectedRecord.anesthesiaName} ({selectedRecord.anesthesiaType})</p>
+             <p><strong>📌 Procedure Type:</strong> {selectedRecord.procedureType || 'N/A'}</p>
 
+              <p><strong>⏱️ Induce Time:</strong> {selectedRecord.induceTime ? new Date(selectedRecord.induceTime).toLocaleString() : 'N/A'}</p>
+              <p><strong>✅ End Time:</strong> {selectedRecord.endTime ? new Date(selectedRecord.endTime).toLocaleString() : 'N/A'}</p>
+              <p><strong>💊 Medicines Used:</strong> {selectedRecord.medicinesUsedText || 'N/A'}</p>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary" variant="contained">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <ToastContainer />
     </div>
@@ -157,32 +191,3 @@ const ViewAnesthesiaRecord = () => {
 };
 
 export default ViewAnesthesiaRecord;
-
-// Styles
-const styles = {
-  container: {
-    maxWidth: '900px',
-    margin: '2rem auto',
-    padding: '1rem',
-    fontFamily: 'Segoe UI, sans-serif'
-  },
-  heading: {
-    textAlign: 'center',
-    marginBottom: '1rem',
-    color: '#003366'
-  },
-  searchInput: {
-    width: '100%',
-    padding: '10px',
-    fontSize: '15px',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-    marginBottom: '1.5rem'
-  },
-  centerText: {
-    textAlign: 'center',
-    marginTop: '2rem',
-    fontSize: '16px',
-    color: '#555'
-  }
-};

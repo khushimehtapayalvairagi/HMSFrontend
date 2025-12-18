@@ -306,18 +306,20 @@ const handleSubmit = async (e) => {
                 <select name="designation" value={form.designation} onChange={handleChange} required>
                   <option value="">Select Designation</option>
                   <option value="Lab Technician">Lab Technician</option>
+                   <option value="Head Nurse">Head Nurse</option>
                   <option value="Receptionist">Receptionist</option>
                   <option value="Inventory Manager">Inventory Manager</option>
                   <option value="Other">Other</option>
                 </select>
-                <select name="department" value={form.department} onChange={handleChange}>
-                  <option value="">Select Department</option>
-                  {departments.map((d) => (
-                    <option key={d._id} value={d._id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
+              <select name="department" value={form.department} onChange={handleChange}>
+  <option value="">Select Department</option>
+  {departments.map((d) => (
+    <option key={d._id} value={d.name}>
+      {d.name}
+    </option>
+  ))}
+</select>
+
               </>
             )}
 

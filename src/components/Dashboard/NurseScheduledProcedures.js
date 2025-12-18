@@ -157,7 +157,7 @@ const NurseScheduledProcedures = () => {
                         <strong>Type:</strong> {proc.procedureType}
                       </Typography>
                       <Typography variant="body2">
-                        <strong>Surgeon:</strong> {proc.surgeonId?.userId?.name || 'N/A'}
+                        <strong>Doctor:</strong> {proc.surgeonId?.userId?.name || 'N/A'}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
                         <strong>Status:</strong> {proc.status}
@@ -190,7 +190,7 @@ const NurseScheduledProcedures = () => {
                     <TableCell>Date & Time</TableCell>
                     <TableCell>Room</TableCell>
                     <TableCell>Type</TableCell>
-                    <TableCell>Surgeon</TableCell>
+                    <TableCell>Doctor</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Update</TableCell>
                   </TableRow>

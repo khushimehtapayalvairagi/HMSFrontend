@@ -45,6 +45,7 @@ useEffect(() => {
     setRegisteredVisits(visits.filter(v => v.status === 'Registered' && v.visitType === 'OPD'));
     setWaitingVisits(visits.filter(v => v.status === 'Waiting' && v.visitType === 'OPD'));
 
+    
   } catch (err) {
     console.error(err);
     toast.error("Failed to fetch patient visits");

@@ -21,7 +21,8 @@ const AdminDashboard = () => {
   const [reportDropdownOpen, setReportDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeModuleLabel, setActiveModuleLabel] = useState('');
-
+ const [nurseDropdownOpen, setNurseDropdownOpen] = useState(false);
+ const [receptionistDropdownOpen, setReceptionistDropdownOpen] = useState(false);
   // Navbar menu anchors
   const [roleAnchor, setRoleAnchor] = useState(null);
   const [staffAnchor, setStaffAnchor] = useState(null);
@@ -69,7 +70,8 @@ const AdminDashboard = () => {
     setSpecialtyDropdownOpen(false);
     setDepartmentDropdownOpen(false);
     setReportDropdownOpen(false);
-
+ setNurseDropdownOpen(false);
+    setReceptionistDropdownOpen(false)
     if (window.innerWidth < 768) setSidebarOpen(false);
   }, [location.pathname]);
 
@@ -92,9 +94,9 @@ const AdminDashboard = () => {
           <Link to="reports/opd-register" style={dropdownLinkStyle}>
             Central OPD Register
           </Link>
-          {/* <Link to="reports/ipd-register" style={dropdownLinkStyle}>
+          <Link to="reports/ipd-register" style={dropdownLinkStyle}>
             Central IPD Register
-          </Link> */}
+          </Link>
         </>
       ),
     },
@@ -257,6 +259,16 @@ const AdminDashboard = () => {
           {/* === Role Menu === */}
           <Menu anchorEl={roleAnchor} open={Boolean(roleAnchor)} onClose={closeRoleMenu}>
             <MenuItem
+  onClick={(e) => {
+    closeRoleMenu();
+    openDoctorMenu(e);   // open Doctor submenu
+  }}
+>
+  🩺 Doctor ▸
+</MenuItem>
+           
+           
+            <MenuItem
               onClick={(e) => {
                 closeRoleMenu();
                 openStaffMenu(e);
@@ -271,9 +283,9 @@ const AdminDashboard = () => {
             <MenuItem onClick={(e) => { closeStaffMenu(); openReceptionistMenu(e); }}>
               📋 Receptionist ▸
             </MenuItem>
-            {/* <MenuItem onClick={(e) => { closeStaffMenu(); openNurseMenu(e); }}>
+            <MenuItem onClick={(e) => { closeStaffMenu(); openNurseMenu(e); }}>
               🧑‍⚕️ Nurse ▸
-            </MenuItem> */}
+            </MenuItem>
             <MenuItem onClick={(e) => { closeStaffMenu(); openLabMenu(e); }}>
               🧪 Lab Dashboard ▸
             </MenuItem>
@@ -516,15 +528,15 @@ const styles = {
     zIndex: 1000,
     transition: 'transform 0.3s ease-in-out',
   },
-  overlay: {
-    position: 'fixed',
-    top: 50,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    zIndex: 999,
-  },
+  // overlay: {
+  //   position: 'fixed',
+  //   top: 50,
+  //   left: 0,
+  //   right: 0,
+  //   bottom: 0,
+  //   backgroundColor: 'rgba(0,0,0,0.3)',
+  //   zIndex: 999,
+  // },
 
   nav: {
     display: 'flex',

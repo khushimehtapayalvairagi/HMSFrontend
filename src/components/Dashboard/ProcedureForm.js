@@ -40,7 +40,7 @@ const fetchInitialData = async () => {
     ] = await Promise.all([
       axios.get(`${BASE_URL}/api/receptionist/patients`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/procedures`, { headers: { Authorization: `Bearer ${token}` } }),
-      axios.get(`${BASE_URL}/api/receptionist/doctors-available`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/operation-theaters`, { headers: { Authorization: `Bearer ${token}` } }),
       axios.get(`${BASE_URL}/api/receptionist/labour-rooms`, { headers: { Authorization: `Bearer ${token}` } }),
     ]);
@@ -114,12 +114,12 @@ const handleSubmit = async e => {
     toast.success('Procedure scheduled successfully!');
     const procedureScheduleId = res.data.procedure._id;
 
-    if (formData.procedureType === 'OT') {
-      navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
-    }
-    else  if (formData.procedureType === 'Labour Room') {
-      navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
-    }
+    // if (formData.procedureType === 'OT') {
+    //   navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
+    // }
+    // else  if (formData.procedureType === 'Labour Room') {
+    //   navigate(`/receptionist-dashboard/AnesthesiaForm/${procedureScheduleId}`);
+    // }
 
   } catch (error) {
     toast.error(error.response?.data?.message || 'Scheduling failed');
@@ -173,7 +173,7 @@ const handleSubmit = async e => {
   </select>
 
   <select name="surgeonId" value={formData.surgeonId} onChange={handleChange}>
-    <option value="">Select Surgeon</option>
+    <option value="">Select Doctor</option>
     {doctors?.map(d => <option key={d._id} value={d._id}>{d.userId?.name}</option>)}
   </select>
 

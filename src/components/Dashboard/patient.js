@@ -22,6 +22,7 @@ const PatientForm = () => {
 
   const validateContact = (val) => /^\d*$/.test(val) && val.length <= 10;
   const validateAadhaar = (val) => /^\d{0,12}$/.test(val);
+const validateAbha = (val) => /^\d{0,14}$/.test(val);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +34,10 @@ const PatientForm = () => {
     if (name === "aadhaarNumber" && value && !validateAadhaar(value)) {
       return toast.error("Aadhaar must be numeric and max 12 digits");
     }
+      if (name === "abhaNumber" && value && !validateAbha(value)) {
+  return toast.error("ABHA must be numeric and max 14 digits");
+}
+
 
     setForm((p) => ({ ...p, [name]: value }));
   };
@@ -61,12 +66,14 @@ const PatientForm = () => {
     if (form.aadhaarNumber && form.aadhaarNumber.length !== 12) {
       return toast.error("Aadhaar number must be exactly 12 digits");
     }
+  
 
     const token = localStorage.getItem("jwt");
     if (!token) return toast.error("Please log in first");
 
 const payload = {
   ...form,
+   abhaNumber: form.abhaNumber?.trim() || undefined, 
   aadhaarNumber: form.aadhaarNumber?.trim() || undefined,
   relatives: form.relatives?.filter(r => r.name || r.contactNumber || r.relationship) || []
 };
@@ -200,14 +207,15 @@ const payload = {
             onChange={handleChange}
             style={{ flex: 1 }}
           />
-          {/* <input
-            name="address"
-            placeholder="🏠 Address *"
-            value={form.address}
-            onChange={handleChange}
-            required
-            style={{ flex: 1 }}
-          /> */}
+       <input
+  name="abhaNumber"
+  placeholder="🏥 ABHA Number (Optional)"
+  value={form.abhaNumber}
+  onChange={handleChange}
+  maxLength={14}
+  style={{ flex: 1 }}
+/>
+
             <input
             name="contactNumber"
             placeholder="📞 Contact Number"
@@ -272,6 +280,7 @@ const payload = {
             <p><strong>Name:</strong> {submittedData.fullName}</p>
             <p><strong>Age:</strong> {submittedData.age}</p>
             <p><strong>Date of Birth:</strong> {submittedData.dob ? new Date(submittedData.dob).toLocaleDateString() : "N/A"}</p>
+                <p><strong>ABHA:</strong> {submittedData.abhaNumber || "N/A"}</p>
 
             <p><strong>Gender:</strong> {submittedData.gender}</p>
             <p><strong>Contact:</strong> {submittedData.contactNumber}</p>

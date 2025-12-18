@@ -62,9 +62,13 @@ const ReceptionistDashboard = () => {
             { label: "Patient", path: "/receptionist-dashboard/patient-form", icon: <IpdIcon /> },
             { label: "View Patient", path: "/receptionist-dashboard/viewPatient", icon: <PersonIcon /> },
             { label: "Visit Form", path: "/receptionist-dashboard/visit-form", icon: <VisitIcon /> },
+           
+            { label: "Update Visit Status", path: "/receptionist-dashboard/UpdatePatientStatus", icon: <VisitIcon /> },
+           
             { label: "Patient Visits Viewer", path: "/receptionist-dashboard/patient-visits-viewer", icon: <PharmacyIcon /> },
             { label: "IPD Admission Form", path: "/receptionist-dashboard/IPDAdmissionForm", icon: <AdmissionIcon /> },
             { label: "Procedure Form", path: "/receptionist-dashboard/ProcedureForm", icon: <ProcedureIcon /> },
+            { label: "Anesthesia Form", path: "/receptionist-dashboard/AnesthesiaForm", icon: <AnesthesiaIcon /> },
             { label: "View Anesthesia Form", path: "/receptionist-dashboard/ViewAnesthesiaForm", icon: <AnesthesiaIcon /> },
             { label: "Labour Room", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
             { label: "View Labour Room", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },

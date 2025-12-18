@@ -76,7 +76,7 @@ const [selectedOtRoom, setSelectedOtRoom] = useState('');
     }
 if (reportType === 'anesthesia') {
   endpoint = `${BASE_URL}/api/reports/anesthesia-register`;
-  params.procedureType = 'OT'; // Optional: 'OT' or 'Labour Room' if needed
+  // params.procedureType = 'OT'; // Optional: 'OT' or 'Labour Room' if needed
 }
 else if (reportType === 'birth') {
   endpoint =  `${BASE_URL}/api/reports/birth-records`;
@@ -157,7 +157,7 @@ IPD Report</h1>
 <option value="birth">Birth Record Register</option>
 <option value="billing">Billing Summary</option>
 <option value="paymentReconciliation">Payment Reconciliation</option>
-<option value="fumigation">OT Fumigation Register</option>
+{/* <option value="fumigation">OT Fumigation Register</option> */}
 
 
 
@@ -286,7 +286,6 @@ IPD Report</h1>
               <th className="border px-4 py-2">Room</th>
               <th className="border px-4 py-2">Bed No</th>
               <th className="border px-4 py-2">Admission Date</th>
-              <th className="border px-4 py-2">Expected Discharge</th>
               <th className="border px-4 py-2">Status</th>
             </tr>
           </thead>
@@ -300,11 +299,7 @@ IPD Report</h1>
                 <td className="border px-4 py-2">{entry.roomCategory?.name || 'N/A'}</td>
                 <td className="border px-4 py-2">{entry.bedNumber || 'N/A'}</td>
                 <td className="border px-4 py-2">{new Date(entry.admissionDate).toLocaleDateString()}</td>
-                <td className="border px-4 py-2">
-                  {entry.expectedDischargeDate
-                    ? new Date(entry.expectedDischargeDate).toLocaleDateString()
-                    : 'N/A'}
-                </td>
+               
                 <td className="border px-4 py-2">{entry.status || 'N/A'}</td>
               </tr>
             ))}
@@ -361,7 +356,7 @@ IPD Report</h1>
      <tr className="table-row">
 
           <th className="border px-4 py-2">Patient</th>
-          <th className="border px-4 py-2">Surgeon</th>
+          <th className="border px-4 py-2">Doctor</th>
           <th className="border px-4 py-2">Department</th>
           <th className="border px-4 py-2">Procedure</th>
           <th className="border px-4 py-2">Cost</th>
@@ -396,15 +391,14 @@ IPD Report</h1>
     <table className="table">
       <thead className="bg-gray-100">
       <tr className="table-row">
-
+           
           <th className="border px-4 py-2">Patient</th>
           <th className="border px-4 py-2">Anesthetist</th>
-          <th className="border px-4 py-2">Procedure</th>
+           {/* <th className="border px-4 py-2">Procedure</th>  */}
           <th className="border px-4 py-2">Anesthesia Type</th>
           <th className="border px-4 py-2">Anesthesia Name</th>
           <th className="border px-4 py-2">Induce Time</th>
           <th className="border px-4 py-2">End Time</th>
-          <th className="border px-4 py-2">Procedure Type</th>
         </tr>
       </thead>
       <tbody>
@@ -412,7 +406,7 @@ IPD Report</h1>
           <tr key={entry._id} className="bg-white hover:bg-gray-50">
             <td className="border px-4 py-2">{entry.patient?.fullName || 'N/A'}</td>
             <td className="border px-4 py-2">{entry.anesthetist?.name || 'N/A'}</td>
-            <td className="border px-4 py-2">{entry.procedure?.name || 'N/A'}</td>
+            {/* <td className="border px-4 py-2">{entry.procedureType?.name || 'N/A'}</td>  */}
             <td className="border px-4 py-2">{entry.anesthesiaType || 'N/A'}</td>
             <td className="border px-4 py-2">{entry.anesthesiaName || 'N/A'}</td>
             <td className="border px-4 py-2">
@@ -421,7 +415,6 @@ IPD Report</h1>
             <td className="border px-4 py-2">
               {entry.endTime ? new Date(entry.endTime).toLocaleString() : 'N/A'}
             </td>
-            <td className="border px-4 py-2">{entry.procedureType || 'N/A'}</td>
           </tr>
         ))}
         {/* Birth Record Register */}
