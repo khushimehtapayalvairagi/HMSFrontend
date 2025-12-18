@@ -156,7 +156,7 @@ const InventoryRoutes =()=>(
         </Route>
 
         {/* ------------------- RECEPTIONIST ROUTES ------------------- */}
-        <Route element={<ProtectedRoute role="STAFF" />}>
+     <Route element={<ProtectedRoute role="STAFF" designations={['Receptionist']} />}>
           <Route path="/receptionist-dashboard" element={<ReceptionistDashboard />}>
             <Route path="patient-form" element={<PatientForm />} />
             <Route path="viewPatient" element={<ViewPatient />} />
@@ -192,7 +192,7 @@ const InventoryRoutes =()=>(
         </Route>
 
         {/* ------------------- NURSE ROUTES ------------------- */}
-        <Route element={<ProtectedRoute role="STAFF" />}>
+       <Route element={<ProtectedRoute role="STAFF" designations={['Nurse', 'Head Nurse']} />}>
           <Route path="/nurse-dashboard" element={<NurseDashboard />}>
             <Route path="NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
             <Route path="DailyReports" element={<DailyReports />} />
@@ -202,7 +202,7 @@ const InventoryRoutes =()=>(
         </Route>
 
         {/* ------------------- INVENTORY MANAGER ROUTES ------------------- */}
-        <Route element={<ProtectedRoute role="STAFF" />}>
+      <Route element={<ProtectedRoute role="STAFF" designations={['Inventory Manager']} />}>
           <Route path="/inventoryManager-dashboard" element={<InventoryManagerDashboard />}>
             <Route path="InventoryForm" element={<InventoryForm />} />
             <Route path="InventoryList" element={<InventoryList />} />
@@ -223,7 +223,7 @@ const InventoryRoutes =()=>(
     <Route path="completed" element={<CompletedTestsPage />} />
     <Route path="upload-report" element={<UploadReportPage />} /> */}
   {/* </Route> */}
-<Route element={<ProtectedRoute role="STAFF" />}>
+<Route element={<ProtectedRoute role="STAFF" designations={['Lab Technician']} />}>
   <Route path="/labTechnician-dashboard" element={<LabTechnicianDashboard />}>
     <Route path="dashboard" element={<LabDashboard />} />
     <Route path="patients" element={<PatientsPage />} />

@@ -1,53 +1,45 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-const ProtectedRoute = ({ role: requiredRole }) => {
+const ProtectedRoute = ({ role, designations = [] }) => {
   const token = localStorage.getItem('jwt');
   const userRaw = localStorage.getItem('user');
 
+  // ❌ Not logged in
   if (!token || !userRaw) {
     return <Navigate to="/" replace />;
   }
 
-  let user;
   try {
-    user = JSON.parse(userRaw);
-    if (!user || typeof user !== 'object' || !user.role) {
-      throw new Error('Invalid user');
-    }
-
+    const user = JSON.parse(userRaw);
     const decoded = jwtDecode(token);
-    if (decoded.exp < Date.now() / 1000) {
+
+    // ❌ Token expired
+    if (decoded.exp * 1000 < Date.now()) {
       throw new Error('Token expired');
     }
 
-    const userRole = user.role;
-    const userDesignation = user.designation;
-
-    // Staff-based access
-    if (requiredRole === 'STAFF') {
-      const allowedDesignations = ['Receptionist', 'Head Nurse'];
-      if (userRole === 'STAFF' && allowedDesignations.includes(userDesignation)) {
-        return <Outlet />;
-      }
+    // ✅ ADMIN / DOCTOR direct role match
+    if (user.role === role) {
+      return <Outlet />;
     }
 
-    if (requiredRole === 'INVENTORY_MANAGER') {
-      if (userRole === 'STAFF' && userDesignation === 'Inventory Manager') {
-        return <Outlet />;
-      }
+    // ✅ STAFF + designation based access
+    if (
+      role === 'STAFF' &&
+      user.role === 'STAFF' &&
+      designations.includes(user.designation)
+    ) {
+      return <Outlet />;
     }
 
-    if (userRole === requiredRole) return <Outlet />;
-
+    // ❌ Unauthorized
     return <Navigate to="/" replace />;
-  } catch (error) {
-    console.error("Auth error:", error.message);
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('user');
+  } catch (err) {
+    console.error('Auth error:', err.message);
+    localStorage.clear();
     return <Navigate to="/" replace />;
   }
 };
-
 
 export default ProtectedRoute;
