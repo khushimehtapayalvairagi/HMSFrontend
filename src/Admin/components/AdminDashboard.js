@@ -528,15 +528,7 @@ const styles = {
     zIndex: 1000,
     transition: 'transform 0.3s ease-in-out',
   },
-  // overlay: {
-  //   position: 'fixed',
-  //   top: 50,
-  //   left: 0,
-  //   right: 0,
-  //   bottom: 0,
-  //   backgroundColor: 'rgba(0,0,0,0.3)',
-  //   zIndex: 999,
-  // },
+
 
   nav: {
     display: 'flex',
