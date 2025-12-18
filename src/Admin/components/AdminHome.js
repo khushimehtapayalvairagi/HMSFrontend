@@ -162,7 +162,9 @@ const AdminHome = () => {
         ipdCount: ipdRes.data.total || 0,
         billingTotal: billRes.data.totalAmount || 0,
         birthsCount: birthRes.data.totalBirths || 0,
-        paymentRecTotal: paymentRecRes.data.total || 0,
+        // paymentRecTotal: paymentRecRes.data.total || 0,
+        paymentRecTotal: paymentRecRes.data.totalReceived || 0,
+
         totalVisitsToday: opdRes.data.today || 0, // adjust if your API returns differently
       });
     } catch (error) {
