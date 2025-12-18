@@ -140,10 +140,10 @@ const AdminHome = () => {
       ] = await Promise.all([
         axios.get(`${BASE_URL}/api/receptionist/patients`, { headers }),
         axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers }),
-        axios.get(`${BASE_URL}/api/receptionist/specialties`, { headers }),
-        axios.get(`${BASE_URL}/api/receptionist/departments`, { headers }),
+        axios.get(`${BASE_URL}/api/admin/specialties`, { headers }),
+        axios.get(`${BASE_URL}/api/admin/departments`, { headers }),
         axios.get(`${BASE_URL}/api/receptionist/wards`, { headers }),
-        axios.get(`${BASE_URL}/api/receptionist/operation-theaters`, { headers }),
+        axios.get(`${BASE_URL}/api/admin/operation-theaters`, { headers }),
         axios.get(`${BASE_URL}/api/reports/opd-register`, { headers }),
         axios.get(`${BASE_URL}/api/reports/ipd-register/central`, { headers }),
         axios.get(`${BASE_URL}/api/reports/billing-summary`, { headers }),
