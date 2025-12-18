@@ -1,100 +1,195 @@
-import React from 'react';
+// import React from 'react';
+
+// const AdminHome = () => {
+//   return (
+//     <div style={styles.container}>
+//       <h1 style={styles.heading}>Welcome, Admin </h1>
+//       <p style={styles.subheading}>Hospital Management Overview</p>
+
+//       <div style={styles.cardsContainer}>
+//         <div style={styles.card}>
+//           <h3>👨‍⚕️ Doctors</h3>
+//           <p>Total: <strong>18</strong></p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>👩‍💼 Staff</h3>
+//           <p>Active: <strong>25</strong></p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>🏥 Departments</h3>
+//           <p>Count: <strong>12</strong></p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>📅 Appointments Today</h3>
+//           <p><strong>34</strong> Scheduled</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>💰 Billing</h3>
+//           <p>Today: <strong>₹48,000</strong></p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>🧍‍♂️ Patients Admitted</h3>
+//           <p><strong>58</strong> Currently</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>🛏️ Available Beds</h3>
+//           <p><strong>22</strong> Free</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>🚑 Emergency Cases</h3>
+//           <p><strong>6</strong> Today</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>💊 Medicine Stock</h3>
+//           <p><strong>154</strong> Items Available</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>📈 Revenue (This Month)</h3>
+//           <p><strong>₹12.4L</strong></p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>👶 Births (This Week)</h3>
+//           <p><strong>11</strong> Recorded</p>
+//         </div>
+
+//         <div style={styles.card}>
+//           <h3>⚰️ Deaths (This Week)</h3>
+//           <p><strong>2</strong> Reported</p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const styles = {
+//   container: {
+//     color: '#111827',
+//   },
+//   heading: {
+//     fontSize: '2rem',
+//     marginBottom: '0.5rem',
+//   },
+//   subheading: {
+//     fontSize: '1.2rem',
+//     color: '#6b7280',
+//     marginBottom: '1.5rem',
+//   },
+//   cardsContainer: {
+//     display: 'grid',
+//     gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+//     gap: '20px',
+//   },
+//   card: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '10px',
+//     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+//     border: '1px solid #e5e7eb',
+//   },
+// };
+
+// export default AdminHome;
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const AdminHome = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const token = localStorage.getItem("jwt");
+
+  const [stats, setStats] = useState({
+    totalDoctors: 0,
+    totalPatients: 0,
+    totalWards: 0,
+    totalOTs: 0,
+    totalVisitsToday: 0,
+  });
+
+  const fetchStats = async () => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const [
+        patientsRes,
+        doctorsRes,
+        wardsRes,
+        otRes,
+        visitsRes,
+      ] = await Promise.all([
+        axios.get(`${BASE_URL}/api/receptionist/patients`, { headers }),
+        axios.get(`${BASE_URL}/api/receptionist/doctors`, { headers }),
+        axios.get(`${BASE_URL}/api/receptionist/wards`, { headers }),
+        axios.get(`${BASE_URL}/api/receptionist/operation-theaters`, {
+          headers,
+        }),
+        axios.get(`${BASE_URL}/api/receptionist/visits/today`, { headers }), // example
+      ]);
+
+      setStats({
+        totalDoctors: doctorsRes.data.doctors?.length || 0,
+        totalPatients: patientsRes.data.patients?.length || 0,
+        totalWards: wardsRes.data.wards?.length || 0,
+        totalOTs: otRes.data.operationTheaters?.length || 0,
+        totalVisitsToday: visitsRes.data.total || 0, // adjust based on your API
+      });
+    } catch (error) {
+      console.error("Failed to fetch admin dashboard stats", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const cards = [
+    { title: "👨‍⚕️ Total Doctors", value: stats.totalDoctors },
+    { title: "🧍‍♂️ Total Patients", value: stats.totalPatients },
+    { title: "🛏️ Total Wards", value: stats.totalWards },
+    { title: "🏥 Operation Theaters", value: stats.totalOTs },
+    { title: "📅 Visits Today", value: stats.totalVisitsToday },
+  ];
+
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>Welcome, Admin </h1>
+      <h1 style={styles.heading}>Welcome, Admin</h1>
       <p style={styles.subheading}>Hospital Management Overview</p>
 
       <div style={styles.cardsContainer}>
-        <div style={styles.card}>
-          <h3>👨‍⚕️ Doctors</h3>
-          <p>Total: <strong>18</strong></p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>👩‍💼 Staff</h3>
-          <p>Active: <strong>25</strong></p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>🏥 Departments</h3>
-          <p>Count: <strong>12</strong></p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>📅 Appointments Today</h3>
-          <p><strong>34</strong> Scheduled</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>💰 Billing</h3>
-          <p>Today: <strong>₹48,000</strong></p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>🧍‍♂️ Patients Admitted</h3>
-          <p><strong>58</strong> Currently</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>🛏️ Available Beds</h3>
-          <p><strong>22</strong> Free</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>🚑 Emergency Cases</h3>
-          <p><strong>6</strong> Today</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>💊 Medicine Stock</h3>
-          <p><strong>154</strong> Items Available</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>📈 Revenue (This Month)</h3>
-          <p><strong>₹12.4L</strong></p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>👶 Births (This Week)</h3>
-          <p><strong>11</strong> Recorded</p>
-        </div>
-
-        <div style={styles.card}>
-          <h3>⚰️ Deaths (This Week)</h3>
-          <p><strong>2</strong> Reported</p>
-        </div>
+        {cards.map((card, idx) => (
+          <div key={idx} style={styles.card}>
+            <h3>{card.title}</h3>
+            <strong>{card.value}</strong>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 const styles = {
-  container: {
-    color: '#111827',
-  },
-  heading: {
-    fontSize: '2rem',
-    marginBottom: '0.5rem',
-  },
-  subheading: {
-    fontSize: '1.2rem',
-    color: '#6b7280',
-    marginBottom: '1.5rem',
-  },
+  container: { padding: "1rem" },
+  heading: { fontSize: "2rem", marginBottom: "0.5rem" },
+  subheading: { fontSize: "1.2rem", color: "#666", marginBottom: "1rem" },
   cardsContainer: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '20px',
+    display: "grid",
+    gap: "16px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
   },
   card: {
-    backgroundColor: '#fff',
-    padding: '20px',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #e5e7eb',
+    background: "#fff",
+    padding: "16px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    textAlign: "center",
   },
 };
 
