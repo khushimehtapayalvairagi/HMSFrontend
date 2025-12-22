@@ -111,13 +111,15 @@ const AddManualCharge = () => {
           <input type="text" name="itemName" placeholder="Item Name" value={form.itemName} onChange={handleChange} style={{ width: '100%', padding: '10px', marginBottom: '10px' }} />
           {errors.itemName && <div style={{ color: 'red' }}>{errors.itemName}</div>}
 
-          <select name="category" value={form.category} onChange={handleChange} style={{ width: '100%', padding: '10px', marginBottom: '10px' }}>
-            <option value="">Select Category</option>
-            <option value="Pharmacy">Pharmacy</option>
-            <option value="Lab">Lab</option>
-            <option value="Labour Room">Labour Room</option>
-            <option value="Other">Other</option>
-          </select>
+       <input
+  type="text"
+  name="category"
+  placeholder="Category (e.g. XRAY, Lab, OT, Scan)"
+  value={form.category}
+  onChange={handleChange}
+  style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+/>
+
           {errors.category && <div style={{ color: 'red' }}>{errors.category}</div>}
 
           <input type="number" name="defaultPrice" placeholder="Default Price" value={form.defaultPrice} onChange={handleChange} style={{ width: '100%', padding: '10px', marginBottom: '10px' }} />
