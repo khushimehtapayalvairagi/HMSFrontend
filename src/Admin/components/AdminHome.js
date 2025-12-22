@@ -114,7 +114,7 @@ const AdminHome = () => {
     totalWards: 0,
     totalOTs: 0,
     opdCount: 0,
-    ipdCount: 0,
+    // ipdCount: 0,
     billingTotal: 0,
     birthsCount: 0,
     paymentRecTotal: 0,
