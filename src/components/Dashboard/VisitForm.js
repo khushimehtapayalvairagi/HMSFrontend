@@ -187,41 +187,76 @@ const VisitForm = () => {
   };
 
   // Print OPD Bill
-  const handlePrintBill = () => {
-    if (!resData) return toast.error('No visit data to print bill');
-    const visitDate = new Date(resData.visitDate || resData.createdAt || Date.now());
-    const amountVal = resData.payment?.amount ?? amount ?? 0;
-    const isPaidVal = resData.payment?.isPaid ?? isPaid ?? false;
+ const handlePrintBill = () => {
+  if (!resData) return toast.error('No visit data to print bill');
 
-    const html = `
-      <html>
-      <head><title>OPD Bill</title></head>
-      <body style="font-family: Arial; padding: 20px;">
-        <div style="text-align:center;">
-          <h3>Anjuman-I-Islam's</h3>
-          <h4>Dr. M.I. Jamkhanawala Tibbia Unani Medical College & Hospital</h4>
-          <h4>Haji Abdul Razzak Kalsekar Tibbia Hospital</h4>
-          <h6>Anjuman-I-Islam Complex, Yari Road, Versova, Andheri(W), Mumbai 400 061.</h6>
-        </div>
-        <hr/>
-        <table style="width:100%; font-size:14px;">
-          <tr><td><b>Patient:</b> ${patientDetails?.fullName || ''}</td>
-          </tr>
-          <tr><td><b>Doctor:</b> ${doctorName || ''}</td><td><b>Date:</b> ${visitDate.toLocaleDateString()}</td></tr>
-          <tr><td><b>Visit Type:</b> ${resData.visitType || ''}</td><td><b>Specialty:</b> ${specialties.find(s => s._id === specialtyId)?.name || '-'}</td></tr>
-        </table>
-        <hr/>
-        <h3 style="text-align:right;">Total: ₹${amountVal}</h3>
-        <p><b>Paid:</b> ₹${isPaidVal ? amountVal : 0} &nbsp;&nbsp; <b>Balance:</b> ₹${isPaidVal ? 0 : amountVal}</p>
-      </body>
-      </html>
-    `;
-    const w = window.open('', '_blank', 'width=800,height=700');
-    w.document.write(html);
-    w.document.close();
-    w.print();
-    w.close();
-  };
+  const visitDate = new Date(resData.createdAt || Date.now());
+  const amountVal = resData.payment?.amount ?? amount ?? 0;
+  const isPaidVal = resData.payment?.isPaid ?? isPaid ?? false;
+
+  // 🔥 RECEIPT NUMBER
+  const receiptNo = resData.receiptNumber || 'N/A';
+
+  const html = `
+    <html>
+    <head>
+      <title>OPD Receipt</title>
+    </head>
+    <body style="font-family: Arial; padding: 20px;">
+      <div style="text-align:center;">
+        <h3>Anjuman-I-Islam's</h3>
+        <h4>Dr. M.I. Jamkhanawala Tibbia Unani Medical College & Hospital</h4>
+        <h4>Haji Abdul Razzak Kalsekar Tibbia Hospital</h4>
+        <h6>Anjuman-I-Islam Complex, Yari Road, Versova, Andheri(W), Mumbai 400 061.</h6>
+      </div>
+
+      <hr/>
+
+      <!-- 🔥 RECEIPT HEADER -->
+      <table style="width:100%; font-size:14px;">
+        <tr>
+          <td><b>Receipt No:</b> ${receiptNo}</td>
+          <td style="text-align:right;"><b>Date:</b> ${visitDate.toLocaleString()}</td>
+        </tr>
+      </table>
+
+      <hr/>
+
+      <table style="width:100%; font-size:14px;">
+        <tr>
+          <td><b>Patient Name:</b> ${patientDetails?.fullName || ''}</td>
+          <td><b>Patient ID:</b> ${resData.patientId}</td>
+        </tr>
+        <tr>
+          <td><b>Doctor:</b> ${doctorName}</td>
+          <td><b>Visit Type:</b> ${resData.visitType}</td>
+        </tr>
+      </table>
+
+      <hr/>
+
+      <h3 style="text-align:right;">Total Amount: ₹${amountVal}</h3>
+      <p style="text-align:right;">
+        <b>Paid:</b> ₹${isPaidVal ? amountVal : 0}<br/>
+        <b>Balance:</b> ₹${isPaidVal ? 0 : amountVal}
+      </p>
+
+      <hr/>
+
+      <p style="text-align:center; font-size:12px;">
+        This is a computer generated receipt.
+      </p>
+    </body>
+    </html>
+  `;
+
+  const w = window.open('', '_blank', 'width=800,height=700');
+  w.document.write(html);
+  w.document.close();
+  w.print();
+  w.close();
+};
+
 
   const showReferralField = visitType === 'IPD_Referral' || visitType === 'IPD_Admission';
   const showPaymentField = visitType === 'OPD';
