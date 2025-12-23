@@ -268,18 +268,15 @@ function InventoryForm() {
             required
             style={styles.input}
           />
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            required
-            style={styles.select}
-          >
-            <option value="">Category*</option>
-            <option value="Surgical Consumable">Surgical Consumable</option>
-            <option value="Equipment">Equipment</option>
-            <option value="Office Supplies">Office Supplies</option>
-          </select>
+         <input
+  name="category"
+  value={form.category}
+  onChange={handleChange}
+  placeholder="Category (e.g. Pathology, Equipment)"
+  required
+  style={styles.input}
+/>
+
           <input
             name="unitOfMeasurement"
             value={form.unitOfMeasurement}
