@@ -95,37 +95,24 @@ const NurseScheduledProcedures = () => {
         Nurse Dashboard – Procedures
       </Typography>
 
-      <Tabs
-        value={activeTab}
-        onChange={(_, newValue) => setActiveTab(newValue)}
-        variant={isMobile ? "scrollable" : "standard"}
-        scrollButtons={isMobile ? "auto" : false}
-        centered={!isMobile}
-        sx={{
-          mb: 4,
-          backgroundColor: '#f5f5f5',
-          borderRadius: 2,
-          boxShadow: 2,
-          '& .MuiTabs-indicator': {
-            backgroundColor: '#2e7d32',
-            height: 4,
-            borderRadius: 2,
-          },
-        }}
-      >
-        {['Scheduled', 'In Progress', 'Completed'].map(tab => (
-          <Tab
-            key={tab}
-            label={tab}
-            value={tab}
-            sx={{
-              fontWeight: 'bold',
-              color: activeTab === tab ? '#2e7d32' : 'gray',
-              '&.Mui-selected': { color: '#2e7d32' },
-            }}
-          />
-        ))}
-      </Tabs>
+ <Tabs
+  value={activeTab}
+  onChange={(_, newValue) => setActiveTab(newValue)}
+  variant={isMobile ? "scrollable" : "standard"}
+  scrollButtons={isMobile ? "auto" : false}
+  centered={!isMobile}
+  sx={{ mb: 4, backgroundColor: '#f5f5f5', borderRadius: 2 }}
+>
+  {['Scheduled', 'In Progress', 'Completed', 'Cancelled'].map(tab => (
+    <Tab
+      key={tab}
+      label={tab}
+      value={tab}
+      sx={{ fontWeight: 'bold', color: activeTab === tab ? '#2e7d32' : 'gray' }}
+    />
+  ))}
+</Tabs>
+
 
       {filteredProcedures.length === 0 ? (
         <Typography align="center" mt={4}>
@@ -224,6 +211,14 @@ const NurseScheduledProcedures = () => {
                           </FormControl>
                         )}
                       </TableCell>
+                      <TableCell>
+  {proc.status}
+  {proc.status === 'Cancelled' && (
+    <div style={{ fontSize: '0.85rem', color: '#d32f2f' }}>
+      Cancelled by: {proc.cancelledByUserId?.name || 'Unknown'}
+    </div>
+  )}
+</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
