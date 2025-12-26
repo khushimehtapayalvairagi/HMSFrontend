@@ -62,17 +62,17 @@ const [dailyReports, setDailyReports] = useState([]);
   fetchAnesthesiaRecords();
 }, [patientId]);
 
-// useEffect(() => {
-//   if (!ipdAdmissionId) return;
-//   const token = localStorage.getItem('jwt');
-// console.log("Calling reports API for", ipdAdmissionId);
+useEffect(() => {
+  if (!ipdAdmissionId) return;
+  const token = localStorage.getItem('jwt');
+console.log("Calling reports API for", ipdAdmissionId);
 
-//   axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
-//     headers: { Authorization: `Bearer ${token}` }
-//   })
-//   .then(res => setDailyReports(res.data.reports || []))
-//   .catch(() => toast.error('Failed to load daily reports'));
-// }, [ipdAdmissionId]);
+  axios.get(`${BASE_URL}/api/ipd/reports/${ipdAdmissionId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => setDailyReports(res.data.reports || []))
+  .catch(() => toast.error('Failed to load daily reports'));
+}, [ipdAdmissionId]);
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     const user = JSON.parse(localStorage.getItem('user'));
@@ -362,7 +362,7 @@ const selectedAdmission = admissions.find(a => a._id === ipdAdmissionId);
         )}
 
         {/* Daily Reports */}
-        {/* {dailyReports.length > 0 && (
+         {dailyReports.length > 0 && (
           <div style={{ background: '#e0f7fa', padding: '10px 15px', borderRadius: '6px', marginBottom: '1rem' }}>
             <h4 style={{ marginBottom: '10px' }}>Latest Progress Report</h4>
             <p><strong>Date:</strong> {new Date(dailyReports[0].reportDateTime).toLocaleString()}</p>
@@ -373,13 +373,13 @@ const selectedAdmission = admissions.find(a => a._id === ipdAdmissionId);
               <li>Respiratory Rate: {dailyReports[0].vitals?.respiratoryRate || 'N/A'}</li>
             </ul>
           </div>
-        )} */}
-{/* 
+        )} 
+ 
         {ipdAdmissionId && dailyReports.length === 0 && (
           <div style={{ background: '#fff3cd', padding: '10px 15px', borderRadius: '6px', marginBottom: '1rem' }}>
             No progress reports found for this admission.
           </div>
-        )} */}
+        )} 
 
         {/* Anesthesia Records */}
         {anesthesiaRecords.length > 0 && (
