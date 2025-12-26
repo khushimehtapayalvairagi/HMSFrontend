@@ -311,14 +311,14 @@ const handleSubmit = async (e) => {
                   <option value="Inventory Manager">Inventory Manager</option>
                   <option value="Other">Other</option>
                 </select>
-              <select name="department" value={form.department} onChange={handleChange}>
+              {/* <select name="department" value={form.department} onChange={handleChange}>
   <option value="">Select Department</option>
   {departments.map((d) => (
     <option key={d._id} value={d.name}>
       {d.name}
     </option>
   ))}
-</select>
+</select> */}
 
               </>
             )}
