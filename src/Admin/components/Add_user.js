@@ -105,16 +105,19 @@ const AddUser = () => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
 
-    if (name === 'name') {
-      const startsWithLetter = /^[A-Za-z]/.test(value);
-      const containsInvalidChar = /[^A-Za-z\s]/.test(value);
-      if (!startsWithLetter) {
-        setErrors((prev) => ({ ...prev, name: 'Name must start with a letter.' }));
-      } else if (containsInvalidChar) {
-        setErrors((prev) => ({ ...prev, name: 'Name must contain only letters and spaces.' }));
-      } else {
-        setErrors((prev) => ({ ...prev, name: '' }));
-      }
+   if (name === 'name') {
+  const regex = /^[A-Za-z][A-Za-z .'-]*$/;
+
+  if (!regex.test(value)) {
+    setErrors((prev) => ({ 
+      ...prev, 
+      name: 'Name can include letters, spaces, periods, apostrophes, and hyphens.' 
+    }));
+  } else {
+    setErrors((prev) => ({ ...prev, name: '' }));
+  }
+}
+
     } else if (name === 'contactNumber') {
       const contactValid = /^\d{0,10}$/.test(value);
       if (!contactValid) {
