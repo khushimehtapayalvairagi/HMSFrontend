@@ -116,7 +116,7 @@ const AddUser = () => {
   } else {
     setErrors((prev) => ({ ...prev, name: '' }));
   }
-}
+
 
     } else if (name === 'contactNumber') {
       const contactValid = /^\d{0,10}$/.test(value);
