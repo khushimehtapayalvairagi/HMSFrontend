@@ -90,10 +90,10 @@ const AddUser = () => {
       try {
         const [spec, dept] = await Promise.all([
           axios.get(`${BASE_URL}/api/admin/specialties`, config),
-          axios.get(`${BASE_URL}/api/admin/departments`, config),
+          axios.get(`${BASE_URL}/api/admin/specialties`, config),
         ]);
         setSpecialties(spec.data.specialties || []);
-        setDepartments(dept.data.departments || []);
+        setDepartments(dept.data.specialties || []);
       } catch (err) {
         console.error('Error fetching options:', err);
       }
