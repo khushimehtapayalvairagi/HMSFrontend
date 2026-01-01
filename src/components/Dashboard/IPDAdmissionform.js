@@ -402,22 +402,20 @@ const IPDAdmissionForm = () => {
   const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 
-  const initialPatientId = adviceData?.patientDbId || patient?._id || "";
-  const initialVisitId = adviceData?.visitId || visit?._id || "";
-  const initialAdmittingDoctorId =
-    adviceData?.admittingDoctorId || visit?.assignedDoctorId || "";
-
-  const [patientId, setPatientId] = useState(initialPatientId);
-  const [visitId, setVisitId] = useState(initialVisitId);
-  const [admittingDoctorId, setAdmittingDoctorId] = useState(
-    initialAdmittingDoctorId
+  const [patientId, setPatientId] = useState(
+    adviceData?.patientDbId || patient?._id || ""
   );
+  const [visitId, setVisitId] = useState(
+    adviceData?.visitId || visit?._id || ""
+  );
+  const [admittingDoctorId, setAdmittingDoctorId] = useState(
+    adviceData?.admittingDoctorId || visit?.assignedDoctorId || ""
+  );
+
   const [patientName, setPatientName] = useState(
     adviceData?.patientName || patient?.name || visit?.patientName || ""
   );
   const [doctorName, setDoctorName] = useState(visit?.doctorName || "");
-
-  const [submitted, setSubmitted] = useState(false);
 
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
@@ -427,29 +425,26 @@ const IPDAdmissionForm = () => {
   const [roomCategoryId, setRoomCategoryId] = useState("");
   const [expectedDischargeDate, setExpectedDischargeDate] = useState("");
 
-  const [admissionData, setAdmissionData] = useState(null);
-  const [admittedOn, setAdmittedOn] = useState("");
-
+  const [submitted, setSubmitted] = useState(false);
   const printRef = useRef();
 
-  // 🔄 fetch wards + categories
+  // 🔄 FETCH DATA
   useEffect(() => {
     fetchWards();
     fetchRoomCategories();
 
     socket.emit("joinReceptionistRoom");
+
     socket.on("newIPDAdmissionAdvice", (data) => {
       toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
       setPatientId(data.patientId || "");
       setVisitId(data.visitId || "");
-      setAdmittingDoctorId(data.admittingDoctorId || data.doctorId || "");
+      setAdmittingDoctorId(data.admittingDoctorId || "");
       setPatientName(data.patientName || "");
       setDoctorName(data.doctorName || "");
     });
 
-    return () => {
-      socket.off("newIPDAdmissionAdvice");
-    };
+    return () => socket.off("newIPDAdmissionAdvice");
   }, []);
 
   const fetchWards = async () => {
@@ -458,7 +453,7 @@ const IPDAdmissionForm = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWards(res.data.wards || []);
-    } catch (err) {
+    } catch {
       toast.error("Failed to load wards");
     }
   };
@@ -470,12 +465,12 @@ const IPDAdmissionForm = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRoomCategories(res.data.roomCategories || []);
-    } catch (err) {
+    } catch {
       toast.error("Failed to load room categories");
     }
   };
 
-  // ✔ submit admission
+  // ✔ SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -501,30 +496,20 @@ const IPDAdmissionForm = () => {
     };
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/ipd/admissions`, payload, {
+      await axios.post(`${BASE_URL}/api/ipd/admissions`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setAdmissionData(res.data.admission || res.data);
-      setAdmittedOn(new Date().toLocaleDateString());
       toast.success("IPD Admission successful!");
       setSubmitted(true);
+      fetchWards(); // 🔥 refresh beds
     } catch (err) {
-      toast.error(err.response?.data?.message || "IPD Admission failed.");
+      toast.error(err.response?.data?.message || "Admission failed");
     }
   };
 
-  // 💡 break name into parts
-  const getNameParts = (fullName) => {
-    if (!fullName) return { surname: "", firstName: "", middleName: "" };
-    const parts = fullName.trim().split(" ");
-    return {
-      surname: parts[parts.length - 1] || "",
-      firstName: parts[0] || "",
-      middleName: parts.slice(1, -1).join(" ") || "",
-    };
-  };
-  const patientNameParts = getNameParts(patientName);
+  // 🧠 Selected ward
+  const selectedWard = wards.find((w) => w._id === wardId);
 
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto" }}>
@@ -537,92 +522,85 @@ const IPDAdmissionForm = () => {
         >
           <h2>IPD Admission</h2>
 
-          <div>
-            <label>Patient</label>
-            <input readOnly value={patientName} />
-          </div>
+          <label>Patient</label>
+          <input readOnly value={patientName} />
 
-          <div>
-            <label>Doctor</label>
-            <input readOnly value={doctorName} />
-          </div>
+          <label>Doctor</label>
+          <input readOnly value={doctorName} />
 
-          <div>
-            <label>Ward</label>
-            <select
-              value={wardId}
-              onChange={(e) => {
-                setWardId(e.target.value);
-                setBedNumber("");
-              }}
-            >
-              <option value="">Select Ward</option>
-              {wards.map((w) => (
-                <option key={w._id} value={w._id}>
-                  {w.name}
+          {/* WARD */}
+          <label>Ward</label>
+          <select
+            value={wardId}
+            onChange={(e) => {
+              setWardId(e.target.value);
+              setBedNumber("");
+            }}
+          >
+            <option value="">Select Ward</option>
+            {wards.map((w) => (
+              <option key={w._id} value={w._id}>
+                {w.name}
+              </option>
+            ))}
+          </select>
+
+          {/* BED — ONLY AVAILABLE */}
+          <label>Bed Number</label>
+          <select
+            value={bedNumber}
+            onChange={(e) => setBedNumber(e.target.value)}
+            disabled={!wardId}
+          >
+            <option value="">Select available bed</option>
+
+            {selectedWard?.beds
+              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
+              .map((b) => (
+                <option key={b.bedNumber} value={b.bedNumber}>
+                  Bed {b.bedNumber}
                 </option>
               ))}
-            </select>
-          </div>
 
-          <div>
-            <label>Bed Number</label>
-            <select
-              value={bedNumber}
-              onChange={(e) => setBedNumber(e.target.value)}
-              disabled={!wardId}
-            >
-              <option value="">Select bed</option>
-              {wards
-                .find((w) => w._id === wardId)
-                ?.beds.map((b) => (
-                  <option
-                    key={`${b.bedNumber}`}
-                    value={b.bedNumber}
-                    disabled={b.status !== "available"}
-                  >
-                    Bed {b.bedNumber} — {b.status}
-                  </option>
-                ))}
-            </select>
-          </div>
+            {selectedWard?.beds?.filter(
+              (b) => b.status === "available"
+            ).length === 0 && (
+              <option disabled>No beds available</option>
+            )}
+          </select>
 
-          <div>
-            <label>Room Category</label>
-            <select
-              value={roomCategoryId}
-              onChange={(e) => setRoomCategoryId(e.target.value)}
-            >
-              <option value="">Select category</option>
-              {roomCategories.map((c) => (
-                <option key={c._id} value={c._id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* ROOM CATEGORY */}
+          <label>Room Category</label>
+          <select
+            value={roomCategoryId}
+            onChange={(e) => setRoomCategoryId(e.target.value)}
+          >
+            <option value="">Select category</option>
+            {roomCategories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
 
-          <div style={{ marginTop: "1rem" }}>
-            <label>Expected Discharge Date</label>
-            <input
-              type="date"
-              value={expectedDischargeDate}
-              onChange={(e) => setExpectedDischargeDate(e.target.value)}
-            />
-          </div>
+          <label>Expected Discharge Date</label>
+          <input
+            type="date"
+            value={expectedDischargeDate}
+            onChange={(e) => setExpectedDischargeDate(e.target.value)}
+          />
 
           <button type="submit" style={{ marginTop: "1rem" }}>
             Admit
           </button>
         </form>
       ) : (
-        <div>
-          <h3>Admission Completed!</h3>
-        </div>
+        <h3>Admission Completed Successfully 🎉</h3>
       )}
     </div>
   );
 };
 
 export default IPDAdmissionForm;
+
 
