@@ -546,28 +546,9 @@ const IPDAdmissionForm = () => {
           </select>
 
           {/* BED — ONLY AVAILABLE */}
-          <label>Bed Number</label>
-          <select
-            value={bedNumber}
-            onChange={(e) => setBedNumber(e.target.value)}
-            disabled={!wardId}
-          >
-            <option value="">Select available bed</option>
-
-            {selectedWard?.beds
-              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
-              .map((b) => (
-                <option key={b.bedNumber} value={b.bedNumber}>
-                  Bed {b.bedNumber}
-                </option>
-              ))}
-
-            {selectedWard?.beds?.filter(
-              (b) => b.status === "available"
-            ).length === 0 && (
-              <option disabled>No beds available</option>
-            )}
-          </select>
+           <div><label>Bed Number</label>
+              <input value={bedNumber} onChange={e => setBedNumber(e.target.value)} />
+            </div>
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
