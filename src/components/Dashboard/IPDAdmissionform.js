@@ -396,12 +396,14 @@ const IPDAdmissionForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("jwt");
-  const { adviceData } = useAdmissionAdvice();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  const { adviceData } = useAdmissionAdvice();
 
   const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 
+  // 🔹 IDs
   const [patientId, setPatientId] = useState(
     adviceData?.patientDbId || patient?._id || ""
   );
@@ -412,23 +414,26 @@ const IPDAdmissionForm = () => {
     adviceData?.admittingDoctorId || visit?.assignedDoctorId || ""
   );
 
+  // 🔹 Display
   const [patientName, setPatientName] = useState(
     adviceData?.patientName || patient?.name || visit?.patientName || ""
   );
   const [doctorName, setDoctorName] = useState(visit?.doctorName || "");
 
+  // 🔹 Data
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
 
+  // 🔹 Form state
   const [wardId, setWardId] = useState("");
-  const [bedNumber, setBedNumber] = useState("");
+  const [bedNumber, setBedNumber] = useState(null); // 🔥 NUMBER ONLY
   const [roomCategoryId, setRoomCategoryId] = useState("");
   const [expectedDischargeDate, setExpectedDischargeDate] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
   const printRef = useRef();
 
-  // 🔄 FETCH DATA
+  // 🔄 Fetch data
   useEffect(() => {
     fetchWards();
     fetchRoomCategories();
@@ -470,26 +475,37 @@ const IPDAdmissionForm = () => {
     }
   };
 
-  // ✔ SUBMIT
+  // 🧠 Selected ward + available beds
+  const selectedWard = wards.find((w) => w._id === wardId);
+  const availableBeds =
+    selectedWard?.beds?.filter((b) => b.status === "available") || [];
+
+  // 🔄 Reset bed when ward changes
+  useEffect(() => {
+    setBedNumber(null);
+  }, [wardId]);
+
+  // ✔ Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !patientId ||
-      !visitId ||
-      !wardId ||
-      !bedNumber ||
-      !roomCategoryId ||
-      !admittingDoctorId
-    ) {
+    if (!patientId || !visitId || !wardId || !roomCategoryId || !admittingDoctorId) {
       return toast.error("All required fields must be filled.");
+    }
+
+    if (availableBeds.length === 0) {
+      return toast.error("No beds available in this ward.");
+    }
+
+    if (bedNumber === null) {
+      return toast.error("Please select a bed number.");
     }
 
     const payload = {
       patientId,
       visitId,
       wardId,
-      bedNumber: Number(bedNumber),
+      bedNumber, // 🔥 always number
       roomCategoryId,
       admittingDoctorId,
       expectedDischargeDate,
@@ -502,14 +518,11 @@ const IPDAdmissionForm = () => {
 
       toast.success("IPD Admission successful!");
       setSubmitted(true);
-      fetchWards(); // 🔥 refresh beds
+      fetchWards(); // refresh bed status
     } catch (err) {
       toast.error(err.response?.data?.message || "Admission failed");
     }
   };
-
-  // 🧠 Selected ward
-  const selectedWard = wards.find((w) => w._id === wardId);
 
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto" }}>
@@ -530,13 +543,7 @@ const IPDAdmissionForm = () => {
 
           {/* WARD */}
           <label>Ward</label>
-          <select
-            value={wardId}
-            onChange={(e) => {
-              setWardId(e.target.value);
-              setBedNumber("");
-            }}
-          >
+          <select value={wardId} onChange={(e) => setWardId(e.target.value)}>
             <option value="">Select Ward</option>
             {wards.map((w) => (
               <option key={w._id} value={w._id}>
@@ -545,29 +552,31 @@ const IPDAdmissionForm = () => {
             ))}
           </select>
 
-          {/* BED — ONLY AVAILABLE */}
+          {/* BED */}
           <label>Bed Number</label>
           <select
-            value={bedNumber}
-            onChange={(e) => setBedNumber(e.target.value)}
-            disabled={!wardId}
+            value={bedNumber ?? ""}
+            onChange={(e) => setBedNumber(Number(e.target.value))}
+            disabled={!wardId || availableBeds.length === 0}
           >
-            <option value="">Select available bed</option>
+            <option value="">
+              {availableBeds.length === 0
+                ? "No beds available"
+                : "Select available bed"}
+            </option>
 
-            {selectedWard?.beds
-              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
-              .map((b) => (
-                <option key={b.bedNumber} value={b.bedNumber}>
-                  Bed {b.bedNumber}
-                </option>
-              ))}
-
-            {selectedWard?.beds?.filter(
-              (b) => b.status === "available"
-            ).length === 0 && (
-              <option disabled>No beds available</option>
-            )}
+            {availableBeds.map((b) => (
+              <option key={b.bedNumber} value={b.bedNumber}>
+                Bed {b.bedNumber}
+              </option>
+            ))}
           </select>
+
+          {wardId && (
+            <small style={{ color: availableBeds.length ? "green" : "red" }}>
+              {availableBeds.length} bed(s) available
+            </small>
+          )}
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
@@ -602,5 +611,6 @@ const IPDAdmissionForm = () => {
 };
 
 export default IPDAdmissionForm;
+
 
 
