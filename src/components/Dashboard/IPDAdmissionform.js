@@ -382,7 +382,7 @@
 // export default IPDAdmissionForm;
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import io from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
@@ -393,16 +393,15 @@ const socket = io(process.env.REACT_APP_BASE_URL, {
 });
 
 const IPDAdmissionForm = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("jwt");
-  const BASE_URL = process.env.REACT_APP_BASE_URL;
-
   const { adviceData } = useAdmissionAdvice();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 
-  // 🔹 IDs
   const [patientId, setPatientId] = useState(
     adviceData?.patientDbId || patient?._id || ""
   );
@@ -413,24 +412,23 @@ const IPDAdmissionForm = () => {
     adviceData?.admittingDoctorId || visit?.assignedDoctorId || ""
   );
 
-  // 🔹 Display
   const [patientName, setPatientName] = useState(
     adviceData?.patientName || patient?.name || visit?.patientName || ""
   );
   const [doctorName, setDoctorName] = useState(visit?.doctorName || "");
 
-  // 🔹 Data
   const [wards, setWards] = useState([]);
   const [roomCategories, setRoomCategories] = useState([]);
 
-  // 🔹 Form state
   const [wardId, setWardId] = useState("");
-  const [bedNumber, setBedNumber] = useState(null); // ✅ NUMBER ONLY
+  const [bedNumber, setBedNumber] = useState("");
   const [roomCategoryId, setRoomCategoryId] = useState("");
   const [expectedDischargeDate, setExpectedDischargeDate] = useState("");
-  const [submitted, setSubmitted] = useState(false);
 
-  // 🔄 Fetch data
+  const [submitted, setSubmitted] = useState(false);
+  const printRef = useRef();
+
+  // 🔄 FETCH DATA
   useEffect(() => {
     fetchWards();
     fetchRoomCategories();
@@ -438,6 +436,7 @@ const IPDAdmissionForm = () => {
     socket.emit("joinReceptionistRoom");
 
     socket.on("newIPDAdmissionAdvice", (data) => {
+      toast.info(`Doctor advised admission for Patient ID: ${data.patientId}`);
       setPatientId(data.patientId || "");
       setVisitId(data.visitId || "");
       setAdmittingDoctorId(data.admittingDoctorId || "");
@@ -471,37 +470,26 @@ const IPDAdmissionForm = () => {
     }
   };
 
-  // 🧠 Selected ward & available beds
-  const selectedWard = wards.find((w) => w._id === wardId);
-  const availableBeds =
-    selectedWard?.beds?.filter((b) => b.status === "available") || [];
-
-  // 🔄 Reset bed when ward changes
-  useEffect(() => {
-    setBedNumber(null);
-  }, [wardId]);
-
-  // 🔒 Submit allowed only if bed selected
-  const isSubmitEnabled =
-    wardId &&
-    roomCategoryId &&
-    admittingDoctorId &&
-    availableBeds.length > 0 &&
-    bedNumber !== null;
-
-  // ✔ Submit
+  // ✔ SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isSubmitEnabled) {
-      return toast.error("Please select all required fields.");
+    if (
+      !patientId ||
+      !visitId ||
+      !wardId ||
+      !bedNumber ||
+      !roomCategoryId ||
+      !admittingDoctorId
+    ) {
+      return toast.error("All required fields must be filled.");
     }
 
     const payload = {
       patientId,
       visitId,
       wardId,
-      bedNumber, // ✅ ALWAYS NUMBER
+      bedNumber: Number(bedNumber),
       roomCategoryId,
       admittingDoctorId,
       expectedDischargeDate,
@@ -514,11 +502,14 @@ const IPDAdmissionForm = () => {
 
       toast.success("IPD Admission successful!");
       setSubmitted(true);
-      fetchWards();
+      fetchWards(); // 🔥 refresh beds
     } catch (err) {
       toast.error(err.response?.data?.message || "Admission failed");
     }
   };
+
+  // 🧠 Selected ward
+  const selectedWard = wards.find((w) => w._id === wardId);
 
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto" }}>
@@ -539,7 +530,13 @@ const IPDAdmissionForm = () => {
 
           {/* WARD */}
           <label>Ward</label>
-          <select value={wardId} onChange={(e) => setWardId(e.target.value)}>
+          <select
+            value={wardId}
+            onChange={(e) => {
+              setWardId(e.target.value);
+              setBedNumber("");
+            }}
+          >
             <option value="">Select Ward</option>
             {wards.map((w) => (
               <option key={w._id} value={w._id}>
@@ -548,31 +545,29 @@ const IPDAdmissionForm = () => {
             ))}
           </select>
 
-          {/* BED */}
+          {/* BED — ONLY AVAILABLE */}
           <label>Bed Number</label>
           <select
-            value={bedNumber ?? ""}
-            onChange={(e) => setBedNumber(Number(e.target.value))}
-            disabled={!wardId || availableBeds.length === 0}
+            value={bedNumber}
+            onChange={(e) => setBedNumber(e.target.value)}
+            disabled={!wardId}
           >
-            <option value="">
-              {availableBeds.length === 0
-                ? "No beds available"
-                : "Select available bed"}
-            </option>
+            <option value="">Select available bed</option>
 
-            {availableBeds.map((b) => (
-              <option key={b.bedNumber} value={b.bedNumber}>
-                Bed {b.bedNumber}
-              </option>
-            ))}
+            {selectedWard?.beds
+              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
+              .map((b) => (
+                <option key={b.bedNumber} value={b.bedNumber}>
+                  Bed {b.bedNumber}
+                </option>
+              ))}
+
+            {selectedWard?.beds?.filter(
+              (b) => b.status === "available"
+            ).length === 0 && (
+              <option disabled>No beds available</option>
+            )}
           </select>
-
-          {wardId && (
-            <small style={{ color: availableBeds.length ? "green" : "red" }}>
-              {availableBeds.length} bed(s) available
-            </small>
-          )}
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
@@ -595,17 +590,7 @@ const IPDAdmissionForm = () => {
             onChange={(e) => setExpectedDischargeDate(e.target.value)}
           />
 
-          {/* 🔒 SUBMIT */}
-          <button
-            type="submit"
-            disabled={!isSubmitEnabled}
-            style={{
-              marginTop: "1rem",
-              backgroundColor: isSubmitEnabled ? "#1976d2" : "#ccc",
-              color: "#fff",
-              cursor: isSubmitEnabled ? "pointer" : "not-allowed",
-            }}
-          >
+          <button type="submit" style={{ marginTop: "1rem" }}>
             Admit
           </button>
         </form>
@@ -617,7 +602,5 @@ const IPDAdmissionForm = () => {
 };
 
 export default IPDAdmissionForm;
-
-
 
 
