@@ -555,13 +555,10 @@ const IPDAdmissionForm = () => {
   <option value="">Select a bed</option>
 
   {selectedWard?.beds?.map((b) => (
-    <option
-      key={b.bedNumber}
-      value={b.bedNumber}
-      disabled={b.status !== "available"}
-    >
-      Bed {b.bedNumber} — {b.status}
-    </option>
+   <option value={b.bedNumber} disabled={b.status !== "available"}>
+  Bed {b.bedNumber} — {b.status}
+</option>
+
   ))}
 
   {!selectedWard?.beds?.length && (

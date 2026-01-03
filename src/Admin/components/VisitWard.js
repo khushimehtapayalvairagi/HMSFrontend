@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './VisitWard.css'; // Import external CSS
+import './VisitWard.css';
 
 const VisitWard = () => {
   const [wards, setWards] = useState([]);
   const [loading, setLoading] = useState(true);
-   const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     const fetchWards = async () => {
       try {
         const token = localStorage.getItem('jwt');
         const res = await axios.get(`${BASE_URL}/api/admin/wards`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setWards(res.data.wards || []);
       } catch (error) {
@@ -46,14 +45,19 @@ const VisitWard = () => {
               {wards.map((ward) => (
                 <tr key={ward._id}>
                   <td>{ward.name}</td>
-                  <td>{ward.roomCategory?.name || 'N/A'}</td>
+                  <td>{ward.roomCategory?.name || "N/A"}</td>
                   <td>
-                    <ul>
-                      {ward.beds.map((bed, index) => (
-                        <li key={index}>
-                          Bed {bed.bedNumber} - {bed.status}
-                        </li>
-                      ))}
+                    <ul className="bed-list">
+                      {ward.beds
+                        .sort((a, b) => a.bedNumber - b.bedNumber)
+                        .map((bed) => (
+                          <li key={bed.bedNumber}>
+                            Bed {bed.bedNumber} —{" "}
+                            <span className={`status ${bed.status}`}>
+                              {bed.status}
+                            </span>
+                          </li>
+                        ))}
                     </ul>
                   </td>
                 </tr>
