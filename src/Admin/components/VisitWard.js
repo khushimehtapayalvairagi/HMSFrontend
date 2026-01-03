@@ -47,19 +47,15 @@ const VisitWard = () => {
                 <tr key={ward._id}>
                   <td>{ward.name}</td>
                   <td>{ward.roomCategory?.name || 'N/A'}</td>
-                 <td>
-  <div className="beds-grid">
-    {ward.beds.map((bed) => (
-      <span
-        key={bed.bedNumber}
-        className={`bed-chip ${bed.status}`}
-      >
-        {bed.bedNumber}
-      </span>
-    ))}
-  </div>
-</td>
-
+                  <td>
+                    <ul>
+                      {ward.beds.map((bed, index) => (
+                        <li key={index}>
+                          Bed {bed.bedNumber} - {bed.status}
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
                 </tr>
               ))}
             </tbody>

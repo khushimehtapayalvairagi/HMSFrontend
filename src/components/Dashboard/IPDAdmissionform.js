@@ -402,7 +402,6 @@ const IPDAdmissionForm = () => {
   const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 
-  // ================= STATES =================
   const [patientId, setPatientId] = useState(
     adviceData?.patientDbId || patient?._id || ""
   );
@@ -422,14 +421,14 @@ const IPDAdmissionForm = () => {
   const [roomCategories, setRoomCategories] = useState([]);
 
   const [wardId, setWardId] = useState("");
-  const [bedNumber, setBedNumber] = useState(null); // ✅ NUMBER
+  const [bedNumber, setBedNumber] = useState("");
   const [roomCategoryId, setRoomCategoryId] = useState("");
   const [expectedDischargeDate, setExpectedDischargeDate] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
   const printRef = useRef();
 
-  // ================= FETCH =================
+  // 🔄 FETCH DATA
   useEffect(() => {
     fetchWards();
     fetchRoomCategories();
@@ -471,12 +470,7 @@ const IPDAdmissionForm = () => {
     }
   };
 
-  // ================= DEBUG (REMOVE LATER) =================
-  useEffect(() => {
-    console.log("🛏 bedNumber:", bedNumber, typeof bedNumber);
-  }, [bedNumber]);
-
-  // ================= SUBMIT =================
+  // ✔ SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -484,7 +478,7 @@ const IPDAdmissionForm = () => {
       !patientId ||
       !visitId ||
       !wardId ||
-      bedNumber === null ||
+      !bedNumber ||
       !roomCategoryId ||
       !admittingDoctorId
     ) {
@@ -495,7 +489,7 @@ const IPDAdmissionForm = () => {
       patientId,
       visitId,
       wardId,
-      bedNumber, // ✅ NUMBER
+      bedNumber: Number(bedNumber),
       roomCategoryId,
       admittingDoctorId,
       expectedDischargeDate,
@@ -508,12 +502,13 @@ const IPDAdmissionForm = () => {
 
       toast.success("IPD Admission successful!");
       setSubmitted(true);
-      fetchWards(); // refresh beds
+      fetchWards(); // 🔥 refresh beds
     } catch (err) {
       toast.error(err.response?.data?.message || "Admission failed");
     }
   };
 
+  // 🧠 Selected ward
   const selectedWard = wards.find((w) => w._id === wardId);
 
   return (
@@ -539,7 +534,7 @@ const IPDAdmissionForm = () => {
             value={wardId}
             onChange={(e) => {
               setWardId(e.target.value);
-              setBedNumber(null); // reset bed
+              setBedNumber("");
             }}
           >
             <option value="">Select Ward</option>
@@ -550,34 +545,29 @@ const IPDAdmissionForm = () => {
             ))}
           </select>
 
-          {/* BED NUMBER */}
+          {/* BED — ONLY AVAILABLE */}
           <label>Bed Number</label>
+          <select
+            value={bedNumber}
+            onChange={(e) => setBedNumber(e.target.value)}
+            disabled={!wardId}
+          >
+            <option value="">Select available bed</option>
 
-          {selectedWard &&
-          selectedWard.beds?.filter((b) => b.status === "available").length ===
-            0 ? (
-            <div style={{ color: "red", marginBottom: "10px" }}>
-              No bed available
-            </div>
-          ) : (
-            <select
-              value={bedNumber ?? ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                setBedNumber(value ? Number(value) : null);
-              }}
-              disabled={!selectedWard}
-            >
-              <option value="">Select Bed</option>
-              {selectedWard?.beds
-                ?.filter((b) => b.status === "available")
-                .map((b) => (
-                  <option key={b.bedNumber} value={b.bedNumber}>
-                    Bed {b.bedNumber} (Available)
-                  </option>
-                ))}
-            </select>
-          )}
+            {selectedWard?.beds
+              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
+              .map((b) => (
+                <option key={b.bedNumber} value={b.bedNumber}>
+                  Bed {b.bedNumber}
+                </option>
+              ))}
+
+            {selectedWard?.beds?.filter(
+              (b) => b.status === "available"
+            ).length === 0 && (
+              <option disabled>No beds available</option>
+            )}
+          </select>
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
@@ -612,6 +602,5 @@ const IPDAdmissionForm = () => {
 };
 
 export default IPDAdmissionForm;
-
 
 
