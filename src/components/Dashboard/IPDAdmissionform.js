@@ -503,6 +503,9 @@ const IPDAdmissionForm = () => {
       toast.success("IPD Admission successful!");
       setSubmitted(true);
       fetchWards(); // 🔥 refresh beds
+       navigate(`/receptionist-dashboard/IPDAdmissionList/${patientId}`, {
+    state: { patientName },
+  });
     } catch (err) {
       toast.error(err.response?.data?.message || "Admission failed");
     }
