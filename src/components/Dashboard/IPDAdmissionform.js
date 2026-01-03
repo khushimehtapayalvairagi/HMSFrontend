@@ -402,6 +402,7 @@ const IPDAdmissionForm = () => {
   const patient = location.state?.patient || null;
   const visit = location.state?.visit || null;
 
+  // ================= STATES =================
   const [patientId, setPatientId] = useState(
     adviceData?.patientDbId || patient?._id || ""
   );
@@ -421,14 +422,14 @@ const IPDAdmissionForm = () => {
   const [roomCategories, setRoomCategories] = useState([]);
 
   const [wardId, setWardId] = useState("");
-  const [bedNumber, setBedNumber] = useState("");
+  const [bedNumber, setBedNumber] = useState(null); // ✅ NUMBER
   const [roomCategoryId, setRoomCategoryId] = useState("");
   const [expectedDischargeDate, setExpectedDischargeDate] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
   const printRef = useRef();
 
-  // 🔄 FETCH DATA
+  // ================= FETCH =================
   useEffect(() => {
     fetchWards();
     fetchRoomCategories();
@@ -470,7 +471,12 @@ const IPDAdmissionForm = () => {
     }
   };
 
-  // ✔ SUBMIT
+  // ================= DEBUG (REMOVE LATER) =================
+  useEffect(() => {
+    console.log("🛏 bedNumber:", bedNumber, typeof bedNumber);
+  }, [bedNumber]);
+
+  // ================= SUBMIT =================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -478,7 +484,7 @@ const IPDAdmissionForm = () => {
       !patientId ||
       !visitId ||
       !wardId ||
-      !bedNumber ||
+      bedNumber === null ||
       !roomCategoryId ||
       !admittingDoctorId
     ) {
@@ -489,7 +495,7 @@ const IPDAdmissionForm = () => {
       patientId,
       visitId,
       wardId,
-      bedNumber: Number(bedNumber),
+      bedNumber, // ✅ NUMBER
       roomCategoryId,
       admittingDoctorId,
       expectedDischargeDate,
@@ -502,13 +508,12 @@ const IPDAdmissionForm = () => {
 
       toast.success("IPD Admission successful!");
       setSubmitted(true);
-      fetchWards(); // 🔥 refresh beds
+      fetchWards(); // refresh beds
     } catch (err) {
       toast.error(err.response?.data?.message || "Admission failed");
     }
   };
 
-  // 🧠 Selected ward
   const selectedWard = wards.find((w) => w._id === wardId);
 
   return (
@@ -534,7 +539,7 @@ const IPDAdmissionForm = () => {
             value={wardId}
             onChange={(e) => {
               setWardId(e.target.value);
-              setBedNumber("");
+              setBedNumber(null); // reset bed
             }}
           >
             <option value="">Select Ward</option>
@@ -545,33 +550,34 @@ const IPDAdmissionForm = () => {
             ))}
           </select>
 
-          {/* BED — ONLY AVAILABLE */}
           {/* BED NUMBER */}
-<label>Bed Number</label>
+          <label>Bed Number</label>
 
-{selectedWard && selectedWard.beds?.filter(b => b.status === "available").length === 0 ? (
-  <div style={{ color: "red", marginBottom: "10px" }}>
-    No bed available
-  </div>
-) : (
-  <select
-    value={bedNumber}
-  onChange={(e) => setBedNumber(Number(e.target.value))}
-
-    disabled={!selectedWard}
-  >
-    <option value="">Select Bed</option>
-
-    {selectedWard?.beds
-      ?.filter((b) => b.status === "available")
-      .map((b) => (
-        <option key={b.bedNumber} value={b.bedNumber}>
-          Bed {b.bedNumber} (Available)
-        </option>
-      ))}
-  </select>
-)}
-
+          {selectedWard &&
+          selectedWard.beds?.filter((b) => b.status === "available").length ===
+            0 ? (
+            <div style={{ color: "red", marginBottom: "10px" }}>
+              No bed available
+            </div>
+          ) : (
+            <select
+              value={bedNumber ?? ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                setBedNumber(value ? Number(value) : null);
+              }}
+              disabled={!selectedWard}
+            >
+              <option value="">Select Bed</option>
+              {selectedWard?.beds
+                ?.filter((b) => b.status === "available")
+                .map((b) => (
+                  <option key={b.bedNumber} value={b.bedNumber}>
+                    Bed {b.bedNumber} (Available)
+                  </option>
+                ))}
+            </select>
+          )}
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
@@ -606,5 +612,6 @@ const IPDAdmissionForm = () => {
 };
 
 export default IPDAdmissionForm;
+
 
 
