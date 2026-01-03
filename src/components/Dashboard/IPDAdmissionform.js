@@ -556,7 +556,8 @@ const IPDAdmissionForm = () => {
 ) : (
   <select
     value={bedNumber}
-    onChange={(e) => setBedNumber(e.target.value)}
+  onChange={(e) => setBedNumber(Number(e.target.value))}
+
     disabled={!selectedWard}
   >
     <option value="">Select Bed</option>
