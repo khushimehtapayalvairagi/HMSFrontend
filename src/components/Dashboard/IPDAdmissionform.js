@@ -489,7 +489,7 @@ const IPDAdmissionForm = () => {
       patientId,
       visitId,
       wardId,
-      bedNumber: Number(bedNumber),
+      bedNumber: bedNumber,
       roomCategoryId,
       admittingDoctorId,
       expectedDischargeDate,
@@ -546,28 +546,30 @@ const IPDAdmissionForm = () => {
           </select>
 
           {/* BED — ONLY AVAILABLE */}
-          <label>Bed Number</label>
-          <select
-            value={bedNumber}
-            onChange={(e) => setBedNumber(e.target.value)}
-            disabled={!wardId}
-          >
-            <option value="">Select available bed</option>
+       <label>Bed Number</label>
+<select
+  value={bedNumber}
+  onChange={(e) => setBedNumber(e.target.value)}
+  disabled={!wardId}
+>
+  <option value="">Select a bed</option>
 
-            {selectedWard?.beds
-              ?.filter((b) => b.status === "available") // ✅ MAIN FIX
-              .map((b) => (
-                <option key={b.bedNumber} value={b.bedNumber}>
-                  Bed {b.bedNumber}
-                </option>
-              ))}
+  {selectedWard?.beds?.map((b) => (
+    <option
+      key={b.bedNumber}
+      value={b.bedNumber}
+      disabled={b.status !== "available"}
+    >
+      Bed {b.bedNumber} — {b.status}
+    </option>
+  ))}
 
-            {selectedWard?.beds?.filter(
-              (b) => b.status === "available"
-            ).length === 0 && (
-              <option disabled>No beds available</option>
-            )}
-          </select>
+  {!selectedWard?.beds?.length && (
+    <option disabled>No beds found</option>
+  )}
+</select>
+
+
 
           {/* ROOM CATEGORY */}
           <label>Room Category</label>
