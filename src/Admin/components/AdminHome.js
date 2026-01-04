@@ -113,12 +113,12 @@ const AdminHome = () => {
     totalDepartments: 0,
     totalWards: 0,
     totalOTs: 0,
-    opdCount: 0,
+    // opdCount: 0,
     // ipdCount: 0,
     billingTotal: 0,
     birthsCount: 0,
     paymentRecTotal: 0,
-    totalVisitsToday: 0,
+    // totalVisitsToday: 0,
   });
 
   const fetchStats = async () => {
@@ -132,7 +132,7 @@ const AdminHome = () => {
         departmentsRes,
         wardsRes,
         otsRes,
-        opdRes,
+        // opdRes,
         // ipdRes,
         billRes,
         birthRes,
@@ -144,7 +144,7 @@ const AdminHome = () => {
         axios.get(`${BASE_URL}/api/admin/departments`, { headers }),
         axios.get(`${BASE_URL}/api/receptionist/wards`, { headers }),
         axios.get(`${BASE_URL}/api/admin/operation-theaters`, { headers }),
-        axios.get(`${BASE_URL}/api/reports/opd-register`, { headers }),
+        // axios.get(`${BASE_URL}/api/reports/opd-register`, { headers }),
         // axios.get(`${BASE_URL}/api/reports/ipd-register/central`, { headers }),
         axios.get(`${BASE_URL}/api/reports/billing-summary`, { headers }),
         axios.get(`${BASE_URL}/api/reports/birth-records`, { headers }),
@@ -158,14 +158,14 @@ const AdminHome = () => {
         totalDepartments: departmentsRes.data.departments?.length || 0,
         totalWards: wardsRes.data.wards?.length || 0,
         totalOTs: otsRes.data.theaters?.length || 0,
-        opdCount: opdRes.data.total || 0,
+        // opdCount: opdRes.data.total || 0,
         // ipdCount: ipdRes.data.total || 0,
         billingTotal: billRes.data.totalAmount || 0,
         birthsCount: birthRes.data.totalBirths || 0,
         // paymentRecTotal: paymentRecRes.data.total || 0,
         paymentRecTotal: paymentRecRes.data.totalReceived || 0,
 
-        totalVisitsToday: opdRes.data.today || 0, // adjust if your API returns differently
+        // totalVisitsToday: opdRes.data.today || 0, // adjust if your API returns differently
       });
     } catch (error) {
       console.error("Failed to fetch admin dashboard stats", error);
@@ -183,12 +183,12 @@ const AdminHome = () => {
     { title: "🏢 Departments", value: stats.totalDepartments },
     { title: "🛏️ Total Wards", value: stats.totalWards },
     { title: "🏥 Operation Theaters", value: stats.totalOTs },
-    { title: "📋 OPD Visits", value: stats.opdCount },
+    // { title: "📋 OPD Visits", value: stats.opdCount },
     // { title: "🏥 IPD Admissions", value: stats.ipdCount },
     { title: "💰 Billing Total", value: `₹${stats.billingTotal}` },
     { title: "👶 Births", value: stats.birthsCount },
     { title: "💳 Payments Reconciled", value: stats.paymentRecTotal },
-    { title: "📅 Visits Today", value: stats.totalVisitsToday },
+    // { title: "📅 Visits Today", value: stats.totalVisitsToday },
   ];
 
   return (
