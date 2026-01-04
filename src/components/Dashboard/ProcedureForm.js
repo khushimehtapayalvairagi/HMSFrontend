@@ -233,8 +233,8 @@ const ProcedureForm = () => {
     scheduledDateTime: '',
     procedureId: '',
     surgeonId: '',
-    assistantIds: [],
-    anestheticId: '',
+    assistantIds: []
+    
   });
 
   const token = localStorage.getItem('jwt');
