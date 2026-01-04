@@ -407,14 +407,23 @@ const ProcedureForm = () => {
           </select>
         )}
 
-        <select name="procedureId" onChange={handleChange}>
+        {/* <select name="procedureId" onChange={handleChange}>
           <option value="">Select Procedure</option>
           {procedures.map((pr) => (
             <option key={pr._id} value={pr._1}>
               {pr.name}
             </option>
           ))}
-        </select>
+        </select> */}
+        <select name="procedureId" onChange={handleChange}>
+  <option value="">Select Procedure</option>
+  {procedures.map((pr) => (
+    <option key={pr._id} value={pr._id}>
+      {pr.name}
+    </option>
+  ))}
+</select>
+
 
         <select name="surgeonId" onChange={handleChange}>
           <option value="">Select Surgeon</option>
