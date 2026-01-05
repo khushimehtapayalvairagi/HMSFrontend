@@ -173,58 +173,56 @@
 //    </div>
 //   );
 // }
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './OPDReportPage.css';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OPDReportPage = () => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [departmentId, setDepartmentId] = useState('');
-  const [departments, setDepartments] = useState([]);
-  const [centralData, setCentralData] = useState([]);
-  const [departmentWiseData, setDepartmentWiseData] = useState({});
-  const [newVsOldData, setNewVsOldData] = useState(null);
-  const [doctorWiseData, setDoctorWiseData] = useState([]);
-  const [reportType, setReportType] = useState('central');
-  const [hasFetched, setHasFetched] = useState(false);
-
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem("jwt");
   const headers = { Authorization: `Bearer ${token}` };
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [specialties, setSpecialties] = useState([]);
+  const [specialtyId, setSpecialtyId] = useState("");
+
+  const [reportType, setReportType] = useState("central");
+  const [hasFetched, setHasFetched] = useState(false);
+
+  const [centralData, setCentralData] = useState([]);
+  const [departmentWiseData, setDepartmentWiseData] = useState({});
+  const [doctorWiseData, setDoctorWiseData] = useState([]);
+  const [newVsOldData, setNewVsOldData] = useState(null);
+
+  /* ---------------- FETCH SPECIALTIES ---------------- */
   useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/admin/departments`, { headers });
-        setDepartments(res.data.departments || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchDepartments();
+    axios
+      .get(`${BASE_URL}/api/admin/specialties`, { headers })
+      .then(res => setSpecialties(res.data.specialties || []))
+      .catch(() => toast.error("Failed to load specialties"));
   }, []);
 
+  /* ---------------- FETCH REPORT ---------------- */
   const handleFetchReports = async () => {
     if (!startDate || !endDate) {
-      toast.warning('Please select start and end dates');
+      toast.warning("Select date range");
       return;
     }
 
     const params = { startDate, endDate };
-    if (departmentId) params.departmentId = departmentId;
+    if (specialtyId) params.specialtyId = specialtyId;
 
     try {
       setHasFetched(false);
 
-      if (reportType === 'central') {
+      if (reportType === "central") {
         const res = await axios.get(`${BASE_URL}/api/reports/opd-register`, { params, headers });
         setCentralData(res.data.consultations || []);
       }
 
-      if (reportType === 'department') {
+      if (reportType === "department") {
         const res = await axios.get(
           `${BASE_URL}/api/reports/opd-register/department-wise`,
           { params, headers }
@@ -232,7 +230,7 @@ const OPDReportPage = () => {
         setDepartmentWiseData(res.data.departmentWiseRegister || {});
       }
 
-      if (reportType === 'doctor') {
+      if (reportType === "doctor") {
         const res = await axios.get(
           `${BASE_URL}/api/reports/opd-register/doctor-wise`,
           { params, headers }
@@ -240,7 +238,7 @@ const OPDReportPage = () => {
         setDoctorWiseData(res.data || []);
       }
 
-      if (reportType === 'newold') {
+      if (reportType === "newold") {
         const res = await axios.get(
           `${BASE_URL}/api/reports/opd-register/new-vs-old`,
           { params, headers }
@@ -249,40 +247,116 @@ const OPDReportPage = () => {
       }
 
       setHasFetched(true);
-    } catch (error) {
-      console.error(error);
-      toast.error('Error fetching report');
+    } catch {
+      toast.error("Failed to fetch report");
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = () => window.print();
 
   return (
-    <div className="opd-report-container">
+    <div className="opd-container">
+      <ToastContainer />
 
-      {/* PRINT HEADER */}
-      <div className="print-header">
-        <h2>
-          NAME OF UNANI COLLEGE <br />
-          Dr. M.I.J. Tibbia Unani Medical College <br />
-          Versova, Andheri (W), Mumbai – 61
-        </h2>
-        <h4>
-          Departmentwise Information of OPD, IPD, OT & LABOUR ROOM PATIENTS <br />
-          (FORMAT – A)
-        </h4>
-        <p>
-          <strong>From:</strong> {startDate} &nbsp;&nbsp;
-          <strong>To:</strong> {endDate}
-        </p>
-        <hr />
-      </div>
+      {/* ---------------- INTERNAL CSS ---------------- */}
+      <style>{`
+        body { counter-reset: page; }
 
-      <h2>📋 OPD Report Dashboard</h2>
+        .opd-container {
+          padding: 20px;
+          background: #f3f4f6;
+        }
 
-      <div className="opd-form-grid">
+        .filter-box {
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+          gap: 15px;
+        }
+
+        label {
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        input, select {
+          padding: 8px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          padding: 10px;
+          background: #1d4ed8;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .print-header {
+          display: none;
+          text-align: center;
+        }
+
+        .print-section {
+          background: #fff;
+          padding: 10px;
+          margin-top: 20px;
+          page-break-after: always;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+          font-size: 13px;
+        }
+
+        th, td {
+          border: 1px solid #000;
+          padding: 6px;
+        }
+
+        th {
+          background: #e5e7eb;
+        }
+
+        .footer {
+          display: none;
+        }
+
+        @media print {
+          .filter-box, button {
+            display: none;
+          }
+
+          .print-header {
+            display: block;
+          }
+
+          .footer {
+            display: block;
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+          }
+
+          .footer:after {
+            counter-increment: page;
+            content: "Page " counter(page);
+          }
+        }
+      `}</style>
+
+      {/* ---------------- FILTER FORM ---------------- */}
+      <div className="filter-box">
         <label>
           Start Date
           <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
@@ -294,11 +368,11 @@ const OPDReportPage = () => {
         </label>
 
         <label>
-          Department
-          <select value={departmentId} onChange={e => setDepartmentId(e.target.value)}>
+          Specialty
+          <select value={specialtyId} onChange={e => setSpecialtyId(e.target.value)}>
             <option value="">All</option>
-            {departments.map(dep => (
-              <option key={dep._id} value={dep._id}>{dep.name}</option>
+            {specialties.map(s => (
+              <option key={s._id} value={s._id}>{s.name}</option>
             ))}
           </select>
         </label>
@@ -306,45 +380,49 @@ const OPDReportPage = () => {
         <label>
           Report Type
           <select value={reportType} onChange={e => setReportType(e.target.value)}>
-            <option value="central">Central OPD</option>
-            <option value="department">Department-wise</option>
-            <option value="doctor">Doctor-wise</option>
+            <option value="central">Central OPD (Format A)</option>
+            <option value="department">Specialty Wise (Format A)</option>
+            <option value="doctor">Doctor Wise (Format B)</option>
             <option value="newold">New vs Old</option>
           </select>
         </label>
 
-        <div className="opd-button-wrapper">
-          <button onClick={handleFetchReports}>Fetch Report</button>
-          {hasFetched && (
-            <button onClick={handlePrint} className="opd-print-button">
-              🖨 Print
-            </button>
-          )}
-        </div>
+        <button onClick={handleFetchReports}>Generate</button>
+        {hasFetched && <button onClick={handlePrint}>🖨 Print</button>}
       </div>
 
-      {/* CENTRAL OPD */}
-      {reportType === 'central' && hasFetched && (
+      {/* ---------------- PRINT HEADER ---------------- */}
+      <div className="print-header">
+        <h3>NAME OF UNANI COLLEGE</h3>
+        <h2>Dr. M.I.J. Tibbia Unani Medical College</h2>
+        <p>Versova, Andheri (W), Mumbai – 61</p>
+        <p><b>OPD REPORT</b></p>
+        <p><b>From:</b> {startDate} &nbsp;&nbsp; <b>To:</b> {endDate}</p>
+        <hr />
+      </div>
+
+      {/* ---------------- CENTRAL OPD ---------------- */}
+      {reportType === "central" && hasFetched && (
         <div className="print-section">
-          <h3>Central OPD Register</h3>
-          <table className="opd-table">
+          <h4>Central OPD Register (FORMAT – A)</h4>
+          <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Patient</th>
                 <th>Doctor</th>
-                <th>Department</th>
+                <th>Specialty</th>
                 <th>Diagnosis</th>
               </tr>
             </thead>
             <tbody>
               {centralData.map((c, i) => (
                 <tr key={i}>
-                  <td>{new Date(c.consultationDateTime).toLocaleString()}</td>
-                  <td>{c.patientId?.fullName || 'N/A'}</td>
-                  <td>{c.doctorId?.userId?.name || 'N/A'}</td>
-                  <td>{c.doctorId?.department?.name || 'N/A'}</td>
-                  <td>{c.diagnosis || 'N/A'}</td>
+                  <td>{new Date(c.consultationDateTime).toLocaleDateString()}</td>
+                  <td>{c.patientId?.fullName}</td>
+                  <td>{c.doctorId?.userId?.name}</td>
+                  <td>{c.doctorId?.specialty?.name}</td>
+                  <td>{c.diagnosis}</td>
                 </tr>
               ))}
             </tbody>
@@ -352,42 +430,15 @@ const OPDReportPage = () => {
         </div>
       )}
 
-      {/* DEPARTMENT WISE */}
-      {reportType === 'department' && hasFetched &&
-        Object.keys(departmentWiseData).map((dept, i) => (
+      {/* ---------------- DOCTOR WISE ---------------- */}
+      {reportType === "doctor" && hasFetched &&
+        doctorWiseData.map((d, i) => (
           <div className="print-section" key={i}>
-            <h3>{dept}</h3>
-            <table className="opd-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Patient</th>
-                  <th>Doctor</th>
-                  <th>Diagnosis</th>
-                </tr>
-              </thead>
-              <tbody>
-                {departmentWiseData[dept].map((c, idx) => (
-                  <tr key={idx}>
-                    <td>{new Date(c.consultationDateTime).toLocaleString()}</td>
-                    <td>{c.patientId?.fullName || 'N/A'}</td>
-                    <td>{c.doctorId?.userId?.name || 'N/A'}</td>
-                    <td>{c.diagnosis || 'N/A'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))
-      }
+            <h4>Doctor Wise OPD (FORMAT – B)</h4>
+            <p><b>Doctor:</b> Dr. {d.doctor.name}</p>
+            <p><b>Specialty:</b> {d.doctor.specialty}</p>
 
-      {/* DOCTOR WISE */}
-      {reportType === 'doctor' && hasFetched &&
-        doctorWiseData.map((entry, i) => (
-          <div className="print-section" key={i}>
-            <h3>Dr. {entry.doctor.name} ({entry.doctor.specialty})</h3>
-            <p><strong>Total Consultations:</strong> {entry.totalConsultations}</p>
-            <table className="opd-table">
+            <table>
               <thead>
                 <tr>
                   <th>Date</th>
@@ -397,12 +448,12 @@ const OPDReportPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {entry.consultations.map((c, idx) => (
+                {d.consultations.map((c, idx) => (
                   <tr key={idx}>
-                    <td>{new Date(c.consultationDateTime).toLocaleString()}</td>
-                    <td>{c.patientId?.fullName || 'N/A'}</td>
-                    <td>{c.chiefComplaint || 'N/A'}</td>
-                    <td>{c.diagnosis || 'N/A'}</td>
+                    <td>{new Date(c.consultationDateTime).toLocaleDateString()}</td>
+                    <td>{c.patientId?.fullName}</td>
+                    <td>{c.chiefComplaint}</td>
+                    <td>{c.diagnosis}</td>
                   </tr>
                 ))}
               </tbody>
@@ -411,23 +462,25 @@ const OPDReportPage = () => {
         ))
       }
 
-      {/* NEW VS OLD */}
-      {reportType === 'newold' && hasFetched && (
+      {/* ---------------- NEW VS OLD ---------------- */}
+      {reportType === "newold" && hasFetched && (
         <div className="print-section">
-          <h3>New vs Old OPD</h3>
-          <ul>
-            <li>Total Consultations: {newVsOldData?.totalConsultations}</li>
-            <li>Unique Patients: {newVsOldData?.uniquePatients}</li>
-            <li>New Patients: {newVsOldData?.newPatients}</li>
-            <li>Old Patients: {newVsOldData?.oldPatients}</li>
-          </ul>
+          <h4>New vs Old OPD Summary</h4>
+          <table>
+            <tbody>
+              <tr><th>Total Consultations</th><td>{newVsOldData?.totalConsultations}</td></tr>
+              <tr><th>New Patients</th><td>{newVsOldData?.newPatients}</td></tr>
+              <tr><th>Old Patients</th><td>{newVsOldData?.oldPatients}</td></tr>
+            </tbody>
+          </table>
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="footer">Dr. M.I.J. Tibbia Unani Medical College</div>
     </div>
   );
 };
 
 export default OPDReportPage;
+
 
