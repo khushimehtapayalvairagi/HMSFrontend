@@ -368,7 +368,7 @@ const OPDReportPage = () => {
         </label>
 
         <label>
-          Specialty
+          Department
           <select value={specialtyId} onChange={e => setSpecialtyId(e.target.value)}>
             <option value="">All</option>
             {specialties.map(s => (
@@ -381,7 +381,7 @@ const OPDReportPage = () => {
           Report Type
           <select value={reportType} onChange={e => setReportType(e.target.value)}>
             <option value="central">Central OPD (Format A)</option>
-            <option value="department">Specialty Wise (Format A)</option>
+            <option value="department">Department Wise (Format A)</option>
             <option value="doctor">Doctor Wise (Format B)</option>
             <option value="newold">New vs Old</option>
           </select>
