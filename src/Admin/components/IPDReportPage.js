@@ -150,7 +150,7 @@ const IPDReportPage = () => {
               <td>{i + 1}</td>
               <td>{r.patient?.fullName}</td>
               <td>{reportType === "ot" ? r.procedure?.name : r.anesthesiaName}</td>
-              <td>{reportType === "ot" ? r.surgeon?.userId?.name : r.anesthetist?.userId?.name}</td>
+              <td>{reportType === "ot" ? r.surgeon?.name : r.anesthetist?.name}</td>
               <td>
                 {new Date(r.scheduledDateTime || r.induceTime).toLocaleString()}
               </td>
