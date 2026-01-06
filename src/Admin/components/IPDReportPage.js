@@ -32,87 +32,98 @@ const IPDReportPage = () => {
   }, []);
 
   /* ---------------- FETCH REPORT ---------------- */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      let endpoint = "";
-      let params = { startDate, endDate };
+  try {
+    let endpoint = "";
+    let params = { startDate, endDate };
 
-      switch (reportType) {
-        case "central":
-          endpoint = `${BASE_URL}/api/reports/ipd-register/central`;
-          break;
-        case "department":
-          endpoint = `${BASE_URL}/api/reports/ipd-register/department-wise`;
-          params.specialtyId = selectedSpecialty;
-          break;
-        case "ot":
-          endpoint = `${BASE_URL}/api/reports/procedures/ot-register`;
-          break;
-        case "anesthesia":
-          endpoint = `${BASE_URL}/api/reports/anesthesia-register`;
-          break;
-        case "birth":
-          endpoint = `${BASE_URL}/api/reports/birth-records`;
-          params.gender = gender;
-          params.delivery_type = deliveryType;
-          break;
-        case "billing":
-          endpoint = `${BASE_URL}/api/reports/billing-summary`;
-          break;
-        case "payment":
-          endpoint = `${BASE_URL}/api/reports/payment-reconciliation`;
-          break;
-        default:
-          return;
-      }
+    switch (reportType) {
+      case "central":
+        endpoint = `${BASE_URL}/api/reports/ipd-register/central`;
+        break;
 
-      const res = await axios.get(endpoint, { headers, params });
+      case "department":
+        endpoint = `${BASE_URL}/api/reports/ipd-register/department-wise`;
+        params.specialtyId = selectedSpecialty;
+        break;
 
-      if (reportType === "billing") {
-        setBillingSummary(res.data);
-        setReportData([]);
-        setPaymentSummary(null);
-      } else if (reportType === "payment") {
-        setPaymentSummary(res.data);
-        setReportData([]);
-        setBillingSummary(null);
-      } else if (reportType === "birth") {
-        setReportData(res.data ? [res.data] : []);
-        setBillingSummary(null);
-        setPaymentSummary(null);
-      } else {
-        setReportData(res.data || []);
-        setBillingSummary(null);
-        setPaymentSummary(null);
-      }
-      } else if (reportType === "department") {
-  const formatted = Object.entries(
-    res.data.specialtyWiseRegister || {}
-  ).map(([specialty, admissions]) => ({
-    specialty,
-    totalAdmissions: admissions.length,
-    admissions
-  }));
+      case "ot":
+        endpoint = `${BASE_URL}/api/reports/procedures/ot-register`;
+        break;
 
-  setReportData(formatted);
-  setBillingSummary(null);
-  setPaymentSummary(null);
-} else {
-  setReportData(res.data || []);
-  setBillingSummary(null);
-  setPaymentSummary(null);
-}
+      case "anesthesia":
+        endpoint = `${BASE_URL}/api/reports/anesthesia-register`;
+        break;
 
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to generate report");
+      case "birth":
+        endpoint = `${BASE_URL}/api/reports/birth-records`;
+        params.gender = gender;
+        params.delivery_type = deliveryType;
+        break;
+
+      case "billing":
+        endpoint = `${BASE_URL}/api/reports/billing-summary`;
+        break;
+
+      case "payment":
+        endpoint = `${BASE_URL}/api/reports/payment-reconciliation`;
+        break;
+
+      default:
+        return;
     }
 
+    const res = await axios.get(endpoint, { headers, params });
+
+    /* ===================== HANDLE RESPONSE ===================== */
+
+    if (reportType === "department") {
+      // ✅ DEPARTMENT-WISE FORMAT
+      const formatted = Object.entries(
+        res.data.specialtyWiseRegister || {}
+      ).map(([specialty, admissions]) => ({
+        specialty,
+        totalAdmissions: admissions.length,
+        admissions
+      }));
+
+      setReportData(formatted);
+      setBillingSummary(null);
+      setPaymentSummary(null);
+
+    } else if (reportType === "billing") {
+      setBillingSummary(res.data);
+      setReportData([]);
+      setPaymentSummary(null);
+
+    } else if (reportType === "payment") {
+      setPaymentSummary(res.data);
+      setReportData([]);
+      setBillingSummary(null);
+
+    } else if (reportType === "birth") {
+      setReportData(res.data ? [res.data] : []);
+      setBillingSummary(null);
+      setPaymentSummary(null);
+
+    } else {
+      // ✅ CENTRAL / OT / ANESTHESIA
+      setReportData(res.data || []);
+      setBillingSummary(null);
+      setPaymentSummary(null);
+    }
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to generate report");
+  } finally {
     setLoading(false);
-  };
+  }
+};
+
 
   /* ---------------- RENDER TABLES ---------------- */
   const renderDepartmentWise = () =>
