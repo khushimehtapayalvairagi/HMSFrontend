@@ -399,76 +399,106 @@ const IPDReportPage = () => {
       )}
 
       {/* INTERNAL CSS */}
-      <style>{`
-        body { font-family: serif; }
+    <style>{`
+  body {
+    font-family: serif;
+  }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-        }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    page-break-inside: avoid;
+  }
 
-        th, td {
-          border: 1px solid #000;
-          padding: 6px;
-          font-size: 13px;
-        }
+  thead {
+    display: table-header-group;
+  }
 
-        th {
-          background: #eee;
-        }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
 
-        .form-section {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 15px;
-          margin-bottom: 20px;
-          background: #fff;
-          padding: 15px;
-          border-radius: 8px;
-        }
+  th, td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 13px;
+  }
 
-        .submit-btn {
-          padding: 10px 15px;
-          background: #2563eb;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-weight: bold;
-        }
+  th {
+    background: #eee;
+  }
 
-        .print-header {
-          display: none;
-          text-align: center;
-        }
+  /* NORMAL SCREEN */
+  .form-section,
+  .submit-btn,
+  .sidebar,
+  .navbar,
+  .toast-container,
+  .report-title {
+    display: block;
+  }
 
-        .print-section {
-          margin-top: 20px;
-        }
+  .print-header {
+    display: none;
+    text-align: center;
+    margin-bottom: 10px;
+  }
 
-        footer::after {
-          content: "Page " counter(page);
-        }
+  /* ================= PRINT MODE ================= */
+  @media print {
 
-        @media print {
-          .form-section,
-          .submit-btn,
-          .toast-container,
-          .report-title {
-            display: none !important;
-          }
-          .print-header {
-            display: block;
-          }
-          footer::after {
-            position: fixed;
-            bottom: 10px;
-            right: 20px;
-            font-size: 12px;
-          }
-        }
-      `}</style>
+    /* ❌ HIDE EVERYTHING */
+    body * {
+      visibility: hidden;
+    }
+
+    /* ✅ SHOW ONLY TABLE AREA */
+    #print-area,
+    #print-area * {
+      visibility: visible;
+    }
+
+    /* ✅ REMOVE SIDEBAR & SCROLLBAR */
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* ✅ POSITION PRINT AREA */
+    #print-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+
+    /* ✅ SHOW PRINT HEADER */
+    .print-header {
+      display: block;
+    }
+
+    /* ✅ AVOID HALF TABLE PRINT */
+    table {
+      page-break-inside: avoid;
+    }
+
+    tr, td, th {
+      page-break-inside: avoid;
+    }
+
+    /* ✅ PAGE NUMBER */
+    footer::after {
+      content: "Page " counter(page);
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      font-size: 12px;
+    }
+  }
+`}</style>
+
       <footer />
     </div>
   );
