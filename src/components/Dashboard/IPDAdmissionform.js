@@ -360,7 +360,7 @@ const IPDAdmissionForm = () => {
           <button onClick={handleView}>📋 View Admissions</button>
         </div>
       )}
-    </div>
+   
     {/* ---------------- PRINTABLE ADMISSION FORM ---------------- */}
 <div style={{ display: "none" }}>
   <div ref={printRef}>
@@ -427,7 +427,7 @@ const IPDAdmissionForm = () => {
     </div>
   </div>
 </div>
-
+</div>
   );
 };
 
