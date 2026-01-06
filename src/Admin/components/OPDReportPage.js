@@ -429,6 +429,46 @@ const OPDReportPage = () => {
           </table>
         </div>
       )}
+{/* ---------------- DEPARTMENT WISE ---------------- */}
+       {reportType === "department" && hasFetched &&
+           Object.keys(departmentWiseData).length === 0 ? (
+             <div className="print-section">
+             <p>No department-wise data available</p>
+           </div>
+   ) : (
+    Object.entries(departmentWiseData).map(([deptName, consultations], idx) => (
+      <div className="print-section" key={idx}>
+        <h4>Department Wise OPD Register (FORMAT – A)</h4>
+        <p><b>Department:</b> {deptName}</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Sr.No</th>
+              <th>Date</th>
+              <th>Patient Name</th>
+              <th>Doctor Name</th>
+              <th>Chief Complaint</th>
+              <th>Diagnosis</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {consultations.map((c, i) => (
+              <tr key={c._id}>
+                <td>{i + 1}</td>
+                <td>{new Date(c.consultationDateTime).toLocaleDateString()}</td>
+                <td>{c.patientId?.fullName || "-"}</td>
+                <td>{c.doctorId?.userId?.name || "-"}</td>
+                <td>{c.chiefComplaint || "-"}</td>
+                <td>{c.diagnosis || "-"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ))
+}
 
       {/* ---------------- DOCTOR WISE ---------------- */}
       {reportType === "doctor" && hasFetched &&

@@ -426,7 +426,7 @@ const ProcedureForm = () => {
 
 
         <select name="surgeonId" onChange={handleChange}>
-          <option value="">Select Surgeon</option>
+          <option value="">Select Doctor</option>
           {doctors.map((d) => (
             <option key={d._id} value={d._id}>
               {d.userId?.name}

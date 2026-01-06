@@ -88,6 +88,24 @@ const IPDReportPage = () => {
         setBillingSummary(null);
         setPaymentSummary(null);
       }
+      } else if (reportType === "department") {
+  const formatted = Object.entries(
+    res.data.specialtyWiseRegister || {}
+  ).map(([specialty, admissions]) => ({
+    specialty,
+    totalAdmissions: admissions.length,
+    admissions
+  }));
+
+  setReportData(formatted);
+  setBillingSummary(null);
+  setPaymentSummary(null);
+} else {
+  setReportData(res.data || []);
+  setBillingSummary(null);
+  setPaymentSummary(null);
+}
+
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate report");

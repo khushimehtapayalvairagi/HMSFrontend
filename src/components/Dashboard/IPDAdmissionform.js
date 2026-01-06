@@ -167,36 +167,69 @@ const IPDAdmissionForm = () => {
 
   const patientNameParts = getNameParts(patientName);
 
-  const handlePrint = () => {
-    if (!printRef.current) return;
+ const handlePrint = () => {
+  if (!printRef.current) {
+    toast.error("Nothing to print");
+    return;
+  }
 
-    const content = printRef.current.innerHTML;
-    const printWindow = window.open("", "", "width=900,height=700");
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Admission Form</title>
-          <style>
-            body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; padding: 20px; }
-            .header { text-align: center; font-weight: bold; }
-            .form-title { text-align: center; font-size: 18pt; border-bottom: 2px solid black; padding-bottom: 5px; margin: 10px 0; }
-            .field-row { display: flex; flex-wrap: wrap; margin-bottom: 8px; }
-            .field { flex: 1; min-width: 150px; margin-right: 15px; display: flex; align-items: baseline; }
-            .field label { font-weight: bold; margin-right: 5px; }
-            .field span { border-bottom: 1px solid black; flex-grow: 1; padding: 2px 0; }
-            .signature-section { display: flex; justify-content: space-between; margin-top: 40px; }
-            .signature-box { text-align: center; flex: 1; }
-            .signature-line { border-top: 1px solid black; margin-top: 30px; }
-            .section-heading { font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; text-decoration: underline; }
-            .consent { border: 1px solid black; padding: 10px; margin-top: 20px; font-style: italic; font-size: 10pt; }
-          </style>
-        </head>
-        <body>${content}</body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  };
+  const printWindow = window.open("", "_blank", "width=900,height=650");
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>IPD Admission Form</title>
+        <style>
+          body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            padding: 20px;
+          }
+          h2, h3 { text-align: center; margin: 4px 0; }
+          hr { margin: 10px 0; }
+          .field-row {
+            display: flex;
+            margin-bottom: 10px;
+          }
+          .field {
+            flex: 1;
+            display: flex;
+            gap: 6px;
+          }
+          label {
+            font-weight: bold;
+            min-width: 140px;
+          }
+          span {
+            border-bottom: 1px solid #000;
+            flex: 1;
+          }
+          .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+          }
+          .signature-box {
+            width: 40%;
+            text-align: center;
+          }
+          .signature-line {
+            border-top: 1px solid #000;
+            margin-bottom: 6px;
+          }
+        </style>
+      </head>
+      <body>
+        ${printRef.current.innerHTML}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
+
 
   const handleCancel = () => {
     setPatientName("");
@@ -328,6 +361,73 @@ const IPDAdmissionForm = () => {
         </div>
       )}
     </div>
+    {/* ---------------- PRINTABLE ADMISSION FORM ---------------- */}
+<div style={{ display: "none" }}>
+  <div ref={printRef}>
+    <div className="header">
+      <h2>Dr. M.I.J. Tibbia Unani Medical College</h2>
+      <p>Versova, Andheri (W), Mumbai – 61</p>
+      <hr />
+      <h3 className="form-title">IPD ADMISSION FORM</h3>
+    </div>
+
+    <div className="field-row">
+      <div className="field">
+        <label>Patient Name:</label>
+        <span>{patientName}</span>
+      </div>
+      <div className="field">
+        <label>IPD No:</label>
+        <span>{admissionData?._id || "-"}</span>
+      </div>
+    </div>
+
+    <div className="field-row">
+      <div className="field">
+        <label>Doctor:</label>
+        <span>{doctorName}</span>
+      </div>
+      <div className="field">
+        <label>Admitted On:</label>
+        <span>{admittedOn}</span>
+      </div>
+    </div>
+
+    <div className="field-row">
+      <div className="field">
+        <label>Ward:</label>
+        <span>{wards.find(w => w._id === wardId)?.name || "-"}</span>
+      </div>
+      <div className="field">
+        <label>Bed No:</label>
+        <span>{bedNumber}</span>
+      </div>
+    </div>
+
+    <div className="field-row">
+      <div className="field">
+        <label>Room Category:</label>
+        <span>{roomCategories.find(r => r._id === roomCategoryId)?.name || "-"}</span>
+      </div>
+      <div className="field">
+        <label>Expected Discharge:</label>
+        <span>{expectedDischargeDate || "-"}</span>
+      </div>
+    </div>
+
+    <div className="signature-section">
+      <div className="signature-box">
+        <div className="signature-line"></div>
+        <p>Doctor Signature</p>
+      </div>
+      <div className="signature-box">
+        <div className="signature-line"></div>
+        <p>Receptionist Signature</p>
+      </div>
+    </div>
+  </div>
+</div>
+
   );
 };
 
