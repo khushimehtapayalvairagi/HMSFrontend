@@ -64,7 +64,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
       <ToastContainer />
   <div className="hospital-left">
   <div className="logo-container">
-    <img src="/public/images/tibbia logo (1).png" alt="Care Cure Logo" className="hospital-logo" />
+    <img src="/images/tibbia logo.png" alt="Care Cure Logo" className="hospital-logo" />
     <span className="logo-text">aitibbia mumbai</span> {/* ⬅️ Hospital name */}
   </div>
 
