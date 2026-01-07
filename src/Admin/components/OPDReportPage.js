@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./OPDReportPage.css";
+
 const OPDReportPage = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem("jwt");
@@ -50,8 +51,6 @@ const OPDReportPage = () => {
           { params, headers }
         );
         setDepartmentWiseData(res.data.specialtyWiseRegister || {});
-
-        // setDepartmentWiseData(res.data.departmentWiseRegister || {});
       }
 
       if (reportType === "doctor") {
@@ -121,7 +120,6 @@ const OPDReportPage = () => {
       {/* ================= PRINT AREA ================= */}
       <div id="print-area">
 
-        {/* PRINT HEADER */}
         <div className="print-header">
           <h2>Dr. M.I.J. Tibbia Unani Medical College</h2>
           <p>Versova, Andheri (W), Mumbai – 61</p>
@@ -226,11 +224,36 @@ const OPDReportPage = () => {
         )}
       </div>
 
-      {/* ================= PRINT CSS ================= */}
+      {/* ================= INTERNAL CSS (FIXED CONTAINER) ================= */}
       <style>{`
+        .opd-report-container {
+          max-width: 1200px;
+          margin: 20px auto;
+          padding: 20px;
+          background: #fff;
+        }
+
+        .filter-box {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          padding: 15px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          margin-bottom: 20px;
+          background: #f9f9f9;
+        }
+
+        .filter-box label {
+          display: flex;
+          flex-direction: column;
+          font-size: 13px;
+        }
+
         table {
           width: 100%;
           border-collapse: collapse;
+          margin-top: 10px;
           page-break-inside: avoid;
         }
 
@@ -238,9 +261,11 @@ const OPDReportPage = () => {
           border: 1px solid #000;
           padding: 6px;
           font-size: 13px;
+          text-align: left;
         }
 
         thead {
+          background: #eee;
           display: table-header-group;
         }
 
@@ -251,6 +276,7 @@ const OPDReportPage = () => {
         .print-header {
           display: none;
           text-align: center;
+          margin-bottom: 10px;
         }
 
         @media print {
