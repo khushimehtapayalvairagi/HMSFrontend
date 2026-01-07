@@ -152,6 +152,9 @@ const InventoryRoutes =()=>(
              <Route path="receptionist/*" element={<ReceptionistRoutes />} />
           <Route path ="inventory/*" element={<InventoryRoutes/>}/>
            <Route path="lab-technician/*" element={<LabTechnicianRoutes />} />
+            <Route path="nurse/NurseIPDAdmissionList" element={<NurseIPDAdmissionList />} />
+  <Route path="nurse/ViewDailyReports" element={<ViewDailyReports />} />
+  <Route path="nurse/NurseScheduledProcedures" element={<NurseScheduledProcedures />} />
           </Route>
         </Route>
 
