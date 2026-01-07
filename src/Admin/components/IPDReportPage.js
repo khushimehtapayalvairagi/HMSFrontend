@@ -80,15 +80,13 @@ const handleSubmit = async (e) => {
 
     /* ===================== HANDLE RESPONSE ===================== */
 
-    if (reportType === "department") {
-      // ✅ DEPARTMENT-WISE FORMAT
-      const formatted = Object.entries(
-        res.data.specialtyWiseRegister || {}
-      ).map(([specialty, admissions]) => ({
-        specialty,
-        totalAdmissions: admissions.length,
-        admissions
-      }));
+   if (reportType === "department") {
+  // backend already sends correct array
+  setReportData(res.data || []);
+  setBillingSummary(null);
+  setPaymentSummary(null);
+}
+
 
       setReportData(formatted);
       setBillingSummary(null);
@@ -177,7 +175,8 @@ const handleSubmit = async (e) => {
           {reportData.map((r, i) => (
             <tr key={r._id}>
               <td>{i + 1}</td>
-              <td>{r.patient?.fullName}</td>
+              <td>{r.patient?.name}</td>
+
               <td>{reportType === "ot" ? r.procedure?.name : r.anesthesiaName}</td>
               <td>{reportType === "ot" ? r.surgeon?.name : r.anesthetist?.name}</td>
               <td>
@@ -316,7 +315,7 @@ const handleSubmit = async (e) => {
           🖨 Print
         </button>
       </form>
-      
+
           <div id="print-area">
 
   <div className="print-header">
