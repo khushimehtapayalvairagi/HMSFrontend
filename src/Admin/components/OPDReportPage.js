@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import "./OPDReportPage.css";
 const OPDReportPage = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const token = localStorage.getItem("jwt");
@@ -49,7 +49,9 @@ const OPDReportPage = () => {
           `${BASE_URL}/api/reports/opd-register/department-wise`,
           { params, headers }
         );
-        setDepartmentWiseData(res.data.departmentWiseRegister || {});
+        setDepartmentWiseData(res.data.specialtyWiseRegister || {});
+
+        // setDepartmentWiseData(res.data.departmentWiseRegister || {});
       }
 
       if (reportType === "doctor") {

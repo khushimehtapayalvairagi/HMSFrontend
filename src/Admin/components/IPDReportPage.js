@@ -147,7 +147,7 @@ const handleSubmit = async (e) => {
             {dept.admissions.map((r, i) => (
               <tr key={r._id}>
                 <td>{i + 1}</td>
-                <td>{r.patient?.fullName}</td>
+                <td>{r.patient?.name}</td>
                 <td>{r.doctor?.name}</td>
                 <td>{r.ward?.name}</td>
                 <td>{r.bedNumber}</td>
@@ -215,7 +215,8 @@ const handleSubmit = async (e) => {
       <ToastContainer />
 
       {/* PRINT HEADER */}
-      <div className="print-header">
+
+      {/* <div className="print-header">
         <h2>NAME OF UNANI COLLEGE</h2>
         <h3>Dr. M.I.J. Tibbia Unani Medical College</h3>
         <p>Versova, Andheri (W), Mumbai – 61</p>
@@ -225,7 +226,7 @@ const handleSubmit = async (e) => {
           <strong>To:</strong> {endDate}
         </p>
         <hr />
-      </div>
+      </div> */}
 
       <h1 className="report-title">IPD / OT / Anesthesia / Birth / Billing Reports</h1>
 
@@ -315,7 +316,20 @@ const handleSubmit = async (e) => {
           🖨 Print
         </button>
       </form>
+      
+          <div id="print-area">
 
+  <div className="print-header">
+        <h2>NAME OF UNANI COLLEGE</h2>
+        <h3>Dr. M.I.J. Tibbia Unani Medical College</h3>
+        <p>Versova, Andheri (W), Mumbai – 61</p>
+        <p>
+          <strong>Report:</strong> {reportType.toUpperCase()} &nbsp; | &nbsp;
+          <strong>From:</strong> {startDate} &nbsp;
+          <strong>To:</strong> {endDate}
+        </p>
+        <hr />
+      </div>
       {/* TABLES */}
       {reportType === "central" && reportData.length > 0 && (
         <table>
@@ -408,9 +422,12 @@ const handleSubmit = async (e) => {
           </tbody>
         </table>
       )}
+      </div>
 
       {/* INTERNAL CSS */}
     <style>{`
+  
+  
   body {
     font-family: serif;
   }
