@@ -194,7 +194,8 @@ const AdminHome = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>Welcome, Admin</h1>
-      <p style={styles.subheading}>Hospital Management Overview</p>
+      <p style={styles.subheading}>Anjuman - I - Islam's Dr. m. i. Jamkhanawala Tibbia Unani Medical
+College & Haji A. R. Kalsekar Tibbia Hospital</p>
 
       <div style={styles.cardsContainer}>
         {cards.map((card, idx) => (

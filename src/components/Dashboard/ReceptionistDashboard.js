@@ -215,7 +215,8 @@ const ReceptionistDashboard = () => {
   <Box sx={{ maxWidth: '1200px', mx: 'auto' }}> {/* ✅ centers content properly */}
     <Toolbar />
     <Typography variant="body1" sx={{ mb: 2, textAlign: 'center' }}>
-      Hospital Management System
+     Anjuman - I - Islam's Dr. m. i. Jamkhanawala Tibbia Unani Medical
+        College & Haji A. R. Kalsekar Tibbia Hospital
     </Typography>
 
     <SocketContext />
