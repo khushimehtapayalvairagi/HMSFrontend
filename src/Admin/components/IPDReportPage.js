@@ -78,17 +78,11 @@ const handleSubmit = async (e) => {
 
     const res = await axios.get(endpoint, { headers, params });
 
-    /* ===================== HANDLE RESPONSE ===================== */
+    /* ================= HANDLE RESPONSE ================= */
 
-   if (reportType === "department") {
-  // backend already sends correct array
-  setReportData(res.data || []);
-  setBillingSummary(null);
-  setPaymentSummary(null);
-}
-
-
-      setReportData(formatted);
+    if (reportType === "department") {
+      // backend already sends correct array
+      setReportData(res.data || []);
       setBillingSummary(null);
       setPaymentSummary(null);
 
@@ -108,7 +102,7 @@ const handleSubmit = async (e) => {
       setPaymentSummary(null);
 
     } else {
-      // ✅ CENTRAL / OT / ANESTHESIA
+      // CENTRAL / OT / ANESTHESIA
       setReportData(res.data || []);
       setBillingSummary(null);
       setPaymentSummary(null);
@@ -121,6 +115,7 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
 
 
   /* ---------------- RENDER TABLES ---------------- */
