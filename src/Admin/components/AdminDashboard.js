@@ -322,9 +322,9 @@ const AdminDashboard = () => {
           {/* === Nurse Submenu === */}
           <Menu anchorEl={nurseAnchor} open={Boolean(nurseAnchor)} onClose={closeNurseMenu}>
             {[
-              { to: "nurse/NurseIPDAdmissionList", label: "🏥 IPD Admissions" },
-              { to: "nurse/ViewDailyReports", label: "📋 Daily Reports" },
-              { to: "nurse/NurseScheduledProcedures", label: "🧪 Scheduled Procedures" },
+              { to: "/admin-dashboard/nurse/NurseIPDAdmissionList", label: "🏥 IPD Admissions" },
+              { to: "/admin-dashboard/nurse/ViewDailyReports", label: "📋 Daily Reports" },
+              { to: "/admin-dashboard/nurse/NurseScheduledProcedures", label: "🧪 Scheduled Procedures" },
             ].map((item, i) => (
               <MenuItem key={i} component={Link} to={item.to} onClick={closeNurseMenu}>
                 {item.label}
