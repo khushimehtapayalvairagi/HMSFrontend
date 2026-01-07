@@ -72,9 +72,9 @@ const ReceptionistDashboard = () => {
             { label: "View Anesthesia Form", path: "/receptionist-dashboard/ViewAnesthesiaForm", icon: <AnesthesiaIcon /> },
             { label: "Labour Room", path: "/receptionist-dashboard/LabourRoom", icon: <LabourRoomIcon /> },
             { label: "View Labour Room", path: "/receptionist-dashboard/ViewLabourRoom", icon: <LabourRoomIcon /> },
-            { label: "Record Prescription", path: "/receptionist-dashboard/record-prescription", icon: <IpdIcon /> },
-            { label: "Daily Reports", path: "/receptionist-dashboard/DailyReports", icon: <EventNoteIcon /> },
-            { label: "prescription-record", path: "/receptionist-dashboard/patient-record-prescription", icon: <HistoryIcon /> },
+            // { label: "Record Prescription", path: "/receptionist-dashboard/record-prescription", icon: <IpdIcon /> },
+            // { label: "Daily Reports", path: "/receptionist-dashboard/DailyReports", icon: <EventNoteIcon /> },
+            // { label: "prescription-record", path: "/receptionist-dashboard/patient-record-prescription", icon: <HistoryIcon /> },
             { label: "Billing", path: "/receptionist-dashboard/Billing", icon: <BillingIcon /> },
             { label: "View Bill", path: "/receptionist-dashboard/ViewBill", icon: <ViewBillIcon /> },
             { label: "Payment Form", path: "/receptionist-dashboard/PaymentForm", icon: <PaymentIcon /> },
@@ -210,9 +210,23 @@ const ReceptionistDashboard = () => {
     marginLeft: { xs: 0, md: sidebarOpen ? `${drawerWidth}px` : 0 },
     width: '100%',
     backgroundColor: '#f4f6f8',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start', // keeps content aligned to top
   }}
 >
-  <Box sx={{ maxWidth: '1200px', mx: 'auto' }}> {/* ✅ centers content properly */}
+  <Box
+    sx={{
+      width: '100%',
+      maxWidth: '1200px',
+      mx: 'auto',
+      mt: 2,
+      background: '#fff',
+      borderRadius: 2,
+      boxShadow: 1,
+      p: 3,
+    }}
+  > {/* ✅ centers content properly */}
     <Toolbar />
     <Typography variant="body1" sx={{ mb: 2, textAlign: 'center' }}>
      Anjuman - I - Islam's Dr. m. i. Jamkhanawala Tibbia Unani Medical
