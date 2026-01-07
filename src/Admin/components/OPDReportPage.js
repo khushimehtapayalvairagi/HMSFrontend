@@ -79,7 +79,7 @@ const OPDReportPage = () => {
   const handlePrint = () => window.print();
 
   return (
-    <div className="opd-container">
+    <div className="opd-report-container">
       <ToastContainer />
 
       {/* ================= FILTER (NO PRINT) ================= */}
